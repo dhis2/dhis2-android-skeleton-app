@@ -11,7 +11,7 @@ import okhttp3.HttpUrl;
 
 public class D2Factory {
 
-    public static D2 create(Context context) {
+    public static D2 create(Context context, String serverUrl) {
 
         D2Configuration d2Configuration = D2Configuration.builder()
                 .databaseName("test.db")
@@ -24,8 +24,25 @@ public class D2Factory {
                 .build();
 
         D2Manager d2Manager = new D2Manager(d2Configuration);
-        d2Manager.configureD2(Configuration.builder().serverUrl(HttpUrl.get("android-current")).build());
+        d2Manager.configureD2(getConfiguration(serverUrl));
 
         return d2Manager.getD2();
+    }
+
+    private static Configuration getConfiguration(String serverUrl) {
+        HttpUrl httpUrl = HttpUrl.parse(canonizeUrl(serverUrl));
+        return Configuration.builder()
+                .serverUrl(httpUrl)
+                .build();
+    }
+
+    private static String canonizeUrl(String serverUrl) {
+        String urlToCanonized = serverUrl.trim();
+        urlToCanonized = urlToCanonized.replace(" ", "");
+        if (urlToCanonized.endsWith("/")) {
+            return urlToCanonized;
+        } else {
+            return urlToCanonized + "/";
+        }
     }
 }
