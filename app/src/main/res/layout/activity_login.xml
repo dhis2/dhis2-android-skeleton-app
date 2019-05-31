@@ -46,6 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/url" >
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/username_text"
             android:hint="@string/prompt_username"
             android:text="@string/auto_fill_username"
             android:inputType="text"
@@ -67,6 +68,7 @@
         app:layout_constraintTop_toBottomOf="@+id/username" >
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_text"
             android:hint="@string/prompt_password"
             android:text="@string/auto_fill_password"
             android:imeActionLabel="@string/action_sign_in_short"

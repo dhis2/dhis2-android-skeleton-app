@@ -1,11 +1,12 @@
 package com.example.android.androidskeletonapp.ui.login;
 
+import android.os.AsyncTask;
 import android.util.Patterns;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.LoginRepository;
-import com.example.android.androidskeletonapp.data.Result;
-import com.example.android.androidskeletonapp.data.model.LoggedInUser;
+
+import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.user.User;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,10 +16,8 @@ public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
 
-    LoginViewModel(LoginRepository loginRepository) {
-        this.loginRepository = loginRepository;
+    LoginViewModel() {
     }
 
     LiveData<LoginFormState> getLoginFormState() {
@@ -29,20 +28,35 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
-    public void login(String username, String password) {
-        // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
+    public void login(String username, String password, D2 d2) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    User user;
+                    if (d2.userModule().isLogged().call()) {
+                        user = d2.userModule().user.get();
+                    } else {
+                        user = d2.userModule().logIn(username, password).call();
+                    }
 
-        if (result instanceof Result.Success) {
-            LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
+                    if (user != null) {
+                        loginResult.postValue(new LoginResult(new LoggedInUserView(user.firstName())));
+                    } else {
+                        loginResult.postValue(new LoginResult(R.string.login_failed));
+                    }
+                } catch (Exception e) {
+                    loginResult.postValue(new LoginResult(R.string.login_failed));
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
-    public void loginDataChanged(String username, String password) {
-        if (!isUserNameValid(username)) {
+    public void loginDataChanged(String serverUrl, String username, String password) {
+        if (!isServerUrlValid(serverUrl)) {
+            loginFormState.setValue(new LoginFormState(R.string.invalid_server_url, null, null));
+        } if (!isUserNameValid(username)) {
             loginFormState.setValue(new LoginFormState(null, R.string.invalid_username, null));
         } else if (!isPasswordValid(password)) {
             loginFormState.setValue(new LoginFormState(null, null, R.string.invalid_password));
@@ -52,15 +66,19 @@ public class LoginViewModel extends ViewModel {
     }
 
     // A placeholder username validation check
+    private boolean isServerUrlValid(String serverUrl) {
+        if (serverUrl == null) {
+            return false;
+        }
+        return Patterns.WEB_URL.matcher(serverUrl).matches();
+    }
+
+    // A placeholder username validation check
     private boolean isUserNameValid(String username) {
         if (username == null) {
             return false;
         }
-        if (username.contains("@")) {
-            return Patterns.EMAIL_ADDRESS.matcher(username).matches();
-        } else {
-            return !username.trim().isEmpty();
-        }
+        return !username.trim().isEmpty();
     }
 
     // A placeholder password validation check

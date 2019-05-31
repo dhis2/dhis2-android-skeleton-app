@@ -1,7 +1,6 @@
 package com.example.android.androidskeletonapp.ui.login;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.D2Factory;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.hisp.dhis.android.core.D2;
 
@@ -35,12 +33,11 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
-                .get(LoginViewModel.class);
+        loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory()).get(LoginViewModel.class);
 
         final TextInputEditText serverUrlEditText = findViewById(R.id.url_text);
-        final TextInputLayout usernameEditText = findViewById(R.id.username);
-        final TextInputLayout passwordEditText = findViewById(R.id.password);
+        final TextInputEditText usernameEditText = findViewById(R.id.username_text);
+        final TextInputEditText passwordEditText = findViewById(R.id.password_text);
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
@@ -74,31 +71,12 @@ public class LoginActivity extends AppCompatActivity {
                     showLoginFailed(loginResult.getError());
                 }
                 if (loginResult.getSuccess() != null) {
-                    final D2 d2 = getD2(serverUrlEditText.getText().toString());
-
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            try {
-                                d2.userModule().logIn("android", "Android123").call();
-                            } catch (Exception e) {
-                            }
-                        }
-                    });
-
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
                     updateUiWithUser(loginResult.getSuccess());
                 }
                 setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
-                finish();
+                // finish();
             }
         });
 
@@ -115,19 +93,24 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                loginViewModel.loginDataChanged(usernameEditText.getEditText().toString(),
-                        passwordEditText.getEditText().toString());
+                loginViewModel.loginDataChanged(
+                        serverUrlEditText.getText().toString(),
+                        usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString());
             }
         };
-        usernameEditText.getEditText().addTextChangedListener(afterTextChangedListener);
-        passwordEditText.getEditText().addTextChangedListener(afterTextChangedListener);
-        passwordEditText.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        serverUrlEditText.addTextChangedListener(afterTextChangedListener);
+        usernameEditText.addTextChangedListener(afterTextChangedListener);
+        passwordEditText.addTextChangedListener(afterTextChangedListener);
+        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login(usernameEditText.getEditText().getText().toString(),
-                            passwordEditText.getEditText().getText().toString());
+                    loginViewModel.login(
+                            usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString(),
+                            getD2(serverUrlEditText.getText().toString()));
                 }
                 return false;
             }
@@ -137,8 +120,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getEditText().getText().toString(),
-                        passwordEditText.getEditText().getText().toString());
+                loginViewModel.login(
+                        usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString(),
+                        getD2(serverUrlEditText.getText().toString()));
             }
         });
     }
@@ -155,6 +140,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private D2 getD2(String serverUrl) {
-        return D2Factory.create(getApplicationContext(), serverUrl);
+        if (d2 == null) {
+            d2 = D2Factory.create(getApplicationContext(), serverUrl);
+        }
+
+        return d2;
     }
 }

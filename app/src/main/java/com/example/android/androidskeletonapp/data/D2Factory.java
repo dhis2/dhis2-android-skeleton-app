@@ -3,11 +3,8 @@ package com.example.android.androidskeletonapp.data;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.d2manager.D2Configuration;
 import org.hisp.dhis.android.core.d2manager.D2Manager;
-
-import okhttp3.HttpUrl;
 
 public class D2Factory {
 
@@ -24,16 +21,9 @@ public class D2Factory {
                 .build();
 
         D2Manager d2Manager = new D2Manager(d2Configuration);
-        d2Manager.configureD2(getConfiguration(serverUrl));
+        d2Manager.configureD2(canonizeUrl(serverUrl));
 
         return d2Manager.getD2();
-    }
-
-    private static Configuration getConfiguration(String serverUrl) {
-        HttpUrl httpUrl = HttpUrl.parse(canonizeUrl(serverUrl));
-        return Configuration.builder()
-                .serverUrl(httpUrl)
-                .build();
     }
 
     private static String canonizeUrl(String serverUrl) {

@@ -23,7 +23,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
 
-        buildConfigField "String", "SDK_VERSION", "\"" + "0.16.2-SNAPSHOT" + "\""
+        buildConfigField "String", "SDK_VERSION", "\"" + "0.16.3-SNAPSHOT" + "\""
     }
 
     buildTypes {
@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    implementation "org.hisp.dhis:android-core:0.16.2-SNAPSHOT"
+    implementation "org.hisp.dhis:android-core:0.16.3-SNAPSHOT"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
