@@ -1,11 +1,11 @@
 package com.example.android.androidskeletonapp.ui.login;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
-
 import com.example.android.androidskeletonapp.data.LoginDataSource;
 import com.example.android.androidskeletonapp.data.LoginRepository;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

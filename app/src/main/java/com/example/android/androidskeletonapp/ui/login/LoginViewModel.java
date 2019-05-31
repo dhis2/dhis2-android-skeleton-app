@@ -1,14 +1,15 @@
 package com.example.android.androidskeletonapp.ui.login;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.util.Patterns;
 
+import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.LoginRepository;
 import com.example.android.androidskeletonapp.data.Result;
 import com.example.android.androidskeletonapp.data.model.LoggedInUser;
-import com.example.android.androidskeletonapp.R;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 public class LoginViewModel extends ViewModel {
 

@@ -7,6 +7,8 @@ import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.d2manager.D2Configuration;
 import org.hisp.dhis.android.core.d2manager.D2Manager;
 
+import okhttp3.HttpUrl;
+
 public class D2Factory {
 
     public static D2 create(Context context) {
@@ -22,7 +24,7 @@ public class D2Factory {
                 .build();
 
         D2Manager d2Manager = new D2Manager(d2Configuration);
-        d2Manager.configureD2(Configuration.builder().serverUrl().build());
+        d2Manager.configureD2(Configuration.builder().serverUrl(HttpUrl.get("android-current")).build());
 
         return d2Manager.getD2();
     }

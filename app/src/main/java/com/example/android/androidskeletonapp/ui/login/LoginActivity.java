@@ -1,12 +1,7 @@
 package com.example.android.androidskeletonapp.ui.login;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -22,7 +17,12 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.D2Factory;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.configuration.Configuration;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
-        final D2 d2 = getD2();
+        // final D2 d2 = getD2();
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
