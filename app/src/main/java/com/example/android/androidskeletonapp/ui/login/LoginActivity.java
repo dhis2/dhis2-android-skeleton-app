@@ -7,13 +7,13 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.D2Factory;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.hisp.dhis.android.core.D2;
@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         final TextInputEditText serverUrlEditText = findViewById(R.id.url_text);
         final TextInputEditText usernameEditText = findViewById(R.id.username_text);
         final TextInputEditText passwordEditText = findViewById(R.id.password_text);
-        final Button loginButton = findViewById(R.id.login);
+        final MaterialButton loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
