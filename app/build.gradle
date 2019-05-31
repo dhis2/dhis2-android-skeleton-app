@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    maven {
+        url("https://oss.sonatype.org/content/repositories/snapshots")
+    }
+    mavenCentral()
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -8,7 +15,10 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        testInstrumentationRunner "androidx.test.ext.junit.runners.AndroidJUnit4"
+
+        buildConfigField "String", "SDK_VERSION", "\"" + "0.16.2-SNAPSHOT" + "\""
     }
     buildTypes {
         release {
@@ -28,4 +38,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation("org.hisp.dhis:android-core:0.16.2-SNAPSHOT") {
+        exclude group: "org.hisp.dhis", module: "core-rules"
+        exclude group: "com.github.eHealthAfrica", module: "dhis2-sms-compression"
+        exclude group: "com.github.lykmapipo", module: "sqlbrite-migrations"
+    }
 }

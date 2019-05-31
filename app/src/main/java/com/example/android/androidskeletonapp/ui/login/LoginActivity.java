@@ -19,8 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.ui.login.LoginViewModel;
-import com.example.android.androidskeletonapp.ui.login.LoginViewModelFactory;
+import com.example.android.androidskeletonapp.data.D2Factory;
+
+import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.configuration.Configuration;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,10 +35,12 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
+        final EditText serverUrlEditText = findViewById(R.id.url);
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        final D2 d2 = getD2();
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -45,6 +49,9 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 loginButton.setEnabled(loginFormState.isDataValid());
+                if (loginFormState.getServerUrlError() != null) {
+                    serverUrlEditText.setError(getString(loginFormState.getServerUrlError()));
+                }
                 if (loginFormState.getUsernameError() != null) {
                     usernameEditText.setError(getString(loginFormState.getUsernameError()));
                 }
@@ -116,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
+
         String welcome = getString(R.string.welcome) + model.getDisplayName();
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
@@ -123,5 +131,18 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    private D2 getD2() {
+        setUpServerComponent();
+        return D2Factory.create(getApplicationContext());
+
+    }
+
+    private void setUpServerComponent() {
+        /*Configuration configuration = configurationManager.get();
+        if (configuration != null) {
+            serverComponent = appComponent.plus(new ServerModule(configuration));
+        }*/
     }
 }
