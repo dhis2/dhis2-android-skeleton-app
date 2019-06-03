@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Android Skeleton App</string>
+    <!-- Strings related to splash -->
+    <string name="android_skeleton_app">Android Skeleton App</string>
     <!-- Strings related to login -->
     <string name="prompt_server_url">Server url</string>
     <string name="prompt_username">Username</string>

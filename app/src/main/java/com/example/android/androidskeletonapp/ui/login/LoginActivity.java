@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private D2 getD2(String serverUrl) {
         if (d2 == null) {
-            d2 = D2Factory.create(getApplicationContext(), serverUrl);
+            d2 = D2Factory.getD2(getApplicationContext(), serverUrl);
         }
 
         return d2;

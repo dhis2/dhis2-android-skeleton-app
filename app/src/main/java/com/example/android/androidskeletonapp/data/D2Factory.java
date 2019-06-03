@@ -8,9 +8,24 @@ import org.hisp.dhis.android.core.d2manager.D2Manager;
 
 public class D2Factory {
 
-    public static D2 create(Context context, String serverUrl) {
+    public static D2Manager getD2Manager(Context context) {
+        return new D2Manager(getD2Configuration(context));
+    }
 
-        D2Configuration d2Configuration = D2Configuration.builder()
+    public static D2 getD2(Context context, String serverUrl) throws IllegalArgumentException {
+        D2Manager d2Manager = getD2Manager(context);
+        if (d2Manager.isD2Configured()) {
+            return d2Manager.getD2();
+        } else if (serverUrl == null) {
+            throw new IllegalArgumentException();
+        } else {
+            d2Manager.configureD2(canonizeUrl(serverUrl));
+            return d2Manager.getD2();
+        }
+    }
+
+    private static D2Configuration getD2Configuration(Context context) {
+        return D2Configuration.builder()
                 .databaseName("test.db")
                 .appName("skeleton_App")
                 .appVersion("0.0.1")
@@ -19,11 +34,6 @@ public class D2Factory {
                 .writeTimeoutInSeconds(30)
                 .context(context)
                 .build();
-
-        D2Manager d2Manager = new D2Manager(d2Configuration);
-        d2Manager.configureD2(canonizeUrl(serverUrl));
-
-        return d2Manager.getD2();
     }
 
     private static String canonizeUrl(String serverUrl) {
