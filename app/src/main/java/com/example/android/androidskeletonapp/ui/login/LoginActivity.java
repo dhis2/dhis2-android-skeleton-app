@@ -1,6 +1,7 @@
 package com.example.android.androidskeletonapp.ui.login;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.D2Factory;
+import com.example.android.androidskeletonapp.ui.main.MainActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -27,7 +29,6 @@ import androidx.lifecycle.ViewModelProviders;
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
-    private D2 d2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,12 +72,11 @@ public class LoginActivity extends AppCompatActivity {
                     showLoginFailed(loginResult.getError());
                 }
                 if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
+                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(mainIntent);
+                    finish();
                 }
                 setResult(Activity.RESULT_OK);
-
-                //Complete and destroy login activity once successful
-                // finish();
             }
         });
 
@@ -128,22 +128,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-    }
-
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
     private D2 getD2(String serverUrl) {
-        if (d2 == null) {
-            d2 = D2Factory.getD2(getApplicationContext(), serverUrl);
-        }
-
-        return d2;
+        return D2Factory.getD2(getApplicationContext(), serverUrl);
     }
 }

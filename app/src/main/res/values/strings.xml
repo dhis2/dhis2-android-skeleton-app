@@ -16,4 +16,7 @@
     <string name="auto_fill_url">"https://play.dhis2.org/android-current"</string>
     <string name="auto_fill_username">"android"</string>
     <string name="auto_fill_password">"Android123"</string>
+    <!-- Strings related to main -->
+    <string name="title_activity_main">MainActivity</string>
+    <string name="syncing">Syncing…</string>
 </resources>
