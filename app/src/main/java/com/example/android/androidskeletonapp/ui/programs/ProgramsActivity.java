@@ -36,7 +36,10 @@ public class ProgramsActivity extends AppCompatActivity {
         programsRecyclerView.setAdapter(adapter);
 
         LiveData<PagedList<Program>> programs =
-                D2Factory.getD2(this).programModule().programs.getPaged(20);
+                D2Factory.getD2(this).programModule().programs
+                        .withStyle()
+                        .withProgramStages()
+                        .getPaged(20);
 
         programs.observe(this, adapter::setPrograms);
     }

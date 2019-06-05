@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
@@ -32,8 +33,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         D2 d2 = D2Factory.getD2(getApplicationContext());
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
+        FloatingActionButton syncButton = findViewById(R.id.sync_button);
+        syncButton.setOnClickListener(view -> {
+            view.setEnabled(Boolean.FALSE);
+            view.setVisibility(View.GONE);
             Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             notificator.setText(R.string.syncing);
