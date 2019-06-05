@@ -19,4 +19,7 @@
     <!-- Strings related to main -->
     <string name="title_activity_main">MainActivity</string>
     <string name="syncing">Syncing…</string>
+    <!-- Strings related to programs -->
+    <string name="title_activity_programs">ProgramsActivity</string>
+    <string name="log_out">Log out</string>
 </resources>
