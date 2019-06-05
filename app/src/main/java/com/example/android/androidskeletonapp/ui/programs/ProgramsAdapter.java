@@ -9,6 +9,7 @@ import com.example.android.androidskeletonapp.R;
 
 import org.hisp.dhis.android.core.program.Program;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +21,12 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.Progra
 
     static class ProgramsHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
+        TextView programName;
+        TextView stages;
         ProgramsHolder(@NonNull View view) {
             super(view);
-            textView = view.findViewById(R.id.program_name);
+            programName = view.findViewById(R.id.program_name);
+            stages = view.findViewById(R.id.program_stages);
         }
     }
 
@@ -38,7 +41,8 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.Progra
     @Override
     public void onBindViewHolder(@NonNull ProgramsHolder holder, int position) {
         Program program = programs.get(position);
-        holder.textView.setText(program.displayName());
+        holder.programName.setText(program.displayName());
+        holder.stages.setText(MessageFormat.format("{0} Program stages", program.programStages().size()));
     }
 
     @Override
