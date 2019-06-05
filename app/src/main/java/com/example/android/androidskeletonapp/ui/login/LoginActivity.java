@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.D2Factory;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
+import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -63,8 +64,13 @@ public class LoginActivity extends AppCompatActivity {
                 showLoginFailed(loginResult.getError());
             }
             if (loginResult.getSuccess() != null) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(mainIntent);
+                if (getD2(null).programModule().programs.count() > 0) {
+                    Intent programsActivity = new Intent(getApplicationContext(), ProgramsActivity.class);
+                    startActivity(programsActivity);
+                } else {
+                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(mainIntent);
+                }
                 finish();
             }
             setResult(Activity.RESULT_OK);

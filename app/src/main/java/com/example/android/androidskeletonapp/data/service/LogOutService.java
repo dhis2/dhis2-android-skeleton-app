@@ -13,7 +13,7 @@ public class LogOutService {
     public static void logOut(AppCompatActivity activity) {
         AsyncTask.execute(() -> {
             try {
-                D2Factory.getD2(activity.getApplicationContext()).wipeModule().wipeEverything();
+                D2Factory.getD2(activity.getApplicationContext()).userModule().logOut().call();
 
                 Intent loginIntent = new Intent(activity.getApplicationContext(), LoginActivity.class);
                 activity.startActivity(loginIntent);
