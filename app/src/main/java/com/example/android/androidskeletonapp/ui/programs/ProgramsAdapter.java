@@ -18,10 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.ProgramsHolder> {
     private List<Program>  programs = new ArrayList<>();
 
-    public static class ProgramsHolder extends RecyclerView.ViewHolder {
+    static class ProgramsHolder extends RecyclerView.ViewHolder {
 
-        public TextView textView;
-        public ProgramsHolder(@NonNull View view) {
+        TextView textView;
+        ProgramsHolder(@NonNull View view) {
             super(view);
             textView = view.findViewById(R.id.program_name);
         }
@@ -46,7 +46,7 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.Progra
         return programs.size();
     }
 
-    public void setPrograms(List<Program> programs) {
+    void setPrograms(List<Program> programs) {
         this.programs = programs;
         notifyDataSetChanged();
     }

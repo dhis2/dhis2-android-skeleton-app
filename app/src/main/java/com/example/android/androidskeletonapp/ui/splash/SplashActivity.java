@@ -25,18 +25,15 @@ public class SplashActivity extends AppCompatActivity {
             Stetho.initializeWithDefaults(this);
         }
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (isUserLogged()) {
-                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainIntent);
-                } else {
-                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(loginIntent);
-                }
-                finish();
+        AsyncTask.execute(() -> {
+            if (isUserLogged()) {
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(mainIntent);
+            } else {
+                Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(loginIntent);
             }
+            finish();
         });
     }
 

@@ -12,7 +12,6 @@ import org.hisp.dhis.android.core.program.Program;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,12 +38,7 @@ public class ProgramsActivity extends AppCompatActivity {
         LiveData<PagedList<Program>> programs =
                 D2Factory.getD2(this).programModule().programs.getPaged(20);
 
-        programs.observe(this, new Observer<PagedList<Program>>() {
-            @Override
-            public void onChanged(PagedList<Program> programs) {
-                adapter.setPrograms(programs);
-            }
-        });
+        programs.observe(this, adapter::setPrograms);
     }
 
     @Override

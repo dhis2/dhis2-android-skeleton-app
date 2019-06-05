@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
@@ -34,14 +33,11 @@ public class MainActivity extends AppCompatActivity {
         D2 d2 = D2Factory.getD2(getApplicationContext());
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                notificator.setText(R.string.syncing);
-                syncMetadata();
-            }
+        fab.setOnClickListener(view -> {
+            Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            notificator.setText(R.string.syncing);
+            syncMetadata();
         });
 
         greeting.setText(String.format("Hi %s!", d2.userModule().user.getWithoutChildren().firstName()));
@@ -66,18 +62,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void syncMetadata() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    D2Factory.getD2(getApplicationContext()).syncMetaData().call();
+        AsyncTask.execute(() -> {
+            try {
+                D2Factory.getD2(getApplicationContext()).syncMetaData().call();
 
-                    Intent programsIntent = new Intent(getApplicationContext(), ProgramsActivity.class);
-                    startActivity(programsIntent);
-                    finish();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Intent programsIntent = new Intent(getApplicationContext(), ProgramsActivity.class);
+                startActivity(programsIntent);
+                finish();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
