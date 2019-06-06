@@ -18,6 +18,7 @@
     <!-- Strings related to main -->
     <string name="title_activity_main">Home</string>
     <string name="syncing">Syncing metadata…</string>
+    <string name="sync_metadata">Sync metadata</string>
     <!-- Strings related to programs -->
     <string name="title_activity_programs">Your programs</string>
     <string name="log_out">Log out</string>

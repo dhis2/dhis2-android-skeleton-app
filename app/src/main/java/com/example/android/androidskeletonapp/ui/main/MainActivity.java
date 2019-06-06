@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         TextView greeting = findViewById(R.id.greeting);
         TextView notificator = findViewById(R.id.notificator);
+        TextView syncMetadataText = findViewById(R.id.sync_metadata_text);
         Toolbar toolbar = findViewById(R.id.toolbar);
         ProgressBar progressBar = findViewById(R.id.sync_progress_bar);
         setSupportActionBar(toolbar);
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         syncButton.setOnClickListener(view -> {
             view.setEnabled(Boolean.FALSE);
             view.setVisibility(View.GONE);
+            syncMetadataText.setVisibility(View.GONE);
             Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             notificator.setVisibility(View.VISIBLE);
