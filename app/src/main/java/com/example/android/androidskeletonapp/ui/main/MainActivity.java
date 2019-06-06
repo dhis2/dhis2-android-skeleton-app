@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.D2Factory;
+import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         TextView notificator = findViewById(R.id.notificator);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        D2 d2 = D2Factory.getD2(getApplicationContext());
+        D2 d2 = Sdk.d2();
 
         FloatingActionButton syncButton = findViewById(R.id.sync_button);
         syncButton.setOnClickListener(view -> {
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private void syncMetadata() {
         AsyncTask.execute(() -> {
             try {
-                D2Factory.getD2(getApplicationContext()).syncMetaData().call();
+                Sdk.d2().syncMetaData().call();
 
                 Intent programsIntent = new Intent(getApplicationContext(), ProgramsActivity.class);
                 startActivity(programsIntent);

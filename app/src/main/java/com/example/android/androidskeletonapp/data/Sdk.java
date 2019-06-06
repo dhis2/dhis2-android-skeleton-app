@@ -10,34 +10,31 @@ import org.hisp.dhis.android.core.d2manager.D2Manager;
 
 import java.util.Collections;
 
-public class D2Factory {
+public class Sdk {
 
-    private static D2 d2;
+    private static D2Manager d2Manager;
 
-    public static D2Manager getD2Manager(Context context) {
-        return new D2Manager(getD2Configuration(context));
+    public static void instantiate(Context context) {
+        d2Manager = new D2Manager(getD2Configuration(context));
     }
 
-    public static D2 getD2(Context context) throws IllegalArgumentException {
-        return getD2(context, null);
+    public static D2 d2() throws IllegalArgumentException {
+        return d2Manager.getD2();
     }
 
-    public static D2 getD2(Context context, String serverUrl) throws IllegalArgumentException {
-        if (d2 != null) {
-            return d2;
+    public static boolean isConfigured() throws IllegalArgumentException {
+        return d2Manager.isD2Configured();
+    }
+
+    public static void configureServer(String serverUrl) throws IllegalArgumentException {
+        if (serverUrl == null) {
+            throw new IllegalArgumentException();
         }
 
-        D2Manager d2Manager = getD2Manager(context);
-        if (!d2Manager.isD2Configured()) {
-            if (serverUrl == null) {
-                throw new IllegalArgumentException();
-            } else {
-                d2Manager.configureD2(canonizeUrl(serverUrl));
-            }
+        String canonizedUrl = canonizeUrl(serverUrl);
+        if (!d2Manager.isD2Configured() || !d2().systemInfoModule().systemInfo.get().contextPath().equals(canonizedUrl)) {
+            d2Manager.configureD2(canonizedUrl);
         }
-
-        d2 = d2Manager.getD2();
-        return d2;
     }
 
     private static D2Configuration getD2Configuration(Context context) {
