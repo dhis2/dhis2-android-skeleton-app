@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android Skeleton App</string>
+    <string name="app_name">Dhis2 Skeleton App</string>
     <!-- Strings related to login -->
     <string name="title_activity_login">Log in</string>
     <string name="prompt_server_url">Server url</string>
