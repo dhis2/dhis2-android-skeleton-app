@@ -34,8 +34,8 @@ public class LoginActivity extends AppCompatActivity {
         final TextInputEditText serverUrlEditText = findViewById(R.id.url_text);
         final TextInputEditText usernameEditText = findViewById(R.id.username_text);
         final TextInputEditText passwordEditText = findViewById(R.id.password_text);
-        final MaterialButton loginButton = findViewById(R.id.login);
-        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        final MaterialButton loginButton = findViewById(R.id.login_button);
+        final ProgressBar loadingProgressBar = findViewById(R.id.login_progress_bar);
 
         loginViewModel.getLoginFormState().observe(this, loginFormState -> {
             if (loginFormState == null) {
@@ -108,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(v -> {
             loadingProgressBar.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.INVISIBLE);
             loginViewModel.login(
                     usernameEditText.getText().toString(),
                     passwordEditText.getText().toString(),

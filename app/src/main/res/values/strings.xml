@@ -1,25 +1,26 @@
 <resources>
     <string name="app_name">Android Skeleton App</string>
-    <!-- Strings related to splash -->
-    <string name="android_skeleton_app">Android Skeleton App</string>
     <!-- Strings related to login -->
+    <string name="title_activity_login">Log in</string>
     <string name="prompt_server_url">Server url</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
+    <string name="welcome">"Welcome!"</string>
     <string name="invalid_server_url">Not a valid server url</string>
     <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_password">Password must have more than 5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <!-- Strings related to autoFill -->
     <string name="auto_fill_url">"https://play.dhis2.org/android-current"</string>
     <string name="auto_fill_username">"android"</string>
     <string name="auto_fill_password">"Android123"</string>
     <!-- Strings related to main -->
-    <string name="title_activity_main">MainActivity</string>
-    <string name="syncing">Syncing…</string>
+    <string name="title_activity_main">Home</string>
+    <string name="syncing">Syncing metadata…</string>
     <!-- Strings related to programs -->
-    <string name="title_activity_programs">ProgramsActivity</string>
+    <string name="title_activity_programs">Your programs</string>
     <string name="log_out">Log out</string>
+    <string name="program_name">Program Name</string>
+    <string name="program_stages">2 Program stages</string>
 </resources>
