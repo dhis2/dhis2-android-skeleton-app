@@ -5,7 +5,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.D2Factory;
+import com.example.android.androidskeletonapp.data.Sdk;
 
 import org.hisp.dhis.android.core.program.Program;
 
@@ -36,7 +36,7 @@ public class ProgramsActivity extends AppCompatActivity {
         programsRecyclerView.setAdapter(adapter);
 
         LiveData<PagedList<Program>> programs =
-                D2Factory.getD2(this).programModule().programs
+                Sdk.d2().programModule().programs
                         .withStyle()
                         .withProgramStages()
                         .getPaged(20);

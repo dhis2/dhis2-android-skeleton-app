@@ -5,15 +5,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.D2Factory;
+import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.facebook.stetho.Stetho;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import static com.example.android.androidskeletonapp.data.D2Factory.getD2;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -29,6 +27,7 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         AsyncTask.execute(() -> {
+            Sdk.instantiate(getApplicationContext());
             if (isUserLogged()) {
                 if (hasPrograms()) {
                     Intent programsActivity = new Intent(getApplicationContext(), ProgramsActivity.class);
@@ -46,9 +45,9 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private boolean isUserLogged() {
-        if (D2Factory.getD2Manager(getApplicationContext()).isD2Configured()) {
+        if (Sdk.isConfigured()) {
             try {
-                return getD2(getApplicationContext()).userModule().isLogged().call();
+                return Sdk.d2().userModule().isLogged().call();
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
@@ -59,6 +58,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private boolean hasPrograms() {
-        return D2Factory.getD2(getApplicationContext()).programModule().programs.count() > 0;
+        return Sdk.d2().programModule().programs.count() > 0;
     }
 }

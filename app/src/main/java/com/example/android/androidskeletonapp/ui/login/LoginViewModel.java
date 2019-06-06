@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 import android.util.Patterns;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.Sdk;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.user.User;
 
 import androidx.lifecycle.LiveData;
@@ -28,14 +28,16 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
-    public void login(String username, String password, D2 d2) {
+    public void login(String username, String password, String serverUrl) {
+        Sdk.configureServer(serverUrl);
+
         AsyncTask.execute(() -> {
             try {
                 User user;
-                if (d2.userModule().isLogged().call()) {
-                    user = d2.userModule().user.get();
+                if (Sdk.d2().userModule().isLogged().call()) {
+                    user = Sdk.d2().userModule().user.get();
                 } else {
-                    user = d2.userModule().logIn(username, password).call();
+                    user = Sdk.d2().userModule().logIn(username, password).call();
                 }
 
                 if (user != null) {
