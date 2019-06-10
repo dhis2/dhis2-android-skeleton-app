@@ -12,6 +12,9 @@
         android:id="@+id/programs_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:clipToPadding="false"
         tools:listitem="@layout/program_item"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

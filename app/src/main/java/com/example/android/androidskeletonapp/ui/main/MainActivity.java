@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
@@ -29,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         TextView greeting = findViewById(R.id.greeting);
         TextView notificator = findViewById(R.id.notificator);
+        TextView syncMetadataText = findViewById(R.id.sync_metadata_text);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        ProgressBar progressBar = findViewById(R.id.sync_progress_bar);
         setSupportActionBar(toolbar);
         D2 d2 = Sdk.d2();
 
@@ -37,9 +40,11 @@ public class MainActivity extends AppCompatActivity {
         syncButton.setOnClickListener(view -> {
             view.setEnabled(Boolean.FALSE);
             view.setVisibility(View.GONE);
+            syncMetadataText.setVisibility(View.GONE);
             Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
-            notificator.setText(R.string.syncing);
+            notificator.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
             syncMetadata();
         });
 
