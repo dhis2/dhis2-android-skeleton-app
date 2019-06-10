@@ -23,5 +23,6 @@
     <string name="title_activity_programs">Your programs</string>
     <string name="log_out">Log out</string>
     <string name="program_name">Program Name</string>
+    <string name="program_icon">Program Icon</string>
     <string name="program_stages">2 Program stages</string>
 </resources>
