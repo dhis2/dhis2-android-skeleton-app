@@ -1,16 +1,17 @@
 package com.example.android.androidskeletonapp.ui.login;
 
-import android.os.AsyncTask;
 import android.util.Patterns;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 
-import org.hisp.dhis.android.core.user.User;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class LoginViewModel extends ViewModel {
 
@@ -28,28 +29,22 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
-    public void login(String username, String password, String serverUrl) {
+    public Disposable login(String username, String password, String serverUrl) {
         Sdk.configureServer(serverUrl);
 
-        AsyncTask.execute(() -> {
-            try {
-                User user;
-                if (Sdk.d2().userModule().isLogged().call()) {
-                    user = Sdk.d2().userModule().user.get();
-                } else {
-                    user = Sdk.d2().userModule().logIn(username, password).call();
-                }
-
-                if (user != null) {
-                    loginResult.postValue(new LoginResult(user));
-                } else {
+        return Single.fromCallable(Sdk.d2().userModule().logIn(username, password))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(user -> {
+                    if (user != null) {
+                        loginResult.postValue(new LoginResult(user));
+                    } else {
+                        loginResult.postValue(new LoginResult(R.string.login_failed));
+                    }
+                }, throwable -> {
                     loginResult.postValue(new LoginResult(R.string.login_failed));
-                }
-            } catch (Exception e) {
-                loginResult.postValue(new LoginResult(R.string.login_failed));
-                e.printStackTrace();
-            }
-        });
+                    throwable.printStackTrace();
+                });
     }
 
     void loginDataChanged(String serverUrl, String username, String password) {

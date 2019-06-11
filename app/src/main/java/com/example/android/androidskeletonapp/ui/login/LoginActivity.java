@@ -20,10 +20,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
+import io.reactivex.disposables.Disposable;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
+    private Disposable disposable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                loginViewModel.login(
+                disposable = loginViewModel.login(
                         usernameEditText.getText().toString(),
                         passwordEditText.getText().toString(),
                         serverUrlEditText.getText().toString());
@@ -109,11 +111,19 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> {
             loadingProgressBar.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.INVISIBLE);
-            loginViewModel.login(
+            disposable = loginViewModel.login(
                     usernameEditText.getText().toString(),
                     passwordEditText.getText().toString(),
                     serverUrlEditText.getText().toString());
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
