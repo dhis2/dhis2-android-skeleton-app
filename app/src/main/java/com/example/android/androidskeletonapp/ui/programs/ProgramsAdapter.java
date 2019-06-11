@@ -1,13 +1,16 @@
 package com.example.android.androidskeletonapp.ui.programs;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
 
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.program.Program;
 
 import java.text.MessageFormat;
@@ -26,12 +29,14 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.Progra
         TextView programName;
         TextView stages;
         ImageView programIcon;
+        FrameLayout programCardFrame;
 
         ProgramsHolder(@NonNull View view) {
             super(view);
             programName = view.findViewById(R.id.program_name);
             stages = view.findViewById(R.id.program_stages);
             programIcon = view.findViewById(R.id.program_icon);
+            programCardFrame = view.findViewById(R.id.program_card_frame);
         }
     }
 
@@ -52,12 +57,22 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.Progra
         int colorWhite = ContextCompat.getColor(holder.itemView.getContext(), R.color.colorWhite);
         holder.programIcon.setColorFilter(colorWhite);
 
-        if (program.style() != null && program.style().icon() != null) {
-            String iconName = program.style().icon().startsWith("ic_") ?
-                    program.style().icon() : "ic_" + program.style().icon();
-            int icon = holder.itemView.getContext().getResources().getIdentifier(
-                    iconName, "drawable", holder.itemView.getContext().getPackageName());
-            holder.programIcon.setImageResource(icon);
+        ObjectStyle style = program.style();
+        if (style != null) {
+            if (style.icon() != null) {
+                String iconName = style.icon().startsWith("ic_") ? style.icon() : "ic_" + style.icon();
+                int icon = holder.itemView.getContext().getResources().getIdentifier(
+                        iconName, "drawable", holder.itemView.getContext().getPackageName());
+                holder.programIcon.setImageResource(icon);
+            }
+
+            if (style.color() != null) {
+                String color = style.color().startsWith("#") ? style.color() : "#" + style.color();
+                int programColor = (color.length() == 4) ?
+                        ContextCompat.getColor(holder.itemView.getContext(), R.color.colorPrimary) :
+                        Color.parseColor(color);
+                holder.programCardFrame.setBackgroundColor(programColor);
+            }
         }
     }
 
