@@ -1,10 +1,10 @@
 package com.example.android.androidskeletonapp.ui.splash;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
@@ -37,17 +37,17 @@ public class SplashActivity extends AppCompatActivity {
                 .subscribe(isUserLogged -> {
                     if (isUserLogged) {
                         if (hasPrograms()) {
-                            startActivity(ProgramsActivity.class);
+                            ActivityStarter.startActivity(this, ProgramsActivity.class);
                         } else {
-                            startActivity(MainActivity.class);
+                            ActivityStarter.startActivity(this, MainActivity.class);
                         }
                     } else {
-                        startActivity(LoginActivity.class);
+                        ActivityStarter.startActivity(this, LoginActivity.class);
                     }
                     finish();
                 }, throwable -> {
                     throwable.printStackTrace();
-                    startActivity(LoginActivity.class);
+                    ActivityStarter.startActivity(this, LoginActivity.class);
                 });
     }
 
@@ -57,11 +57,6 @@ public class SplashActivity extends AppCompatActivity {
         if (disposable != null) {
             disposable.dispose();
         }
-    }
-
-    private void startActivity(Class<?> activityClass) {
-        Intent loginIntent = new Intent(getApplicationContext(), activityClass);
-        startActivity(loginIntent);
     }
 
     private Single<Boolean> isUserLogged() {

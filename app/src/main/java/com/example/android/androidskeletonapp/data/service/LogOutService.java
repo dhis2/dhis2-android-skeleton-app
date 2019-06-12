@@ -1,26 +1,21 @@
 package com.example.android.androidskeletonapp.data.service;
 
-import android.content.Intent;
-import android.os.AsyncTask;
-
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class LogOutService {
 
-    public static void logOut(AppCompatActivity activity) {
-        AsyncTask.execute(() -> {
-            try {
-                Sdk.d2().userModule().logOut().call();
-
-                Intent loginIntent = new Intent(activity.getApplicationContext(), LoginActivity.class);
-                activity.startActivity(loginIntent);
-                activity.finish();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+    public static Disposable logOut(AppCompatActivity activity) {
+        return Completable.fromCallable(() -> Sdk.d2().userModule().logOut().call())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> ActivityStarter.startActivity(activity, LoginActivity.class),
+                                Throwable::printStackTrace);
     }
 }

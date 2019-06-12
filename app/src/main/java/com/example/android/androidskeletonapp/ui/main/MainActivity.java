@@ -19,10 +19,13 @@ import org.hisp.dhis.android.core.D2;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import io.reactivex.disposables.Disposable;
 
 import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +65,19 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.logout_item) {
-            logOut(this);
+            disposable = logOut(this);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 
     private void syncMetadata() {

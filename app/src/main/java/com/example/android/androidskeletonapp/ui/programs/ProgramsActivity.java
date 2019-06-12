@@ -15,10 +15,13 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.reactivex.disposables.Disposable;
 
 import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
 public class ProgramsActivity extends AppCompatActivity {
+
+    private Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +58,18 @@ public class ProgramsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.logout_item) {
-            logOut(this);
+            disposable = logOut(this);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 }
