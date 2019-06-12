@@ -44,7 +44,6 @@ public class SplashActivity extends AppCompatActivity {
                     } else {
                         ActivityStarter.startActivity(this, LoginActivity.class);
                     }
-                    finish();
                 }, throwable -> {
                     throwable.printStackTrace();
                     ActivityStarter.startActivity(this, LoginActivity.class);

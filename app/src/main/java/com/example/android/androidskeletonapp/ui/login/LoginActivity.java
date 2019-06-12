@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.button.MaterialButton;
@@ -65,13 +66,10 @@ public class LoginActivity extends AppCompatActivity {
             }
             if (loginResult.getSuccess() != null) {
                 if (Sdk.d2().programModule().programs.count() > 0) {
-                    Intent programsActivity = new Intent(getApplicationContext(), ProgramsActivity.class);
-                    startActivity(programsActivity);
+                    ActivityStarter.startActivity(this, ProgramsActivity.class);
                 } else {
-                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainIntent);
+                    ActivityStarter.startActivity(this, MainActivity.class);
                 }
-                finish();
             }
             setResult(Activity.RESULT_OK);
         });
