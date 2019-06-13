@@ -7,44 +7,32 @@ import android.view.MenuItem;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 
-import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
 public class ProgramsActivity extends AppCompatActivity {
 
-    private Disposable disposable;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        compositeDisposable = new CompositeDisposable();
         setContentView(R.layout.activity_programs);
         Toolbar toolbar = findViewById(R.id.programs_toolbar);
         setSupportActionBar(toolbar);
-
-
-        RecyclerView programsRecyclerView = findViewById(R.id.programs_recycler_view);
-        programsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        programsRecyclerView.setHasFixedSize(true);
-
-        ProgramsAdapter adapter = new ProgramsAdapter();
-        programsRecyclerView.setAdapter(adapter);
-
-        LiveData<PagedList<Program>> programs =
-                Sdk.d2().programModule().programs
-                        .withStyle()
-                        .withProgramStages()
-                        .getPaged(20);
-
-        programs.observe(this, adapter::setPrograms);
+        observePrograms();
     }
 
     @Override
@@ -58,18 +46,39 @@ public class ProgramsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.logout_item) {
-            disposable = logOut(this);
+            compositeDisposable.add(logOut(this));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void observePrograms() {
+        RecyclerView programsRecyclerView = findViewById(R.id.programs_recycler_view);
+        programsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        ProgramsAdapter adapter = new ProgramsAdapter();
+        programsRecyclerView.setAdapter(adapter);
+
+        compositeDisposable.add(Observable.fromIterable(Sdk.d2().organisationUnitModule().organisationUnits
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).get())
+                .map(BaseIdentifiableObject::uid)
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(organisationUnitUids -> Sdk.d2().programModule().programs
+                                .byOrganisationUnitList(organisationUnitUids)
+                                .withStyle()
+                                .withProgramStages()
+                                .getPaged(20))
+                .subscribe(programs -> programs.observe(this, adapter::setPrograms)));
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (disposable != null) {
-            disposable.dispose();
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
         }
     }
 }
