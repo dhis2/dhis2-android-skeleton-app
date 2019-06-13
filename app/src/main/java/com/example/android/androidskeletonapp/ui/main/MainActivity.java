@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.service.ActivityStarter;
+import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -19,10 +21,17 @@ import org.hisp.dhis.android.core.D2;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Disposable logOutDisposable;
+    private Disposable metadataDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,24 +71,29 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.logout_item) {
-            logOut(this);
+            logOutDisposable = logOut(this);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void syncMetadata() {
-        AsyncTask.execute(() -> {
-            try {
-                Sdk.d2().syncMetaData().call();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (logOutDisposable != null) {
+            logOutDisposable.dispose();
+        }
+        if (metadataDisposable != null) {
+            metadataDisposable.dispose();
+        }
+    }
 
-                Intent programsIntent = new Intent(getApplicationContext(), ProgramsActivity.class);
-                startActivity(programsIntent);
-                finish();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+    private void syncMetadata() {
+        metadataDisposable = Completable.fromCallable(() -> Sdk.d2().syncMetaData().call())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> ActivityStarter.startActivity(this, ProgramsActivity.class),
+                        Throwable::printStackTrace);
     }
 }

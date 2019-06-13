@@ -10,12 +10,14 @@ import org.hisp.dhis.android.core.d2manager.D2Manager;
 
 import java.util.Collections;
 
+import io.reactivex.Completable;
+
 public class Sdk {
 
     private static D2Manager d2Manager;
 
-    public static void instantiate(Context context) {
-        d2Manager = new D2Manager(getD2Configuration(context));
+    public static Completable instantiate(Context context) {
+        return Completable.fromCallable(() -> d2Manager = new D2Manager(getD2Configuration(context)));
     }
 
     public static D2 d2() throws IllegalArgumentException {

@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.button.MaterialButton;
@@ -20,10 +21,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
+import io.reactivex.disposables.Disposable;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
+    private Disposable disposable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,13 +66,10 @@ public class LoginActivity extends AppCompatActivity {
             }
             if (loginResult.getSuccess() != null) {
                 if (Sdk.d2().programModule().programs.count() > 0) {
-                    Intent programsActivity = new Intent(getApplicationContext(), ProgramsActivity.class);
-                    startActivity(programsActivity);
+                    ActivityStarter.startActivity(this, ProgramsActivity.class);
                 } else {
-                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainIntent);
+                    ActivityStarter.startActivity(this, MainActivity.class);
                 }
-                finish();
             }
             setResult(Activity.RESULT_OK);
         });
@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                loginViewModel.login(
+                disposable = loginViewModel.login(
                         usernameEditText.getText().toString(),
                         passwordEditText.getText().toString(),
                         serverUrlEditText.getText().toString());
@@ -109,11 +109,19 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> {
             loadingProgressBar.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.INVISIBLE);
-            loginViewModel.login(
+            disposable = loginViewModel.login(
                     usernameEditText.getText().toString(),
                     passwordEditText.getText().toString(),
                     serverUrlEditText.getText().toString());
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
