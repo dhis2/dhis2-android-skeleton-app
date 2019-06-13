@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
@@ -67,10 +68,11 @@ public class ProgramsActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(organisationUnitUids -> Sdk.d2().programModule().programs
-                                .byOrganisationUnitList(organisationUnitUids)
-                                .withStyle()
-                                .withProgramStages()
-                                .getPaged(20))
+                        .byOrganisationUnitList(organisationUnitUids)
+                        .orderByName(RepositoryScope.OrderByDirection.ASC)
+                        .withStyle()
+                        .withProgramStages()
+                        .getPaged(20))
                 .subscribe(programs -> programs.observe(this, adapter::setPrograms)));
     }
 
