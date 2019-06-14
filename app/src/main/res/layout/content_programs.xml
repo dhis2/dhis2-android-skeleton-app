@@ -8,6 +8,15 @@
     tools:context=".ui.programs.ProgramsActivity"
     tools:showIn="@layout/activity_programs">
 
+    <TextView
+        android:id="@+id/programs_notificator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/no_programs_found" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/programs_recycler_view"
         android:layout_width="match_parent"

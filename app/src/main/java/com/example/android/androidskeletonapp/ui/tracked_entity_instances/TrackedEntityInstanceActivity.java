@@ -1,6 +1,7 @@
 package com.example.android.androidskeletonapp.ui.tracked_entity_instances;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
@@ -63,7 +64,11 @@ public class TrackedEntityInstanceActivity extends AppCompatActivity {
                         .withEnrollments()
                         .getPaged(20))
                 .subscribe(trackedEntityInstances ->
-                        trackedEntityInstances.observe(this, adapter::setTrackedEntityInstances)));
+                        trackedEntityInstances.observe(this, trackedEntityInstancePagedList -> {
+                            adapter.setTrackedEntityInstances(trackedEntityInstancePagedList);
+                            findViewById(R.id.tracked_entity_instance_notificator).setVisibility(
+                                    trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
+                            })));
     }
 
     @Override

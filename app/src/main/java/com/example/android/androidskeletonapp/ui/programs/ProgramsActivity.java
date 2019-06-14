@@ -1,6 +1,7 @@
 package com.example.android.androidskeletonapp.ui.programs;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
@@ -66,7 +67,13 @@ public class ProgramsActivity extends AppCompatActivity {
                         .withStyle()
                         .withProgramStages()
                         .getPaged(20))
-                .subscribe(programs -> programs.observe(this, adapter::setPrograms)));
+                .subscribe(programs -> {
+                    programs.observe(this, programPagedList -> {
+                        adapter.setPrograms(programPagedList);
+                        findViewById(R.id.programs_notificator).setVisibility(
+                                programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
+                    });
+                }));
     }
 
     @Override
