@@ -11,17 +11,23 @@
         android:roundIcon="@mipmap/ic_dhis_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.navigation.NavigationActivity"
+            android:label="@string/title_activity_navigation"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".ui.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="play.dhis2.org"
                     android:scheme="https" />
@@ -32,12 +38,16 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:label="@string/title_activity_main"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.programs.ProgramsActivity"
             android:label="@string/title_activity_programs"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.tracked_entity_instances.TrackedEntityInstanceActivity"
+            android:label="@string/title_activity_tracked_entities"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.ui.programs;
+package com.example.android.androidskeletonapp.ui.tracked_entity_instances;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,9 +7,8 @@ import android.view.MenuItem;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceActivity;
+import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
@@ -24,7 +23,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
-public class ProgramsActivity extends AppCompatActivity {
+public class TrackedEntityInstanceActivity extends AppCompatActivity {
 
     private CompositeDisposable compositeDisposable;
 
@@ -32,10 +31,10 @@ public class ProgramsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         compositeDisposable = new CompositeDisposable();
-        setContentView(R.layout.activity_programs);
-        Toolbar toolbar = findViewById(R.id.programs_toolbar);
+        setContentView(R.layout.activity_tracked_entity_instances);
+        Toolbar toolbar = findViewById(R.id.tracked_entity_instances_toolbar);
         setSupportActionBar(toolbar);
-        observePrograms();
+        observeTrackedEntityInstances();
     }
 
     @Override
@@ -51,20 +50,22 @@ public class ProgramsActivity extends AppCompatActivity {
         if (id == R.id.logout_item) {
             compositeDisposable.add(logOut(this));
             return true;
-        } else if (id == R.id.tracked_entity_instance_item) {
-            ActivityStarter.startActivity(this, TrackedEntityInstanceActivity.class);
+        }
+
+        if (id == R.id.programs_item) {
+            ActivityStarter.startActivity(this, ProgramsActivity.class);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void observePrograms() {
-        RecyclerView programsRecyclerView = findViewById(R.id.programs_recycler_view);
-        programsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    private void observeTrackedEntityInstances() {
+        RecyclerView trackedEntityInstancesRecyclerView = findViewById(R.id.tracked_entity_instance_recycler_view);
+        trackedEntityInstancesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ProgramsAdapter adapter = new ProgramsAdapter();
-        programsRecyclerView.setAdapter(adapter);
+        TrackedEntityInstanceAdapter adapter = new TrackedEntityInstanceAdapter();
+        trackedEntityInstancesRecyclerView.setAdapter(adapter);
 
         compositeDisposable.add(Observable.fromIterable(Sdk.d2().organisationUnitModule().organisationUnits
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).get())
@@ -72,13 +73,11 @@ public class ProgramsActivity extends AppCompatActivity {
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(organisationUnitUids -> Sdk.d2().programModule().programs
-                        .byOrganisationUnitList(organisationUnitUids)
-                        .orderByName(RepositoryScope.OrderByDirection.ASC)
-                        .withStyle()
-                        .withProgramStages()
+                .map(organisationUnitUids -> Sdk.d2().trackedEntityModule().trackedEntityInstances
+                        .withEnrollments()
                         .getPaged(20))
-                .subscribe(programs -> programs.observe(this, adapter::setPrograms)));
+                .subscribe(trackedEntityInstances ->
+                        trackedEntityInstances.observe(this, adapter::setTrackedEntityInstances)));
     }
 
     @Override
