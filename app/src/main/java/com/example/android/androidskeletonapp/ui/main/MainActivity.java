@@ -1,9 +1,6 @@
 package com.example.android.androidskeletonapp.ui.main;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -12,15 +9,20 @@ import android.widget.TextView;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
+import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.user.User;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -28,7 +30,8 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private Disposable logOutDisposable;
     private Disposable metadataDisposable;
@@ -36,16 +39,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_navigation);
+
         TextView greeting = findViewById(R.id.greeting);
         TextView notificator = findViewById(R.id.notificator);
         TextView syncMetadataText = findViewById(R.id.sync_metadata_text);
         Toolbar toolbar = findViewById(R.id.toolbar);
         ProgressBar progressBar = findViewById(R.id.sync_progress_bar);
+        FloatingActionButton syncButton = findViewById(R.id.sync_button);
         setSupportActionBar(toolbar);
         D2 d2 = Sdk.d2();
 
-        FloatingActionButton syncButton = findViewById(R.id.sync_button);
         syncButton.setOnClickListener(view -> {
             view.setEnabled(Boolean.FALSE);
             view.setVisibility(View.GONE);
@@ -57,25 +61,32 @@ public class MainActivity extends AppCompatActivity {
             syncMetadata();
         });
 
-        greeting.setText(String.format("Hi %s!", d2.userModule().user.getWithoutChildren().firstName()));
+        User user = d2.userModule().user.getWithoutChildren();
+        greeting.setText(String.format("Hi %s!", user.firstName()));
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+
+        TextView firstName = headerView.findViewById(R.id.first_name);
+        TextView email = headerView.findViewById(R.id.email);
+        firstName.setText(user.firstName());
+        email.setText(user.email());
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.logout_item) {
-            logOutDisposable = logOut(this);
-            return true;
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -95,5 +106,22 @@ public class MainActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> ActivityStarter.startActivity(this, ProgramsActivity.class),
                         Throwable::printStackTrace);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_programs) {
+            ActivityStarter.startActivity(this, ProgramsActivity.class);
+        } else if (id == R.id.nav_tracked_entities) {
+            ActivityStarter.startActivity(this, TrackedEntityInstanceActivity.class);
+        } else if (id == R.id.nav_exit) {
+            logOutDisposable = logOut(this);
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

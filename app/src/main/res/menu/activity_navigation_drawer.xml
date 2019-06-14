@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_programs"
+            android:icon="@drawable/ic_assignment_black_24dp"
+            android:title="@string/title_activity_programs" />
+        <item
+            android:id="@+id/nav_tracked_entities"
+            android:icon="@drawable/ic_group_black_24dp"
+            android:title="@string/title_activity_tracked_entities" />
+    </group>
+
+    <item android:title="@string/session">
+        <menu>
+            <item
+                android:id="@+id/nav_exit"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="@string/log_out" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,13 +1,11 @@
 package com.example.android.androidskeletonapp.ui.tracked_entity_instances;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
+import com.example.android.androidskeletonapp.ui.main.MainActivity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -21,8 +19,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
-
 public class TrackedEntityInstanceActivity extends AppCompatActivity {
 
     private CompositeDisposable compositeDisposable;
@@ -34,30 +30,20 @@ public class TrackedEntityInstanceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tracked_entity_instances);
         Toolbar toolbar = findViewById(R.id.tracked_entity_instances_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         observeTrackedEntityInstances();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+    public boolean onSupportNavigateUp() {
+        ActivityStarter.startActivity(this, MainActivity.class);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.logout_item) {
-            compositeDisposable.add(logOut(this));
-            return true;
-        }
-
-        if (id == R.id.programs_item) {
-            ActivityStarter.startActivity(this, ProgramsActivity.class);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onBackPressed() {
+        ActivityStarter.startActivity(this, MainActivity.class);
     }
 
     private void observeTrackedEntityInstances() {
