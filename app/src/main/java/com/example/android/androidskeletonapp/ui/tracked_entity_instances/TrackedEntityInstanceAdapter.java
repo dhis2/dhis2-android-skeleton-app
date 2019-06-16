@@ -9,26 +9,42 @@ import com.example.android.androidskeletonapp.R;
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class TrackedEntityInstanceAdapter extends
-        RecyclerView.Adapter<TrackedEntityInstanceAdapter.TrackedEntityInstancesHolder> {
-    private List<TrackedEntityInstance>  trackedEntityInstances = new ArrayList<>();
+        PagedListAdapter<TrackedEntityInstance, TrackedEntityInstanceAdapter.TrackedEntityInstancesHolder> {
+
+    private static final  DiffUtil.ItemCallback<TrackedEntityInstance> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<TrackedEntityInstance>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull TrackedEntityInstance oldItem,
+                                       @NonNull TrackedEntityInstance newItem) {
+            return oldItem.uid().equals(newItem.uid());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull TrackedEntityInstance oldItem,
+                                          @NonNull TrackedEntityInstance newItem) {
+            return oldItem == newItem;
+        }
+    };
+
+    TrackedEntityInstanceAdapter() {
+        super(DIFF_CALLBACK);
+    }
 
     static class TrackedEntityInstancesHolder extends RecyclerView.ViewHolder {
 
         TextView trackedEntityInstanceName;
-        TextView enrollments;
+        TextView uniqueId;
 
         TrackedEntityInstancesHolder(@NonNull View view) {
             super(view);
             trackedEntityInstanceName = view.findViewById(R.id.tracked_entity_instance_name);
-            enrollments = view.findViewById(R.id.tracked_entity_instance_enrollments);
+            uniqueId = view.findViewById(R.id.unique_id);
         }
     }
 
@@ -42,19 +58,11 @@ public class TrackedEntityInstanceAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull TrackedEntityInstancesHolder holder, int position) {
-        TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(position);
-        holder.trackedEntityInstanceName.setText(trackedEntityInstance.trackedEntityType());
-        holder.enrollments.setText(MessageFormat.format("{0} Enrollments",
-                trackedEntityInstance.enrollments().size()));
+        TrackedEntityInstance trackedEntityInstance = getItem(position);
+        holder.trackedEntityInstanceName.setText(
+                trackedEntityInstance.trackedEntityAttributeValues().get(1).value());
+        holder.uniqueId.setText(
+                trackedEntityInstance.trackedEntityAttributeValues().get(0).value());
     }
 
-    @Override
-    public int getItemCount() {
-        return trackedEntityInstances.size();
-    }
-
-    void setTrackedEntityInstances(List<TrackedEntityInstance> trackedEntityInstances) {
-        this.trackedEntityInstances = trackedEntityInstances;
-        notifyDataSetChanged();
-    }
 }

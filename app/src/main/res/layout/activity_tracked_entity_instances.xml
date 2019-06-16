@@ -22,4 +22,12 @@
 
     <include layout="@layout/content_tracked_entity_instances" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/download_data_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_sync" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

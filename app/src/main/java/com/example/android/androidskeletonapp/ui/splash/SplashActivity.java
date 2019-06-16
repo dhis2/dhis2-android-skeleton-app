@@ -7,7 +7,6 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
-import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.facebook.stetho.Stetho;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,11 +35,7 @@ public class SplashActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isUserLogged -> {
                     if (isUserLogged) {
-                        if (hasPrograms()) {
-                            ActivityStarter.startActivity(this, ProgramsActivity.class);
-                        } else {
-                            ActivityStarter.startActivity(this, MainActivity.class);
-                        }
+                        ActivityStarter.startActivity(this, MainActivity.class);
                     } else {
                         ActivityStarter.startActivity(this, LoginActivity.class);
                     }
@@ -66,9 +61,5 @@ public class SplashActivity extends AppCompatActivity {
                 emitter.onSuccess(Boolean.FALSE);
             }
         });
-    }
-
-    private boolean hasPrograms() {
-        return Sdk.d2().programModule().programs.count() > 0;
     }
 }

@@ -15,7 +15,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.user.User;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -25,7 +24,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
@@ -33,8 +32,7 @@ import static com.example.android.androidskeletonapp.data.service.LogOutService.
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Disposable logOutDisposable;
-    private Disposable metadataDisposable;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,6 @@ public class MainActivity extends AppCompatActivity
         ProgressBar progressBar = findViewById(R.id.sync_progress_bar);
         FloatingActionButton syncButton = findViewById(R.id.sync_button);
         setSupportActionBar(toolbar);
-        D2 d2 = Sdk.d2();
 
         syncButton.setOnClickListener(view -> {
             view.setEnabled(Boolean.FALSE);
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity
             syncMetadata();
         });
 
-        User user = d2.userModule().user.getWithoutChildren();
+        User user = Sdk.d2().userModule().user.getWithoutChildren();
         greeting.setText(String.format("Hi %s!", user.firstName()));
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -92,20 +89,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (logOutDisposable != null) {
-            logOutDisposable.dispose();
-        }
-        if (metadataDisposable != null) {
-            metadataDisposable.dispose();
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
         }
     }
 
     private void syncMetadata() {
-        metadataDisposable = Completable.fromCallable(() -> Sdk.d2().syncMetaData().call())
+        compositeDisposable.add(Completable.fromCallable(() -> Sdk.d2().syncMetaData().call())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> ActivityStarter.startActivity(this, ProgramsActivity.class),
-                        Throwable::printStackTrace);
+                        Throwable::printStackTrace));
     }
 
     @Override
@@ -117,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_tracked_entities) {
             ActivityStarter.startActivity(this, TrackedEntityInstanceActivity.class);
         } else if (id == R.id.nav_exit) {
-            logOutDisposable = logOut(this);
+            compositeDisposable.add(logOut(this));
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
