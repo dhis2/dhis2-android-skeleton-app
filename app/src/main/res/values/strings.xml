@@ -17,8 +17,10 @@
     <!-- Strings related to main -->
     <string name="title_activity_main">Home</string>
     <string name="welcome">"Welcome!"</string>
-    <string name="syncing">Syncing metadata…</string>
+    <string name="syncing_metadata">Syncing metadata…</string>
+    <string name="syncing_data">Syncing data…</string>
     <string name="sync_metadata">Sync metadata</string>
+    <string name="sync_data">Sync data</string>
     <string name="log_out">Log out</string>
     <!-- Strings related to programs -->
     <string name="title_activity_programs">Your programs</string>

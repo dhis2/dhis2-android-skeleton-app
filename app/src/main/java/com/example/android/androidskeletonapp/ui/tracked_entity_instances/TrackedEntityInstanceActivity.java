@@ -118,7 +118,7 @@ public class TrackedEntityInstanceActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (compositeDisposable != null) {
-            compositeDisposable.dispose();
+            compositeDisposable.clear();
         }
     }
 }
