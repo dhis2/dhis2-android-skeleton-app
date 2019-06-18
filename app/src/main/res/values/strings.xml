@@ -28,11 +28,12 @@
     <string name="program_icon">Program Icon</string>
     <string name="program_stages">2 Program stages</string>
     <string name="no_programs_found">No programs found</string>
-    <!-- Strings related to tracked entity instances -->
-    <string name="title_activity_tracked_entities">Your tracked entities</string>
-    <string name="tracked_entity_instance_name">Tracked Entity Instance Name</string>
+    <!-- Strings related to tracked entity instances search -->
+    <string name="title_activity_tracked_entity_search">Tracked entities search</string>
     <string name="search_data">Search data</string>
     <string name="searching">Searching data…</string>
+    <!-- Strings related to tracked entity instances -->
+    <string name="tracked_entity_instance_name">Tracked Entity Instance Name</string>
     <string name="unique_id">1234</string>
     <string name="no_tracked_entity_instances_found">No tracked entity instances found</string>
     <!-- Strings related to navigation -->

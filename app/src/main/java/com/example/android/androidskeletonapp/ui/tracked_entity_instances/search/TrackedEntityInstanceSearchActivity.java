@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.ui.tracked_entity_instances;
+package com.example.android.androidskeletonapp.ui.tracked_entity_instances.search;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +9,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
+import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -28,7 +29,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class TrackedEntityInstanceActivity extends AppCompatActivity {
+public class TrackedEntityInstanceSearchActivity extends AppCompatActivity {
 
     private CompositeDisposable compositeDisposable;
     private ProgressBar progressBar;
@@ -40,7 +41,7 @@ public class TrackedEntityInstanceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         compositeDisposable = new CompositeDisposable();
-        setContentView(R.layout.activity_tracked_entity_instances);
+        setContentView(R.layout.activity_tracked_entity_instance_search);
         Toolbar toolbar = findViewById(R.id.tracked_entity_instances_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -48,7 +49,6 @@ public class TrackedEntityInstanceActivity extends AppCompatActivity {
 
         notificator = findViewById(R.id.data_notificator);
         downloadDataText = findViewById(R.id.download_data_text);
-        TextView teiNotFound = findViewById(R.id.tracked_entity_instance_not_found);
         progressBar = findViewById(R.id.tracked_entity_instance_progress_bar);
         FloatingActionButton downloadButton = findViewById(R.id.download_data_button);
 
@@ -58,7 +58,6 @@ public class TrackedEntityInstanceActivity extends AppCompatActivity {
             view.setEnabled(Boolean.FALSE);
             view.setVisibility(View.GONE);
             downloadDataText.setVisibility(View.GONE);
-            teiNotFound.setVisibility(View.GONE);
             Snackbar.make(view, "Downloading data", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             notificator.setVisibility(View.VISIBLE);
@@ -109,8 +108,6 @@ public class TrackedEntityInstanceActivity extends AppCompatActivity {
                             notificator.setVisibility(View.GONE);
                             progressBar.setVisibility(View.GONE);
                             adapter.submitList(trackedEntityInstancePagedList);
-                            findViewById(R.id.tracked_entity_instance_not_found).setVisibility(
-                                    trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
                 })));
     }
 

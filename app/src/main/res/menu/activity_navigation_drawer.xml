@@ -10,8 +10,8 @@
             android:title="@string/title_activity_programs" />
         <item
             android:id="@+id/nav_tracked_entities"
-            android:icon="@drawable/ic_group_black_24dp"
-            android:title="@string/title_activity_tracked_entities" />
+            android:icon="@drawable/ic_search"
+            android:title="@string/title_activity_tracked_entity_search" />
     </group>
 
     <item android:title="@string/session">

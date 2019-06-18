@@ -11,7 +11,7 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
-import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceActivity;
+import com.example.android.androidskeletonapp.ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 syncMetadataText.setVisibility(View.GONE);
                 Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                notificator.setText(R.string.sync_metadata);
+                notificator.setText(R.string.syncing_metadata);
                 progressBar.setVisibility(View.VISIBLE);
                 syncMetadata();
             });
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .asObservable())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstanceActivity.class))
+                .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class))
                 .doOnError(Throwable::printStackTrace)
                 .subscribe());
     }
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_programs) {
             ActivityStarter.startActivity(this, ProgramsActivity.class);
         } else if (id == R.id.nav_tracked_entities) {
-            ActivityStarter.startActivity(this, TrackedEntityInstanceActivity.class);
+            ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class);
         } else if (id == R.id.nav_exit) {
             compositeDisposable.add(logOut(this));
         }

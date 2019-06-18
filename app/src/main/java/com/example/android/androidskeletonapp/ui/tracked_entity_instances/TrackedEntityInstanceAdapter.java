@@ -32,7 +32,7 @@ public class TrackedEntityInstanceAdapter extends
         }
     };
 
-    TrackedEntityInstanceAdapter() {
+    public TrackedEntityInstanceAdapter() {
         super(DIFF_CALLBACK);
     }
 

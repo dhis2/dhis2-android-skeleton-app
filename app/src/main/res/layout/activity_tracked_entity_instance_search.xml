@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.tracked_entity_instances.TrackedEntityInstanceActivity">
+    tools:context=".ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_tracked_entity_instances" />
+    <include layout="@layout/content_tracked_entity_instance_search" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/download_data_button"
@@ -28,6 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_sync" />
+        app:srcCompat="@drawable/ic_search" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

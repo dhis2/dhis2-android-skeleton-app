@@ -5,17 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.tracked_entity_instances.TrackedEntityInstanceActivity"
-    tools:showIn="@layout/activity_tracked_entity_instances">
-
-    <TextView
-        android:id="@+id/tracked_entity_instance_not_found"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/no_tracked_entity_instances_found"
-        android:textSize="16sp" />
+    tools:context=".ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity"
+    tools:showIn="@layout/activity_tracked_entity_instance_search">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -42,8 +42,8 @@
             android:label="@string/title_activity_programs"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.tracked_entity_instances.TrackedEntityInstanceActivity"
-            android:label="@string/title_activity_tracked_entities"
+            android:name=".ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity"
+            android:label="@string/title_activity_tracked_entity_search"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
