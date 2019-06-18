@@ -69,7 +69,7 @@ public class ProgramsActivity extends AppCompatActivity {
                         .getPaged(20))
                 .subscribe(programs -> {
                     programs.observe(this, programPagedList -> {
-                        adapter.setPrograms(programPagedList);
+                        adapter.submitList(programPagedList);
                         findViewById(R.id.programs_notificator).setVisibility(
                                 programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
                     });
