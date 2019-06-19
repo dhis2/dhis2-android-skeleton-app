@@ -7,14 +7,12 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
 
 public class D2ErrorActivity extends ListActivity {
-
-    Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,25 +25,13 @@ public class D2ErrorActivity extends ListActivity {
         D2ErrorAdapter adapter = new D2ErrorAdapter();
         recyclerView.setAdapter(adapter);
 
-        disposable = Single.just(Sdk.d2().maintenanceModule().d2Errors
-                .getPaged(20))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(d2Errors -> {
-                    d2Errors.observe(this, d2ErrorPagedList -> {
-                        adapter.submitList(d2ErrorPagedList);
-                        findViewById(R.id.d2_errors_notificator).setVisibility(
-                                d2ErrorPagedList.isEmpty() ? View.VISIBLE : View.GONE);
-                    });
-                });
-    }
+        LiveData<PagedList<D2Error>> liveData = Sdk.d2().maintenanceModule().d2Errors
+                .getPaged(20);
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (disposable != null) {
-            disposable.dispose();
-        }
-
+        liveData.observe(this, d2ErrorPagedList -> {
+            adapter.submitList(d2ErrorPagedList);
+            findViewById(R.id.d2_errors_notificator).setVisibility(
+                    d2ErrorPagedList.isEmpty() ? View.VISIBLE : View.GONE);
+        });
     }
 }
