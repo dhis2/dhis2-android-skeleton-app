@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.data.service;
+package com.example.android.androidskeletonapp.data.service.forms;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,8 +48,6 @@ import io.reactivex.Flowable;
 
 public class RuleEngineService {
 
-    private static Flowable<RuleEngine> ruleEngineFlowable;
-    private static RuleEngineContext ruleEngineContext;
     private D2 d2;
     private String stage;
     private JexlEngine jexlEngine;
@@ -62,13 +60,13 @@ public class RuleEngineService {
     private String eventUid;
     private String enrollmentUid;
 
-    public Flowable<RuleEngine> cornfigure(D2 d2, String programUid, @Nullable String enrollmentUid,
-                                           @Nullable String eventUid) {
+    public Flowable<RuleEngine> configure(D2 d2, String programUid, @Nullable String enrollmentUid,
+                                          @Nullable String eventUid) {
         this.d2 = d2;
         this.programUid = programUid;
         this.enrollmentUid = enrollmentUid;
         this.eventUid = eventUid;
-
+        this.stage = null;
 
         jexlEngine = new JexlEngine();
 
@@ -94,7 +92,7 @@ public class RuleEngineService {
         );
     }
 
-    private Flowable<RuleEnrollment> ruleEnrollment() {
+    public Flowable<RuleEnrollment> ruleEnrollment() {
         return Flowable.fromCallable(() -> {
             Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrollmentUid).get();
             String ouCode = d2.organisationUnitModule().organisationUnits.uid(enrollment.organisationUnit()).get().code();

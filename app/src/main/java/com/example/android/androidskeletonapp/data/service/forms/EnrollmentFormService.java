@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.data.service;
+package com.example.android.androidskeletonapp.data.service.forms;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.hisp.dhis.android.core.D2;
@@ -112,6 +112,10 @@ public class EnrollmentFormService {
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();
         }
+    }
+
+    public String getEnrollmentUid() {
+        return enrollmentRepository.get().uid();
     }
 
     public void delete() {
