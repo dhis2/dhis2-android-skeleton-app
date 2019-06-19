@@ -29,7 +29,7 @@ public class EnrollmentFormService {
     }
 
     public static EnrollmentFormService getInstance() {
-        if (instance != null)
+        if (instance == null)
             instance = new EnrollmentFormService();
 
         return instance;
@@ -46,6 +46,8 @@ public class EnrollmentFormService {
                             .build()
             );
             enrollmentRepository = d2.enrollmentModule().enrollments.uid(enrollmentUid);
+            enrollmentRepository.setEnrollmentDate(new Date()); //TODO: ALWAYS USE TODAY DATE??
+            enrollmentRepository.setIncidentDate(new Date());//TODO: CHECK WITH PROGRAM
             return true;
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();
@@ -63,7 +65,7 @@ public class EnrollmentFormService {
             );
         else
             return Flowable.fromCallable(() ->
-                    d2.programModule().programs.uid(enrollmentRepository.get().uid())
+                    d2.programModule().programs.uid(enrollmentRepository.get().program())
                             .withAllChildren().get()
                             .programTrackedEntityAttributes()
             )

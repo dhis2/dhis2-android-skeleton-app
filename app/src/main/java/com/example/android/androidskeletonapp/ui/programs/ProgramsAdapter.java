@@ -8,6 +8,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.android.androidskeletonapp.R;
 
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -15,15 +21,9 @@ import org.hisp.dhis.android.core.program.Program;
 
 import java.text.MessageFormat;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.paging.PagedListAdapter;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class ProgramsAdapter extends PagedListAdapter<Program, ProgramsAdapter.ProgramsHolder> {
 
-    private static final  DiffUtil.ItemCallback<Program> DIFF_CALLBACK =
+    private static final DiffUtil.ItemCallback<Program> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<Program>() {
                 @Override
                 public boolean areItemsTheSame(@NonNull Program oldItem,
@@ -37,9 +37,11 @@ public class ProgramsAdapter extends PagedListAdapter<Program, ProgramsAdapter.P
                     return oldItem == newItem;
                 }
             };
+    private final OnProgramSelectionListener programSelectionListener;
 
-    ProgramsAdapter() {
+    ProgramsAdapter(OnProgramSelectionListener programSelectionListener) {
         super(DIFF_CALLBACK);
+        this.programSelectionListener = programSelectionListener;
     }
 
     static class ProgramsHolder extends RecyclerView.ViewHolder {
@@ -104,5 +106,7 @@ public class ProgramsAdapter extends PagedListAdapter<Program, ProgramsAdapter.P
             holder.programIcon.setBackgroundColor(emptyColor);
             holder.programCardFrame.setBackgroundColor(emptyColor);
         }
+
+        holder.itemView.setOnClickListener(view -> programSelectionListener.onProgramSelected(program.uid()));
     }
 }
