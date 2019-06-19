@@ -109,7 +109,7 @@ public class RuleEngineService {
                     enrollment.uid(),
                     enrollment.incidentDate(),
                     enrollment.enrollmentDate(),
-                    RuleEnrollment.Status.valueOf(enrollment.status().name()),
+                    enrollment.status() != null ? RuleEnrollment.Status.valueOf(enrollment.status().name()) : RuleEnrollment.Status.ACTIVE,
                     enrollment.organisationUnit(),
                     ouCode,
                     attributeValues,
@@ -187,7 +187,7 @@ public class RuleEngineService {
         for (ProgramRule rule : programRules) {
             List<RuleAction> ruleActions = transformToRuleAction(rule.programRuleActions());
             rules.add(
-                    Rule.create(rule.programStage().uid(), rule.priority(), rule.condition(), ruleActions, rule.name())
+                    Rule.create(rule.programStage() != null ? rule.programStage().uid() : null, rule.priority(), rule.condition(), ruleActions, rule.name())
             );
         }
         return rules;
@@ -238,19 +238,25 @@ public class RuleEngineService {
             switch (prv.programRuleVariableSourceType()) {
                 case TEI_ATTRIBUTE:
                     ruleVariables.add(RuleVariableAttribute.create(attr.name(), attr.uid(), mimeType));
+                    break;
                 case DATAELEMENT_CURRENT_EVENT:
                     ruleVariables.add(RuleVariableCurrentEvent.create(de.name(), de.uid(), mimeType));
+                    break;
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM:
                     ruleVariables.add(RuleVariableNewestEvent.create(de.name(), de.uid(), mimeType));
+                    break;
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE:
                     if (stage != null)
                         ruleVariables.add(RuleVariableNewestStageEvent.create(de.name(), de.uid(), stage, mimeType));
+                    break;
                 case DATAELEMENT_PREVIOUS_EVENT:
                     ruleVariables.add(RuleVariablePreviousEvent.create(de.name(), de.uid(), mimeType));
+                    break;
                 case CALCULATED_VALUE:
                     String variable = de != null ? de.uid() : attr.uid();
                     String name = de != null ? de.name() : attr.name();
                     ruleVariables.add(RuleVariableCalculatedValue.create(name, variable != null ? variable : "", mimeType));
+                    break;
                 default:
                     throw new IllegalArgumentException("Unsupported variable " +
                             "source type: " + prv.programRuleVariableSourceType().name());
