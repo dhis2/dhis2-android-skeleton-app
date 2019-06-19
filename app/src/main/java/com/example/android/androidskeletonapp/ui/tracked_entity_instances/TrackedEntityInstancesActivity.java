@@ -6,30 +6,25 @@ import android.view.View;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
+import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class TrackedEntityInstancesActivity extends AppCompatActivity {
+public class TrackedEntityInstancesActivity extends ListActivity {
 
-    private CompositeDisposable compositeDisposable;
+    private Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        compositeDisposable = new CompositeDisposable();
-        setContentView(R.layout.activity_tracked_entity_instances);
-        Toolbar toolbar = findViewById(R.id.tracked_entity_instances_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setUp(R.layout.activity_tracked_entity_instances, R.id.tracked_entity_instances_toolbar,
+                R.id.tracked_entity_instances_recycler_view);
         observeTrackedEntityInstances();
     }
 
@@ -51,7 +46,7 @@ public class TrackedEntityInstancesActivity extends AppCompatActivity {
         TrackedEntityInstanceAdapter adapter = new TrackedEntityInstanceAdapter();
         trackedEntityInstancesRecyclerView.setAdapter(adapter);
 
-        compositeDisposable.add(Single.just(Sdk.d2().trackedEntityModule().trackedEntityInstances
+        disposable = Single.just(Sdk.d2().trackedEntityModule().trackedEntityInstances
                 .withTrackedEntityAttributeValues()
                 .getPaged(20))
                 .subscribeOn(Schedulers.io())
@@ -62,14 +57,14 @@ public class TrackedEntityInstancesActivity extends AppCompatActivity {
                         findViewById(R.id.tracked_entity_instances_notificator).setVisibility(
                                 trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
                     });
-                }));
+                });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (compositeDisposable != null) {
-            compositeDisposable.clear();
+        if (disposable != null) {
+            disposable.dispose();
         }
     }
 }
