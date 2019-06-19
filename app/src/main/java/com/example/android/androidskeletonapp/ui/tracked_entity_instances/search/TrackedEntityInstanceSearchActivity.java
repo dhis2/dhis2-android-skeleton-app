@@ -19,16 +19,8 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 
 import java.util.Collections;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
 public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
-    private Disposable disposable;
     private ProgressBar progressBar;
     private TextView downloadDataText;
     private TextView notificator;
@@ -60,9 +52,7 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
     }
 
     private void syncData() {
-        RecyclerView trackedEntityInstancesRecyclerView = findViewById(R.id.tracked_entity_instance_recycler_view);
-        trackedEntityInstancesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        trackedEntityInstancesRecyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
         TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
                 .orgUnits(Collections.singletonList("DiszpKrYNg8"))
@@ -77,27 +67,13 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
                         .build())
                 .build();
 
-        disposable =
-                Single.fromCallable(() ->
-                Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery
-                        .query(query)
-                        .onlineFirst().getPaged(15))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(trackedEntityInstances ->
-                        trackedEntityInstances.observe(this, trackedEntityInstancePagedList -> {
-                            downloadDataText.setVisibility(View.GONE);
-                            notificator.setVisibility(View.GONE);
-                            progressBar.setVisibility(View.GONE);
-                            adapter.submitList(trackedEntityInstancePagedList);
-                }));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (disposable != null) {
-            disposable.dispose();
-        }
+        Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery
+                .query(query)
+                .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
+            downloadDataText.setVisibility(View.GONE);
+            notificator.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+            adapter.submitList(trackedEntityInstancePagedList);
+        });
     }
 }
