@@ -43,4 +43,12 @@
     <string name="nav_header_title">User name</string>
     <string name="nav_header_subtitle">user@email.com</string>
     <string name="session">Session</string>
+    <!-- Strings related to errors -->
+    <string name="title_activity_d2_errors">Your errors</string>
+    <string name="d2_error_code">D2 error code</string>
+    <string name="d2_error_creation">12/03 23:05:12</string>
+    <string name="d2_error_description">D2 error description</string>
+    <string name="d2_error_component">D2 error component</string>
+    <string name="d2_error_icon">D2 error icon</string>
+    <string name="no_d2_errors_found">No errors found</string>
 </resources>
