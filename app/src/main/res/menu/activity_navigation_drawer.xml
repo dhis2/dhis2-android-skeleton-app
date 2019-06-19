@@ -16,6 +16,10 @@
             android:id="@+id/nav_tracked_entities_search"
             android:icon="@drawable/ic_search"
             android:title="@string/title_activity_tracked_entity_search" />
+        <item
+            android:id="@+id/nav_d2_errors"
+            android:icon="@drawable/ic_error_outline_black_24dp"
+            android:title="@string/title_activity_d2_errors" />
     </group>
 
     <item android:title="@string/session">
