@@ -1,5 +1,6 @@
 package com.example.android.androidskeletonapp.ui.main;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,12 +47,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         compositeDisposable = new CompositeDisposable();
 
-        User user = Sdk.d2().userModule().user.getWithoutChildren();
+        User user = getUser();
         TextView greeting = findViewById(R.id.greeting);
         greeting.setText(String.format("Hi %s!", user.firstName()));
 
         inflateMainView();
         createNavigationView(user);
+    }
+    
+    private User getUser() {
+        return Sdk.d2().userModule().user.getWithoutChildren();
+    }
+
+    private User getUserFromCursor() {
+        try (Cursor cursor = Sdk.d2().databaseAdapter().query("SELECT * FROM user;")) {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                return User.create(cursor);
+            } else {
+                return null;
+            }
+        }
     }
 
     @Override
