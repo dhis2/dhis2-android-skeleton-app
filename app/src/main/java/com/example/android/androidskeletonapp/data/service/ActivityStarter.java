@@ -11,4 +11,9 @@ public class ActivityStarter {
         activity.startActivity(intent);
         activity.finish();
     }
+
+    public static void startActivity(AppCompatActivity activity, Intent intent) {
+        activity.startActivity(intent);
+        activity.finish();
+    }
 }

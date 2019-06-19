@@ -12,18 +12,26 @@
         android:id="@+id/tracked_entity_instances_notificator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="@string/no_tracked_entity_instances_found" />
+        android:text="@string/no_tracked_entity_instances_found"
+        android:textSize="16sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tracked_entity_instances_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:clipToPadding="false"
-        tools:listitem="@layout/program_item"/>
+        tools:listitem="@layout/program_item" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/enrollmentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_add_white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

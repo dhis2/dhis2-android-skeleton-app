@@ -5,7 +5,9 @@ import android.view.View;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
+import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -16,7 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ProgramsActivity extends ListActivity {
+public class ProgramsActivity extends ListActivity implements OnProgramSelectionListener {
 
     private Disposable disposable;
 
@@ -28,7 +30,7 @@ public class ProgramsActivity extends ListActivity {
     }
 
     private void observePrograms() {
-        ProgramsAdapter adapter = new ProgramsAdapter();
+        ProgramsAdapter adapter = new ProgramsAdapter(this);
         recyclerView.setAdapter(adapter);
 
         disposable = Observable.fromIterable(Sdk.d2().organisationUnitModule().organisationUnits
@@ -58,5 +60,12 @@ public class ProgramsActivity extends ListActivity {
         if (disposable != null) {
             disposable.dispose();
         }
+    }
+
+    @Override
+    public void onProgramSelected(String programUid) {
+        ActivityStarter.startActivity(this,
+                TrackedEntityInstancesActivity
+                        .getTrackedEntityInstancesActivityIntent(this, programUid));
     }
 }
