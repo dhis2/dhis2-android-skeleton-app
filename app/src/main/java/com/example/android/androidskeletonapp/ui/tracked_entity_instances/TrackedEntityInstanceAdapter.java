@@ -59,10 +59,11 @@ public class TrackedEntityInstanceAdapter extends
     @Override
     public void onBindViewHolder(@NonNull TrackedEntityInstancesHolder holder, int position) {
         TrackedEntityInstance trackedEntityInstance = getItem(position);
-        holder.trackedEntityInstanceName.setText(
-                trackedEntityInstance.trackedEntityAttributeValues().get(1).value());
-        holder.uniqueId.setText(
-                trackedEntityInstance.trackedEntityAttributeValues().get(0).value());
+        if (trackedEntityInstance.trackedEntityAttributeValues().size() > 2) {
+            holder.trackedEntityInstanceName.setText(
+                    trackedEntityInstance.trackedEntityAttributeValues().get(1).value());
+            holder.uniqueId.setText(
+                    trackedEntityInstance.trackedEntityAttributeValues().get(0).value());
+        }
     }
-
 }
