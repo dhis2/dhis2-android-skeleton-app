@@ -14,15 +14,33 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.program.Program;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.ProgramsHolder> {
-    private List<Program>  programs = new ArrayList<>();
+public class ProgramsAdapter extends PagedListAdapter<Program, ProgramsAdapter.ProgramsHolder> {
+
+    private static final  DiffUtil.ItemCallback<Program> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<Program>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull Program oldItem,
+                                               @NonNull Program newItem) {
+                    return oldItem.uid().equals(newItem.uid());
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull Program oldItem,
+                                                  @NonNull Program newItem) {
+                    return oldItem == newItem;
+                }
+            };
+
+    ProgramsAdapter() {
+        super(DIFF_CALLBACK);
+    }
 
     static class ProgramsHolder extends RecyclerView.ViewHolder {
 
@@ -50,7 +68,7 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.Progra
 
     @Override
     public void onBindViewHolder(@NonNull ProgramsHolder holder, int position) {
-        Program program = programs.get(position);
+        Program program = getItem(position);
         holder.programName.setText(program.displayName());
         holder.stages.setText(MessageFormat.format("{0} Program stages", program.programStages().size()));
 
@@ -59,30 +77,32 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.Progra
 
         ObjectStyle style = program.style();
         if (style != null) {
-            if (style.icon() != null) {
+            if (style.icon() == null) {
+                int emptyColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.colorEmpty);
+                holder.programIcon.setImageResource(0);
+                holder.programIcon.setBackgroundColor(emptyColor);
+            } else {
                 String iconName = style.icon().startsWith("ic_") ? style.icon() : "ic_" + style.icon();
                 int icon = holder.itemView.getContext().getResources().getIdentifier(
                         iconName, "drawable", holder.itemView.getContext().getPackageName());
                 holder.programIcon.setImageResource(icon);
+                int darkColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.colorAccentDark);
+                holder.programIcon.setBackgroundColor(darkColor);
             }
 
-            if (style.color() != null) {
+            if (style.color() == null || style.color().length() == 4) {
+                int emptyColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.colorEmpty);
+                holder.programCardFrame.setBackgroundColor(emptyColor);
+            } else {
                 String color = style.color().startsWith("#") ? style.color() : "#" + style.color();
-                int programColor = (color.length() == 4) ?
-                        ContextCompat.getColor(holder.itemView.getContext(), R.color.colorPrimary) :
-                        Color.parseColor(color);
+                int programColor = Color.parseColor(color);
                 holder.programCardFrame.setBackgroundColor(programColor);
             }
+        } else {
+            int emptyColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.colorEmpty);
+            holder.programIcon.setImageResource(0);
+            holder.programIcon.setBackgroundColor(emptyColor);
+            holder.programCardFrame.setBackgroundColor(emptyColor);
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return programs.size();
-    }
-
-    void setPrograms(List<Program> programs) {
-        this.programs = programs;
-        notifyDataSetChanged();
     }
 }

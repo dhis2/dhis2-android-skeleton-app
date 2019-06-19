@@ -6,7 +6,6 @@
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome!"</string>
     <string name="invalid_server_url">Not a valid server url</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must have more than 5 characters</string>
@@ -17,12 +16,31 @@
     <string name="auto_fill_password">"Android123"</string>
     <!-- Strings related to main -->
     <string name="title_activity_main">Home</string>
-    <string name="syncing">Syncing metadata…</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="syncing_metadata">Syncing metadata…</string>
+    <string name="syncing_data">Syncing data…</string>
     <string name="sync_metadata">Sync metadata</string>
+    <string name="sync_data">Sync data</string>
+    <string name="log_out">Log out</string>
     <!-- Strings related to programs -->
     <string name="title_activity_programs">Your programs</string>
-    <string name="log_out">Log out</string>
     <string name="program_name">Program Name</string>
     <string name="program_icon">Program Icon</string>
     <string name="program_stages">2 Program stages</string>
+    <string name="no_programs_found">No programs found</string>
+    <!-- Strings related to tracked entity instances search -->
+    <string name="title_activity_tracked_entity_search">Tracked entities search</string>
+    <string name="search_data">Search data</string>
+    <string name="searching">Searching data…</string>
+    <!-- Strings related to tracked entity instances -->
+    <string name="title_activity_tracked_entity_instances">Your tracked entity instances</string>
+    <string name="tracked_entity_instance_name">Tracked Entity Instance Name</string>
+    <string name="unique_id">1234</string>
+    <string name="no_tracked_entity_instances_found">No tracked entity instances found</string>
+    <!-- Strings related to navigation -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">User name</string>
+    <string name="nav_header_subtitle">user@email.com</string>
+    <string name="session">Session</string>
 </resources>

@@ -5,20 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.programs.ProgramsActivity"
-    tools:showIn="@layout/activity_programs">
+    tools:context=".ui.tracked_entity_instances.TrackedEntityInstancesActivity"
+    tools:showIn="@layout/activity_tracked_entity_instances">
 
     <TextView
-        android:id="@+id/programs_notificator"
+        android:id="@+id/tracked_entity_instances_notificator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="@string/no_programs_found" />
+        android:text="@string/no_tracked_entity_instances_found" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/programs_recycler_view"
+        android:id="@+id/tracked_entity_instances_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="4dp"
