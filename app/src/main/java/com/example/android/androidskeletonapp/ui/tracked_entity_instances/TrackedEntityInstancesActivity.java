@@ -52,7 +52,7 @@ public class TrackedEntityInstancesActivity extends ListActivity {
             findViewById(R.id.enrollmentButton).setVisibility(View.GONE);
 
         findViewById(R.id.enrollmentButton).setOnClickListener(view -> compositeDisposable.add(
-                Single.just(Sdk.d2().programModule().programs.uid(selectedProgram).get())
+                Single.fromCallable(() -> Sdk.d2().programModule().programs.uid(selectedProgram).get())
                         .map(program -> Sdk.d2().trackedEntityModule().trackedEntityInstances
                                 .add(
                                         TrackedEntityInstanceCreateProjection.builder()
