@@ -19,7 +19,7 @@ public class D2ErrorActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setUp(R.layout.activity_d2_errors, R.id.d2Errors_toolbar, R.id.d2_errors_recycler_view);
+        setUp(R.layout.activity_d2_errors, R.id.d2Errors_toolbar, R.id.d2_errors_recycler_view);
         observeD2Errors();
     }
 

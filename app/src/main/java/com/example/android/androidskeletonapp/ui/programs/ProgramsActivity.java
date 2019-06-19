@@ -5,57 +5,33 @@ import android.view.View;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.main.MainActivity;
+import com.example.android.androidskeletonapp.ui.base.ListActivity;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ProgramsActivity extends AppCompatActivity {
+public class ProgramsActivity extends ListActivity {
 
-    private CompositeDisposable compositeDisposable;
+    private Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        compositeDisposable = new CompositeDisposable();
-        setContentView(R.layout.activity_programs);
-        Toolbar toolbar = findViewById(R.id.programs_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setUp(R.layout.activity_programs, R.id.programs_toolbar, R.id.programs_recycler_view);
         observePrograms();
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        ActivityStarter.startActivity(this, MainActivity.class);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        ActivityStarter.startActivity(this, MainActivity.class);
-    }
-
     private void observePrograms() {
-        RecyclerView programsRecyclerView = findViewById(R.id.programs_recycler_view);
-        programsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         ProgramsAdapter adapter = new ProgramsAdapter();
-        programsRecyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
-        compositeDisposable.add(Observable.fromIterable(Sdk.d2().organisationUnitModule().organisationUnits
+        disposable = Observable.fromIterable(Sdk.d2().organisationUnitModule().organisationUnits
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).get())
                 .map(BaseIdentifiableObject::uid)
                 .toList()
@@ -73,14 +49,14 @@ public class ProgramsActivity extends AppCompatActivity {
                         findViewById(R.id.programs_notificator).setVisibility(
                                 programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
                     });
-                }));
+                });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (compositeDisposable != null) {
-            compositeDisposable.clear();
+        if (disposable != null) {
+            disposable.dispose();
         }
     }
 }
