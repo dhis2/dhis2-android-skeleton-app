@@ -164,8 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void downloadData() {
         compositeDisposable.add(Observable.defer(() -> Sdk.d2().trackedEntityModule()
-                .downloadTrackedEntityInstances(10, false, false)
-                .asObservable())
+                .downloadTrackedEntityInstances(10, false, false))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class))

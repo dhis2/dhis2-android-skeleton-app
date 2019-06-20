@@ -17,7 +17,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProje
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -52,7 +51,7 @@ public class TrackedEntityInstancesActivity extends ListActivity {
             findViewById(R.id.enrollmentButton).setVisibility(View.GONE);
 
         findViewById(R.id.enrollmentButton).setOnClickListener(view -> compositeDisposable.add(
-                Single.fromCallable(() -> Sdk.d2().programModule().programs.uid(selectedProgram).get())
+                Sdk.d2().programModule().programs.uid(selectedProgram).getAsync()
                         .map(program -> Sdk.d2().trackedEntityModule().trackedEntityInstances
                                 .add(
                                         TrackedEntityInstanceCreateProjection.builder()
