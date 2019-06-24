@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.androidskeletonapp.R;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 
 import java.util.ArrayList;
@@ -20,16 +20,32 @@ import java.util.List;
 
 public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
+    private final int OPTIONSET = 98;
+    private final OnValueSaved valueSavedListener;
+
     private List<Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute, TrackedEntityAttributeValueObjectRepository>> fields;
 
-    public FormAdapter() {
+    public FormAdapter(OnValueSaved valueSavedListener) {
         fields = new ArrayList();
+        this.valueSavedListener = valueSavedListener;
     }
 
     @NonNull
     @Override
     public FieldHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new FieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field, parent, false));
+        if (viewType == OPTIONSET) {
+            return new OptionSetFieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field_optionset, parent, false),
+                    valueSavedListener);
+        } else
+            switch (ValueType.values()[viewType]) {
+                case TEXT:
+                case LONG_TEXT:
+                    return new TextFieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field, parent, false),
+                            valueSavedListener);
+                default:
+                    return new FieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field, parent, false),
+                            valueSavedListener);
+            }
     }
 
     @Override
@@ -69,5 +85,17 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
         fields.addAll(updates);
 
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (fields.get(position).getMiddle().optionSet() != null && fields.get(position).getMiddle().optionSet().uid() != null)
+            return OPTIONSET;
+        else
+            return fields.get(position).getMiddle().valueType().ordinal();
+    }
+
+    public interface OnValueSaved {
+        void onValueSaved(String fieldUid, String value);
     }
 }

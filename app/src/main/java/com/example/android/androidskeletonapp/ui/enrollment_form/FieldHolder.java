@@ -15,11 +15,13 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjec
 
 class FieldHolder extends RecyclerView.ViewHolder {
 
-    private TextView label;
+    final FormAdapter.OnValueSaved valueSavedListener;
+    TextView label;
 
-    FieldHolder(@NonNull View itemView) {
+    FieldHolder(@NonNull View itemView, FormAdapter.OnValueSaved valueSavedListener) {
         super(itemView);
         this.label = itemView.findViewById(R.id.label);
+        this.valueSavedListener = valueSavedListener;
     }
 
     void bind(Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute,
