@@ -23,7 +23,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
 
-        buildConfigField "String", "SDK_VERSION", "\"" + "0.16.3-SNAPSHOT" + "\""
+        buildConfigField "String", "SDK_VERSION", "\"" + "0.17.0-SNAPSHOT" + "\""
     }
 
     configurations.all*.exclude module: 'jsr305'
