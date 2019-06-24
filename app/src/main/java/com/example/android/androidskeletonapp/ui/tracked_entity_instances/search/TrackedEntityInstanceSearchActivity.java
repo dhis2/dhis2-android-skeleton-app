@@ -12,7 +12,7 @@ import com.example.android.androidskeletonapp.ui.tracked_entity_instances.Tracke
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
 import org.hisp.dhis.android.core.trackedentity.search.QueryOperator;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
@@ -56,7 +56,7 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
         TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
                 .orgUnits(Collections.singletonList("DiszpKrYNg8"))
-                .orgUnitMode(OuMode.DESCENDANTS)
+                .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
                 .pageSize(15)
                 .paging(true)
                 .page(1)

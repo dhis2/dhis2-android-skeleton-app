@@ -3,12 +3,12 @@ package com.example.android.androidskeletonapp.ui.login;
 import android.util.Patterns;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
+
+import org.hisp.dhis.android.core.d2manager.D2Manager;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -30,9 +30,8 @@ public class LoginViewModel extends ViewModel {
     }
 
     public Disposable login(String username, String password, String serverUrl) {
-        Sdk.configureServer(serverUrl);
-
-        return Single.fromCallable(Sdk.d2().userModule().logIn(username, password))
+        return D2Manager.setServerUrl(serverUrl).andThen(D2Manager.instantiateD2()).flatMap(d2 ->
+            d2.userModule().logIn(username, password))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user -> {
