@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_d2_errors">
 
     <TextView
-        android:id="@+id/d2_errors_notificator"
+        android:id="@+id/d2ErrorsNotificator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -18,7 +18,7 @@
         android:text="@string/no_d2_errors_found" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/d2_errors_recycler_view"
+        android:id="@+id/d2ErrorsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="4dp"

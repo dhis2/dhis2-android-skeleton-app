@@ -5,19 +5,19 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_programs"
+            android:id="@+id/navPrograms"
             android:icon="@drawable/ic_assignment_black_24dp"
             android:title="@string/title_activity_programs" />
         <item
-            android:id="@+id/nav_tracked_entities"
+            android:id="@+id/navTrackedEntities"
             android:icon="@drawable/ic_group_black_24dp"
             android:title="@string/title_activity_tracked_entity_instances" />
         <item
-            android:id="@+id/nav_tracked_entities_search"
+            android:id="@+id/navTrackedEntitiesSearch"
             android:icon="@drawable/ic_search"
             android:title="@string/title_activity_tracked_entity_search" />
         <item
-            android:id="@+id/nav_d2_errors"
+            android:id="@+id/navD2Errors"
             android:icon="@drawable/ic_error_outline_black_24dp"
             android:title="@string/title_activity_d2_errors" />
     </group>
@@ -25,7 +25,7 @@
     <item android:title="@string/session">
         <menu>
             <item
-                android:id="@+id/nav_exit"
+                android:id="@+id/navExit"
                 android:icon="@drawable/ic_exit_to_app_black_24dp"
                 android:title="@string/log_out" />
         </menu>

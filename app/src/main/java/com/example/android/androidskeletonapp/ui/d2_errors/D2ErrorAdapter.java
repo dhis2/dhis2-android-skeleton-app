@@ -50,10 +50,10 @@ public class D2ErrorAdapter extends PagedListAdapter<D2Error, D2ErrorAdapter.D2E
 
         D2ErrorsHolder(@NonNull View view) {
             super(view);
-            errorCode = view.findViewById(R.id.d2_error_code);
-            errorDescription = view.findViewById(R.id.d2_error_description);
-            created = view.findViewById(R.id.d2_error_creation);
-            component = view.findViewById(R.id.d2_error_component);
+            errorCode = view.findViewById(R.id.d2ErrorCode);
+            errorDescription = view.findViewById(R.id.d2ErrorDescription);
+            created = view.findViewById(R.id.d2ErrorCreation);
+            component = view.findViewById(R.id.d2ErrorComponent);
         }
     }
 

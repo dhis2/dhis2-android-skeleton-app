@@ -9,7 +9,7 @@
     android:layout_marginBottom="4dp">
 
     <FrameLayout
-        android:id="@+id/d2_error_card_frame"
+        android:id="@+id/d2ErrorCardFrame"
         android:background="@color/colorAccentDark"
         android:layout_width="8dp"
         android:layout_height="match_parent" />
@@ -22,14 +22,14 @@
         android:orientation="horizontal">
 
         <RelativeLayout
-            android:id="@+id/d2_error_icon_layout"
+            android:id="@+id/d2ErrorIconLayout"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp">
 
             <ImageView
-                android:id="@+id/d2_error_icon"
+                android:id="@+id/d2ErrorIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
@@ -51,10 +51,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/d2_error_title">
+                android:id="@+id/d2ErrorTitle">
 
                 <TextView
-                    android:id="@+id/d2_error_code"
+                    android:id="@+id/d2ErrorCode"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -65,7 +65,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/d2_error_creation"
+                    android:id="@+id/d2ErrorCreation"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -77,10 +77,10 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/d2_error_description"
+                android:id="@+id/d2ErrorDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/d2_error_title"
+                android:layout_below="@id/d2ErrorTitle"
                 android:layout_alignParentStart="true"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -88,10 +88,10 @@
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/d2_error_component"
+                android:id="@+id/d2ErrorComponent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/d2_error_description"
+                android:layout_below="@id/d2ErrorDescription"
                 android:layout_alignParentStart="true"
                 android:ellipsize="end"
                 android:maxLines="1"

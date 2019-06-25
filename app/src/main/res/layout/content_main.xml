@@ -32,7 +32,7 @@
         app:layout_constraintTop_toBottomOf="@+id/greeting" />
 
     <TextView
-        android:id="@+id/programs_downloaded_text"
+        android:id="@+id/programsDownloadedText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="220dp"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tracked_entity_instances_downloaded_text"
+        android:id="@+id/trackedEntityInstancesDownloadedText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="260dp"
@@ -52,7 +52,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        android:id="@+id/sync_progress_bar"
+        android:id="@+id/syncProgressBar"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center"
@@ -63,7 +63,7 @@
         app:layout_constraintTop_toBottomOf="@+id/greeting" />
 
     <TextView
-        android:id="@+id/sync_metadata_text"
+        android:id="@+id/syncMetadataText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="100dp"
@@ -73,7 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/sync_data_text"
+        android:id="@+id/syncDataText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="100dp"

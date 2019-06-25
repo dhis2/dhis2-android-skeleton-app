@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_programs">
 
     <TextView
-        android:id="@+id/programs_notificator"
+        android:id="@+id/programsNotificator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -18,7 +18,7 @@
         android:text="@string/no_programs_found" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/programs_recycler_view"
+        android:id="@+id/programsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="4dp"

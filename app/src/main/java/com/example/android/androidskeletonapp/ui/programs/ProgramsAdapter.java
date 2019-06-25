@@ -8,18 +8,18 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.paging.PagedListAdapter;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.android.androidskeletonapp.R;
 
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.program.Program;
 
 import java.text.MessageFormat;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ProgramsAdapter extends PagedListAdapter<Program, ProgramsAdapter.ProgramsHolder> {
 
@@ -53,10 +53,10 @@ public class ProgramsAdapter extends PagedListAdapter<Program, ProgramsAdapter.P
 
         ProgramsHolder(@NonNull View view) {
             super(view);
-            programName = view.findViewById(R.id.program_name);
-            stages = view.findViewById(R.id.program_stages);
-            programIcon = view.findViewById(R.id.program_icon);
-            programCardFrame = view.findViewById(R.id.program_card_frame);
+            programName = view.findViewById(R.id.programName);
+            stages = view.findViewById(R.id.programStages);
+            programIcon = view.findViewById(R.id.programIcon);
+            programCardFrame = view.findViewById(R.id.programCardFrame);
         }
     }
 
