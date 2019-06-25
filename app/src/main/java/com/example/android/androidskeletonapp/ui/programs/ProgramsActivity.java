@@ -3,86 +3,57 @@ package com.example.android.androidskeletonapp.ui.programs;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.main.MainActivity;
+import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ProgramsActivity extends AppCompatActivity implements OnProgramSelectionListener {
+public class ProgramsActivity extends ListActivity implements OnProgramSelectionListener {
 
-    private CompositeDisposable compositeDisposable;
+    private Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        compositeDisposable = new CompositeDisposable();
-        setContentView(R.layout.activity_programs);
-        Toolbar toolbar = findViewById(R.id.programs_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setUp(R.layout.activity_programs, R.id.programs_toolbar, R.id.programs_recycler_view);
         observePrograms();
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        ActivityStarter.startActivity(this, MainActivity.class);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        ActivityStarter.startActivity(this, MainActivity.class);
-    }
-
     private void observePrograms() {
-        RecyclerView programsRecyclerView = findViewById(R.id.programs_recycler_view);
-        programsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         ProgramsAdapter adapter = new ProgramsAdapter(this);
-        programsRecyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
-        compositeDisposable.add(Observable.fromIterable(Sdk.d2().organisationUnitModule().organisationUnits
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).get())
-                .map(BaseIdentifiableObject::uid)
-                .toList()
+        disposable = Sdk.d2().organisationUnitModule().organisationUnits
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).getAsync()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(organisationUnitUids -> Sdk.d2().programModule().programs
-                        .byOrganisationUnitList(organisationUnitUids)
+                        .byOrganisationUnitList(UidsHelper.getUidsList(organisationUnitUids))
                         .orderByName(RepositoryScope.OrderByDirection.ASC)
                         .withStyle()
                         .withProgramStages()
                         .getPaged(20))
-                .subscribe(programs -> {
-                    programs.observe(this, programPagedList -> {
-                        adapter.submitList(programPagedList);
-                        findViewById(R.id.programs_notificator).setVisibility(
-                                programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
-                    });
+                .subscribe(programs -> programs.observe(this, programPagedList -> {
+                    adapter.submitList(programPagedList);
+                    findViewById(R.id.programs_notificator).setVisibility(
+                            programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
                 }));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (compositeDisposable != null) {
-            compositeDisposable.clear();
+        if (disposable != null) {
+            disposable.dispose();
         }
     }
 

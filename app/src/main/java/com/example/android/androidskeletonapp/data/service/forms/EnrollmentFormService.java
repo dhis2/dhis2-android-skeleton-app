@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.data.service.forms;
 
+import android.text.TextUtils;
+
 import org.apache.commons.lang3.tuple.Triple;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
@@ -71,19 +73,26 @@ public class EnrollmentFormService {
             )
                     .flatMapIterable(programTrackedEntityAttributes -> programTrackedEntityAttributes)
                     .map(programAttribute -> {
+
+                        TrackedEntityAttribute attribute = d2.trackedEntityModule().trackedEntityAttributes
+                                .uid(
+                                        programAttribute.trackedEntityAttribute().uid())
+                                .get();
+                        TrackedEntityAttributeValueObjectRepository valueRepository = d2.trackedEntityModule().trackedEntityAttributeValues
+                                .value(programAttribute.trackedEntityAttribute().uid(),
+                                        enrollmentRepository.get().trackedEntityInstance());
+
+                        if (attribute.generated() && (valueRepository.get() == null || (valueRepository.get() != null && TextUtils.isEmpty(valueRepository.get().value())))) {
+                            //get reserved value
+                            String value = d2.trackedEntityModule().reservedValueManager.getValue(programAttribute.trackedEntityAttribute().uid(),
+                                    enrollmentRepository.get().organisationUnit());
+                            valueRepository.set(value);
+                        }
+
                         Triple<ProgramTrackedEntityAttribute,
                                 TrackedEntityAttribute,
                                 TrackedEntityAttributeValueObjectRepository> field =
-                                Triple.of(
-                                        programAttribute,
-                                        d2.trackedEntityModule().trackedEntityAttributes
-                                                .uid(
-                                                        programAttribute.trackedEntityAttribute().uid())
-                                                .get(),
-                                        d2.trackedEntityModule().trackedEntityAttributeValues
-                                                .value(programAttribute.trackedEntityAttribute().uid(),
-                                                        enrollmentRepository.get().trackedEntityInstance())
-                                );
+                                Triple.of(programAttribute, attribute, valueRepository);
 
 
                         fieldMap.put(programAttribute.trackedEntityAttribute().uid(), field);

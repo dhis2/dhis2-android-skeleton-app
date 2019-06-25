@@ -66,9 +66,9 @@ public class LoginActivity extends AppCompatActivity {
             }
             if (loginResult.getSuccess() != null) {
                 if (Sdk.d2().programModule().programs.count() > 0) {
-                    ActivityStarter.startActivity(this, ProgramsActivity.class);
+                    ActivityStarter.startActivity(this, ProgramsActivity.class,true);
                 } else {
-                    ActivityStarter.startActivity(this, MainActivity.class);
+                    ActivityStarter.startActivity(this, MainActivity.class,true);
                 }
             }
             setResult(Activity.RESULT_OK);

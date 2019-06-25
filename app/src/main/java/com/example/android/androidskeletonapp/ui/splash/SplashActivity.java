@@ -9,6 +9,8 @@ import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
 import com.facebook.stetho.Stetho;
 
+import org.hisp.dhis.android.core.d2manager.D2Manager;
+
 import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -29,20 +31,21 @@ public class SplashActivity extends AppCompatActivity {
             Stetho.initializeWithDefaults(this);
         }
 
-        disposable = Sdk.instantiate(getApplicationContext())
-                .andThen(isUserLogged())
+        disposable = D2Manager.setUp(Sdk.getD2Configuration(this))
+                .andThen(isLogged())
+                .doOnSuccess(isLogged -> {
+                    if(isLogged) {
+                        ActivityStarter.startActivity(this, MainActivity.class,true);
+                    } else {
+                        ActivityStarter.startActivity(this, LoginActivity.class,true);
+                    }
+                }).doOnError(throwable -> {
+                    throwable.printStackTrace();
+                    ActivityStarter.startActivity(this, LoginActivity.class,true);
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isUserLogged -> {
-                    if (isUserLogged) {
-                        ActivityStarter.startActivity(this, MainActivity.class);
-                    } else {
-                        ActivityStarter.startActivity(this, LoginActivity.class);
-                    }
-                }, throwable -> {
-                    throwable.printStackTrace();
-                    ActivityStarter.startActivity(this, LoginActivity.class);
-                });
+                .subscribe();
     }
 
     @Override
@@ -53,12 +56,12 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private Single<Boolean> isUserLogged() {
-        return Single.create(emitter -> {
-            if (Sdk.isConfigured()) {
-                emitter.onSuccess(Sdk.d2().userModule().isLogged().call());
+    private Single<Boolean> isLogged() {
+        return Single.defer(() -> {
+            if (D2Manager.isServerUrlSet()) {
+                return D2Manager.instantiateD2().flatMap(d2 -> d2.userModule().isLogged());
             } else {
-                emitter.onSuccess(Boolean.FALSE);
+                return Single.just(Boolean.FALSE);
             }
         });
     }

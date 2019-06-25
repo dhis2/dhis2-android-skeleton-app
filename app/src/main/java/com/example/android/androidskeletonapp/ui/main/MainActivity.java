@@ -1,10 +1,17 @@
 package com.example.android.androidskeletonapp.ui.main;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
@@ -22,11 +29,6 @@ import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -46,12 +48,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         compositeDisposable = new CompositeDisposable();
 
-        User user = Sdk.d2().userModule().user.getWithoutChildren();
+        User user = getUser();
         TextView greeting = findViewById(R.id.greeting);
         greeting.setText(String.format("Hi %s!", user.firstName()));
 
         inflateMainView();
         createNavigationView(user);
+    }
+
+    private User getUser() {
+        return Sdk.d2().userModule().user.getWithoutChildren();
+    }
+
+    private User getUserFromCursor() {
+        try (Cursor cursor = Sdk.d2().databaseAdapter().query("SELECT * FROM user;")) {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                return User.create(cursor);
+            } else {
+                return null;
+            }
+        }
     }
 
     @Override
@@ -142,17 +159,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         compositeDisposable.add(Completable.fromCallable(() -> Sdk.d2().syncMetaData().call())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> ActivityStarter.startActivity(this, ProgramsActivity.class),
+                .subscribe(() -> ActivityStarter.startActivity(this, ProgramsActivity.class, false),
                         Throwable::printStackTrace));
     }
 
     private void downloadData() {
         compositeDisposable.add(Observable.defer(() -> Sdk.d2().trackedEntityModule()
-                .downloadTrackedEntityInstances(10, false, false)
-                .asObservable())
+                .downloadTrackedEntityInstances(10, false, false))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class))
+                .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false))
                 .doOnError(Throwable::printStackTrace)
                 .subscribe());
     }
@@ -162,13 +178,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_programs) {
-            ActivityStarter.startActivity(this, ProgramsActivity.class);
+            ActivityStarter.startActivity(this, ProgramsActivity.class, false);
         } else if (id == R.id.nav_tracked_entities) {
-            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class);
+            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false);
         } else if (id == R.id.nav_tracked_entities_search) {
-            ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class);
+            ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class, false);
         } else if (id == R.id.nav_d2_errors) {
-            ActivityStarter.startActivity(this, D2ErrorActivity.class);
+            ActivityStarter.startActivity(this, D2ErrorActivity.class, false);
         } else if (id == R.id.nav_exit) {
             compositeDisposable.add(logOut(this));
         }

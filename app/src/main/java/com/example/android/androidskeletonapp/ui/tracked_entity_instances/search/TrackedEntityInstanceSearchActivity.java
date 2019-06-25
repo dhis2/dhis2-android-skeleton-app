@@ -7,31 +7,20 @@ import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.main.MainActivity;
+import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
 import org.hisp.dhis.android.core.trackedentity.search.QueryOperator;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 
 import java.util.Collections;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
+public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
-public class TrackedEntityInstanceSearchActivity extends AppCompatActivity {
-
-    private CompositeDisposable compositeDisposable;
     private ProgressBar progressBar;
     private TextView downloadDataText;
     private TextView notificator;
@@ -40,12 +29,8 @@ public class TrackedEntityInstanceSearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        compositeDisposable = new CompositeDisposable();
-        setContentView(R.layout.activity_tracked_entity_instance_search);
-        Toolbar toolbar = findViewById(R.id.tracked_entity_instances_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setUp(R.layout.activity_tracked_entity_instance_search, R.id.tracked_entity_instances_toolbar,
+                R.id.tracked_entity_instance_recycler_view);
 
         notificator = findViewById(R.id.data_notificator);
         downloadDataText = findViewById(R.id.download_data_text);
@@ -66,25 +51,12 @@ public class TrackedEntityInstanceSearchActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        ActivityStarter.startActivity(this, MainActivity.class);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        ActivityStarter.startActivity(this, MainActivity.class);
-    }
-
     private void syncData() {
-        RecyclerView trackedEntityInstancesRecyclerView = findViewById(R.id.tracked_entity_instance_recycler_view);
-        trackedEntityInstancesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        trackedEntityInstancesRecyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
         TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
                 .orgUnits(Collections.singletonList("DiszpKrYNg8"))
-                .orgUnitMode(OuMode.DESCENDANTS)
+                .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
                 .pageSize(15)
                 .paging(true)
                 .page(1)
@@ -95,27 +67,13 @@ public class TrackedEntityInstanceSearchActivity extends AppCompatActivity {
                         .build())
                 .build();
 
-        compositeDisposable.add(
-                Single.fromCallable(() ->
-                Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery
-                        .query(query)
-                        .onlineFirst().getPaged(15))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(trackedEntityInstances ->
-                        trackedEntityInstances.observe(this, trackedEntityInstancePagedList -> {
-                            downloadDataText.setVisibility(View.GONE);
-                            notificator.setVisibility(View.GONE);
-                            progressBar.setVisibility(View.GONE);
-                            adapter.submitList(trackedEntityInstancePagedList);
-                })));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (compositeDisposable != null) {
-            compositeDisposable.clear();
-        }
+        Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery
+                .query(query)
+                .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
+            downloadDataText.setVisibility(View.GONE);
+            notificator.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+            adapter.submitList(trackedEntityInstancePagedList);
+        });
     }
 }

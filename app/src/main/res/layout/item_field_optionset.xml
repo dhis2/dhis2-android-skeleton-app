@@ -13,21 +13,10 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="FORM LABEL" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLayout"
+    <Spinner
+        android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/label">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputEditText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:imeActionLabel="next field"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:maxLines="1"
-            tools:text="This is data" />
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toBottomOf="@id/label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
