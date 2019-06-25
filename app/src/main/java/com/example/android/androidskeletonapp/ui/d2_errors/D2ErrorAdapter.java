@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.ui.base.DiffByUidItemCallback;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -14,30 +15,14 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class D2ErrorAdapter extends PagedListAdapter<D2Error, D2ErrorAdapter.D2ErrorsHolder> {
 
     private SimpleDateFormat dateFormat;
 
-    private static final  DiffUtil.ItemCallback<D2Error> DIFF_CALLBACK =
-            new DiffUtil.ItemCallback<D2Error>() {
-                @Override
-                public boolean areItemsTheSame(@NonNull D2Error oldItem,
-                                               @NonNull D2Error newItem) {
-                    return oldItem.uid().equals(newItem.uid());
-                }
-
-                @Override
-                public boolean areContentsTheSame(@NonNull D2Error oldItem,
-                                                  @NonNull D2Error newItem) {
-                    return oldItem == newItem;
-                }
-            };
-
     D2ErrorAdapter() {
-        super(DIFF_CALLBACK);
+        super(new DiffByUidItemCallback<>());
         this.dateFormat = new SimpleDateFormat("MM/dd hh:mm:ss", Locale.US);
     }
 
