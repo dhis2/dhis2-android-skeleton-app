@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.ui.base.DiffByUidItemCallback;
+import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
@@ -18,7 +18,7 @@ public class TrackedEntityInstanceAdapter extends
         PagedListAdapter<TrackedEntityInstance, TrackedEntityInstanceAdapter.TrackedEntityInstancesHolder> {
 
     public TrackedEntityInstanceAdapter() {
-        super(new DiffByUidItemCallback<>());
+        super(new DiffByIdItemCallback<>());
     }
 
     static class TrackedEntityInstancesHolder extends RecyclerView.ViewHolder {

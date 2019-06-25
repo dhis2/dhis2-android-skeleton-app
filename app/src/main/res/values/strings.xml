@@ -52,4 +52,7 @@
     <!-- Strings related to errors -->
     <string name="title_activity_d2_errors">Your errors</string>
     <string name="no_d2_errors_found">No errors found</string>
+    <!-- Strings related to errors -->
+    <string name="title_activity_fk_violations">Foreign key violations</string>
+    <string name="no_fk_violations_found">No foreign key violations found</string>
 </resources>

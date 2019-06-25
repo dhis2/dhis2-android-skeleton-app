@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ui.foreign_key_violations.ForeignKeyViolationsActivity"
+    tools:showIn="@layout/activity_fk_violations">
+
+    <TextView
+        android:id="@+id/fkViolationsNotificator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/no_fk_violations_found" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fkViolationsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:clipToPadding="false"
+        tools:listitem="@layout/list_item"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
