@@ -18,6 +18,8 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
+import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
+import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity;
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -91,22 +93,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void inflateMainView() {
         TextView notificator = findViewById(R.id.notificator);
-        TextView syncMetadataText = findViewById(R.id.sync_metadata_text);
-        TextView syncDataText = findViewById(R.id.sync_data_text);
-        ProgressBar progressBar = findViewById(R.id.sync_progress_bar);
-        FloatingActionButton syncButton = findViewById(R.id.sync_button);
-        FloatingActionButton syncDataButton = findViewById(R.id.sync_data_button);
+        TextView syncMetadataText = findViewById(R.id.syncMetadataText);
+        TextView syncDataText = findViewById(R.id.syncDataText);
+        ProgressBar progressBar = findViewById(R.id.syncProgressBar);
+        FloatingActionButton syncButton = findViewById(R.id.syncButton);
+        FloatingActionButton syncDataButton = findViewById(R.id.syncDataButton);
 
         if (SyncStatusHelper.isMetadataSynced()) {
             syncButton.hide();
             syncMetadataText.setVisibility(View.GONE);
-            TextView downloadedProgramsText = findViewById(R.id.programs_downloaded_text);
+            TextView downloadedProgramsText = findViewById(R.id.programsDownloadedText);
+            TextView downloadedDataSetsText = findViewById(R.id.dataSetsDownloadedText);
             downloadedProgramsText.setText(MessageFormat.format("{0} Programs",
                     Sdk.d2().programModule().programs.count()));
+            downloadedDataSetsText.setText(MessageFormat.format("{0} Data sets",
+                    Sdk.d2().dataSetModule().dataSets.count()));
             if (SyncStatusHelper.isDataSynced()) {
                 syncDataButton.hide();
                 syncDataText.setVisibility(View.GONE);
-                TextView downloadedTeisText = findViewById(R.id.tracked_entity_instances_downloaded_text);
+                TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
                 downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances",
                         Sdk.d2().trackedEntityModule().trackedEntityInstances.count()));
             } else {
@@ -140,8 +145,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void createNavigationView(User user) {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        DrawerLayout drawer = findViewById(R.id.drawerLayout);
+        NavigationView navigationView = findViewById(R.id.navView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -149,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
 
-        TextView firstName = headerView.findViewById(R.id.first_name);
+        TextView firstName = headerView.findViewById(R.id.firstName);
         TextView email = headerView.findViewById(R.id.email);
         firstName.setText(user.firstName());
         email.setText(user.email());
@@ -177,19 +182,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_programs) {
-            ActivityStarter.startActivity(this, ProgramsActivity.class, false);
-        } else if (id == R.id.nav_tracked_entities) {
-            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false);
-        } else if (id == R.id.nav_tracked_entities_search) {
-            ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class, false);
-        } else if (id == R.id.nav_d2_errors) {
-            ActivityStarter.startActivity(this, D2ErrorActivity.class, false);
-        } else if (id == R.id.nav_exit) {
+        if (id == R.id.navPrograms) {
+            ActivityStarter.startActivity(this, ProgramsActivity.class,false);
+        } else if (id == R.id.navTrackedEntities) {
+            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class,false);
+        } else if (id == R.id.navTrackedEntitiesSearch) {
+            ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class,false);
+        } else if (id == R.id.navDataSets) {
+            ActivityStarter.startActivity(this, DataSetsActivity.class,false);
+        } else if (id == R.id.navD2Errors) {
+            ActivityStarter.startActivity(this, D2ErrorActivity.class,false);
+        } else if (id == R.id.navFKViolations) {
+            ActivityStarter.startActivity(this, ForeignKeyViolationsActivity.class,false);
+        } else if (id == R.id.navExit) {
             compositeDisposable.add(logOut(this));
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawerLayout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

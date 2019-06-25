@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_tracked_entity_instances">
 
     <TextView
-        android:id="@+id/tracked_entity_instances_notificator"
+        android:id="@+id/trackedEntityInstancesNotificator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -18,13 +18,13 @@
         android:textSize="16sp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tracked_entity_instances_recycler_view"
+        android:id="@+id/trackedEntityInstancesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        tools:listitem="@layout/program_item" />
+        tools:listitem="@layout/list_item_with_style" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/enrollmentButton"

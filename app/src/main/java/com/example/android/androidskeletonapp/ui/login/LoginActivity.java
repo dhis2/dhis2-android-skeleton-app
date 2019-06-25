@@ -1,7 +1,6 @@
 package com.example.android.androidskeletonapp.ui.login;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,11 +33,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory()).get(LoginViewModel.class);
 
-        final TextInputEditText serverUrlEditText = findViewById(R.id.url_text);
-        final TextInputEditText usernameEditText = findViewById(R.id.username_text);
-        final TextInputEditText passwordEditText = findViewById(R.id.password_text);
-        final MaterialButton loginButton = findViewById(R.id.login_button);
-        final ProgressBar loadingProgressBar = findViewById(R.id.login_progress_bar);
+        final TextInputEditText serverUrlEditText = findViewById(R.id.urlText);
+        final TextInputEditText usernameEditText = findViewById(R.id.usernameText);
+        final TextInputEditText passwordEditText = findViewById(R.id.passwordText);
+        final MaterialButton loginButton = findViewById(R.id.loginButton);
+        final ProgressBar loadingProgressBar = findViewById(R.id.loginProgressBar);
 
         loginViewModel.getLoginFormState().observe(this, loginFormState -> {
             if (loginFormState == null) {

@@ -11,9 +11,12 @@ import com.example.android.androidskeletonapp.R;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +25,22 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
     private final int OPTIONSET = 98;
     private final OnValueSaved valueSavedListener;
+    private final FormType formType;
 
     private List<Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute, TrackedEntityAttributeValueObjectRepository>> fields;
+    private List<Triple<ProgramStageDataElement, DataElement, TrackedEntityDataValueObjectRepository>> fieldsEvents;
 
-    public FormAdapter(OnValueSaved valueSavedListener) {
-        fields = new ArrayList();
+    public enum FormType {
+        ENROLLMENT, EVENT
+    }
+
+    public FormAdapter(OnValueSaved valueSavedListener, FormType formType) {
+        if (formType == FormType.ENROLLMENT)
+            fields = new ArrayList<>();
+        else
+            fieldsEvents = new ArrayList<>();
         this.valueSavedListener = valueSavedListener;
+        this.formType = formType;
     }
 
     @NonNull
@@ -50,12 +63,18 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull FieldHolder holder, int position) {
-        holder.bind(fields.get(position));
+        if (formType == FormType.ENROLLMENT)
+            holder.bind(fields.get(position));
+        else
+            holder.bindEvents(fieldsEvents.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return fields.size();
+        if (formType == FormType.ENROLLMENT)
+            return fields.size();
+        else
+            return fieldsEvents.size();
     }
 
     public void updateData(List<Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute, TrackedEntityAttributeValueObjectRepository>> updates) {
@@ -87,12 +106,49 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
         diffResult.dispatchUpdatesTo(this);
     }
 
+    public void updateDataEvents(List<Triple<ProgramStageDataElement, DataElement, TrackedEntityDataValueObjectRepository>> updates) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return fieldsEvents.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return fieldsEvents.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return fieldsEvents.get(oldItemPosition).getMiddle().uid().equals(updates.get(newItemPosition).getMiddle().uid());
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return fieldsEvents.get(oldItemPosition) == updates.get(newItemPosition);
+            }
+        });
+
+        fieldsEvents.clear();
+        fieldsEvents.addAll(updates);
+
+        diffResult.dispatchUpdatesTo(this);
+    }
+
     @Override
     public int getItemViewType(int position) {
-        if (fields.get(position).getMiddle().optionSet() != null && fields.get(position).getMiddle().optionSet().uid() != null)
-            return OPTIONSET;
-        else
-            return fields.get(position).getMiddle().valueType().ordinal();
+        if (formType == FormType.ENROLLMENT)
+            if (fields.get(position).getMiddle().optionSet() != null && fields.get(position).getMiddle().optionSet().uid() != null)
+                return OPTIONSET;
+            else
+                return fields.get(position).getMiddle().valueType().ordinal();
+        else {
+            if (fieldsEvents.get(position).getMiddle().optionSet() != null && fieldsEvents.get(position).getMiddle().optionSet().uid() != null)
+                return OPTIONSET;
+            else
+                return fieldsEvents.get(position).getMiddle().valueType().ordinal();
+        }
+
     }
 
     public interface OnValueSaved {

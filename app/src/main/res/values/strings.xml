@@ -14,6 +14,12 @@
     <string name="auto_fill_url">"https://play.dhis2.org/android-current"</string>
     <string name="auto_fill_username">"android"</string>
     <string name="auto_fill_password">"Android123"</string>
+    <!-- Strings related to list item -->
+    <string name="item_icon">Icon</string>
+    <string name="item_title">D2 error code</string>
+    <string name="item_right_text">12/03 23:05:12</string>
+    <string name="item_subtitle_1">D2 error description</string>
+    <string name="item_subtitle_2">D2 error component</string>
     <!-- Strings related to main -->
     <string name="title_activity_main">Home</string>
     <string name="welcome">"Welcome!"</string>
@@ -45,11 +51,14 @@
     <string name="session">Session</string>
     <!-- Strings related to errors -->
     <string name="title_activity_d2_errors">Your errors</string>
-    <string name="d2_error_code">D2 error code</string>
-    <string name="d2_error_creation">12/03 23:05:12</string>
-    <string name="d2_error_description">D2 error description</string>
-    <string name="d2_error_component">D2 error component</string>
-    <string name="d2_error_icon">D2 error icon</string>
     <string name="no_d2_errors_found">No errors found</string>
+    <!-- Strings related to errors -->
+    <string name="title_activity_fk_violations">Foreign key violations</string>
+    <string name="no_fk_violations_found">No foreign key violations found</string>
+    <!-- Strings related to data sets -->
+    <string name="title_activity_data_sets">Your data sets</string>
+    <string name="no_data_sets_found">No data sets found</string>
+    <!-- Strings related to enrollment forms -->
     <string name="title_activity_enrollment_form">Enrollment form</string>
+    <string name="title_activity_event_form">Event form</string>
 </resources>

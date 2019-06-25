@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.d2_errors.D2ErrorActivity"
-    tools:showIn="@layout/activity_d2_errors">
+    tools:context=".ui.data_sets.DataSetsActivity"
+    tools:showIn="@layout/activity_data_sets">
 
     <TextView
-        android:id="@+id/d2ErrorsNotificator"
+        android:id="@+id/dataSetsNotificator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -18,12 +18,12 @@
         android:text="@string/no_d2_errors_found" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/d2ErrorsRecyclerView"
+        android:id="@+id/dataSetsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:clipToPadding="false"
-        tools:listitem="@layout/list_item"/>
+        tools:listitem="@layout/d2_error_item"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -22,7 +22,7 @@
         app:srcCompat="@mipmap/ic_dhis_launcher_round" />
 
     <TextView
-        android:id="@+id/first_name"
+        android:id="@+id/firstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_title"

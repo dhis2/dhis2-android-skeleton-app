@@ -17,7 +17,7 @@ public class D2ErrorActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUp(R.layout.activity_d2_errors, R.id.d2Errors_toolbar, R.id.d2_errors_recycler_view);
+        setUp(R.layout.activity_d2_errors, R.id.d2ErrorsToolbar, R.id.d2ErrorsRecyclerView);
         observeD2Errors();
     }
 
@@ -30,7 +30,7 @@ public class D2ErrorActivity extends ListActivity {
 
         liveData.observe(this, d2ErrorPagedList -> {
             adapter.submitList(d2ErrorPagedList);
-            findViewById(R.id.d2_errors_notificator).setVisibility(
+            findViewById(R.id.d2ErrorsNotificator).setVisibility(
                     d2ErrorPagedList.isEmpty() ? View.VISIBLE : View.GONE);
         });
     }

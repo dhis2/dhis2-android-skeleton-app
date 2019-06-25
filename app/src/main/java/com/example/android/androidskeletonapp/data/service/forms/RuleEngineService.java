@@ -92,30 +92,77 @@ public class RuleEngineService {
         );
     }
 
-    public Flowable<RuleEnrollment> ruleEnrollment() {
-        return Flowable.fromCallable(() -> {
-            Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrollmentUid).get();
-            String ouCode = d2.organisationUnitModule().organisationUnits.uid(enrollment.organisationUnit()).get().code();
-            Program program = d2.programModule().programs.uid(enrollment.program()).withAllChildren().get();
-            List<String> programAttributesUids = getProgramTrackedEntityAttributesUids(program.programTrackedEntityAttributes());
+    public Flowable<RuleEngine> configure(D2 d2, String programUid, String eventUid) {
+        this.d2 = d2;
+        this.programUid = programUid;
+        this.enrollmentUid = d2.eventModule().events.uid(eventUid).get().enrollment();
+        this.eventUid = eventUid;
+        this.stage = null;
 
-            List<RuleAttributeValue> attributeValues = transformToRuleAttributeValues(
-                    d2.trackedEntityModule().trackedEntityAttributeValues
-                            .byTrackedEntityInstance().eq(enrollment.trackedEntityInstance())
-                            .byTrackedEntityAttribute().in(programAttributesUids)
-                            .get()
-            );
-            return RuleEnrollment.create(
-                    enrollment.uid(),
-                    enrollment.incidentDate(),
-                    enrollment.enrollmentDate(),
-                    enrollment.status() != null ? RuleEnrollment.Status.valueOf(enrollment.status().name()) : RuleEnrollment.Status.ACTIVE,
-                    enrollment.organisationUnit(),
-                    ouCode,
-                    attributeValues,
-                    program.name()
-            );
-        });
+        jexlEngine = new JexlEngine();
+
+        return Flowable.zip(
+                getRuleVariables(),
+                getRules(),
+                getOtherEvents(eventUid),
+                ruleEnrollment(),
+                (ruleVariables, rules, events, enrollment) -> {
+                    RuleEngine.Builder builder = RuleEngineContext.builder(new RuleExpressionEvaluator() {
+                        @Nonnull
+                        @Override
+                        public String evaluate(@Nonnull String expression) {
+                            return jexlEngine.createExpression(expression).evaluate(null).toString();
+                        }
+                    })
+                            .ruleVariables(ruleVariables)
+                            .rules(rules)
+                            .supplementaryData(new HashMap<>())
+                            .calculatedValueMap(new HashMap<>())
+                            .build().toEngineBuilder()
+                            .triggerEnvironment(TriggerEnvironment.ANDROIDCLIENT)
+                            .events(events);
+                    if (enrollment != null)
+                        builder.enrollment(enrollment);
+                    return builder.build();
+                }
+        );
+    }
+
+    public Flowable<RuleEnrollment> ruleEnrollment() {
+        if (enrollmentUid == null)
+            return Flowable.empty();
+        else
+            return Flowable.fromCallable(() -> {
+                Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrollmentUid).get();
+                String ouCode = d2.organisationUnitModule().organisationUnits.uid(enrollment.organisationUnit()).get().code();
+                Program program = d2.programModule().programs.uid(enrollment.program()).withAllChildren().get();
+                List<String> programAttributesUids = getProgramTrackedEntityAttributesUids(program.programTrackedEntityAttributes());
+
+                List<RuleAttributeValue> attributeValues = transformToRuleAttributeValues(
+                        d2.trackedEntityModule().trackedEntityAttributeValues
+                                .byTrackedEntityInstance().eq(enrollment.trackedEntityInstance())
+                                .byTrackedEntityAttribute().in(programAttributesUids)
+                                .get()
+                );
+                return RuleEnrollment.create(
+                        enrollment.uid(),
+                        enrollment.incidentDate(),
+                        enrollment.enrollmentDate(),
+                        enrollment.status() != null ? RuleEnrollment.Status.valueOf(enrollment.status().name()) : RuleEnrollment.Status.ACTIVE,
+                        enrollment.organisationUnit(),
+                        ouCode,
+                        attributeValues,
+                        program.name()
+                );
+            });
+    }
+
+    public Flowable<RuleEvent> ruleEvent() {
+        if (eventUid == null)
+            return Flowable.empty();
+        else
+            return Flowable.fromCallable(() ->
+                    transformToRuleEvent(d2.eventModule().events.uid(eventUid).get()));
     }
 
     private List<String> getProgramTrackedEntityAttributesUids(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
@@ -141,6 +188,20 @@ public class RuleEngineService {
                 .byEnrollmentUid().eq(enrollmentUid)
                 .byStatus().in(EventStatus.ACTIVE, EventStatus.COMPLETED)
                 .get()).flatMapIterable(events -> events)
+                .map(this::transformToRuleEvent)
+                .toList().toFlowable();
+    }
+
+    private Flowable<List<RuleEvent>> getOtherEvents(String eventUid) {
+        return Flowable.fromCallable(() -> d2.eventModule().events.uid(eventUid).get())
+                .flatMap(event ->
+                        Flowable.fromCallable(() -> d2.eventModule().events
+                                .byProgramUid().eq(event.program())
+                                .byUid().notIn(event.uid())
+                                .byEventDate().before(event.eventDate())
+                                .byStatus().in(EventStatus.ACTIVE, EventStatus.COMPLETED)
+                                .get()))
+                .flatMapIterable(events -> events)
                 .map(this::transformToRuleEvent)
                 .toList().toFlowable();
     }
