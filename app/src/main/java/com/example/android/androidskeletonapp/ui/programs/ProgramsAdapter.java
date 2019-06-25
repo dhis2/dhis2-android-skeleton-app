@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.ui.base.DiffByUidItemCallback;
 
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.program.Program;
@@ -18,29 +19,14 @@ import java.text.MessageFormat;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.paging.PagedListAdapter;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ProgramsAdapter extends PagedListAdapter<Program, ProgramsAdapter.ProgramsHolder> {
 
-    private static final DiffUtil.ItemCallback<Program> DIFF_CALLBACK =
-            new DiffUtil.ItemCallback<Program>() {
-                @Override
-                public boolean areItemsTheSame(@NonNull Program oldItem,
-                                               @NonNull Program newItem) {
-                    return oldItem.uid().equals(newItem.uid());
-                }
-
-                @Override
-                public boolean areContentsTheSame(@NonNull Program oldItem,
-                                                  @NonNull Program newItem) {
-                    return oldItem == newItem;
-                }
-            };
     private final OnProgramSelectionListener programSelectionListener;
 
     ProgramsAdapter(OnProgramSelectionListener programSelectionListener) {
-        super(DIFF_CALLBACK);
+        super(new DiffByUidItemCallback<>());
         this.programSelectionListener = programSelectionListener;
     }
 
