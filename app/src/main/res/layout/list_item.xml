@@ -9,7 +9,7 @@
     android:layout_marginBottom="4dp">
 
     <FrameLayout
-        android:id="@+id/d2ErrorCardFrame"
+        android:id="@+id/cardFrame"
         android:background="@color/colorAccentDark"
         android:layout_width="8dp"
         android:layout_height="match_parent" />
@@ -22,21 +22,20 @@
         android:orientation="horizontal">
 
         <RelativeLayout
-            android:id="@+id/d2ErrorIconLayout"
+            android:id="@+id/iconLayout"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp">
 
             <ImageView
-                android:id="@+id/d2ErrorIcon"
+                android:id="@+id/itemIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/circle_shape"
-                android:contentDescription='@string/d2_error_icon'
+                android:contentDescription="@string/item_icon"
                 android:padding="3dp"
-                app:srcCompat="@drawable/ic_error_outline_black_24dp"
                 app:tint="@color/colorWhite"/>
 
         </RelativeLayout>
@@ -51,51 +50,51 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/d2ErrorTitle">
+                android:id="@+id/itemLinearLayout">
 
                 <TextView
-                    android:id="@+id/d2ErrorCode"
+                    android:id="@+id/itemTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@string/d2_error_code"
+                    android:text="@string/item_title"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/d2ErrorCreation"
+                    android:id="@+id/rightText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="end"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@string/d2_error_creation"
+                    android:text="@string/item_right_text"
                     android:textSize="12sp" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/d2ErrorDescription"
+                android:id="@+id/itemSubtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/d2ErrorTitle"
+                android:layout_below="@id/itemLinearLayout"
                 android:layout_alignParentStart="true"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@string/d2_error_description"
+                android:text="@string/item_subtitle_1"
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/d2ErrorComponent"
+                android:id="@+id/itemSubtitle2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/d2ErrorDescription"
+                android:layout_below="@id/itemSubtitle1"
                 android:layout_alignParentStart="true"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@string/d2_error_component"
+                android:text="@string/item_subtitle_2"
                 android:textSize="12sp" />
 
         </RelativeLayout>
