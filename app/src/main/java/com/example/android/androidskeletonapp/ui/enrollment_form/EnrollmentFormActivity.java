@@ -16,6 +16,7 @@ import com.example.android.androidskeletonapp.data.service.forms.RuleEngineServi
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
@@ -60,7 +61,17 @@ public class EnrollmentFormActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_enrollment_form);
-        adapter = new FormAdapter();
+        adapter = new FormAdapter((fieldUid, value) -> {
+            try {
+                Sdk.d2().trackedEntityModule().trackedEntityAttributeValues.value(fieldUid,
+                        getIntent().getStringExtra(IntentExtra.TEI_UID.name()))
+                        .set(value);
+            } catch (D2Error d2Error) {
+                d2Error.printStackTrace();
+            } finally {
+                engineInitialization.onNext(true);
+            }
+        });
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
         binding.formRecycler.setAdapter(adapter);
 
