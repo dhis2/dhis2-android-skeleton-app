@@ -3,10 +3,10 @@ package com.example.android.androidskeletonapp.ui.d2_errors;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.ui.base.DiffByUidItemCallback;
+import com.example.android.androidskeletonapp.ui.base.ListItemHolder;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -15,9 +15,8 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 
-public class D2ErrorAdapter extends PagedListAdapter<D2Error, D2ErrorAdapter.D2ErrorsHolder> {
+public class D2ErrorAdapter extends PagedListAdapter<D2Error, ListItemHolder> {
 
     private SimpleDateFormat dateFormat;
 
@@ -26,36 +25,21 @@ public class D2ErrorAdapter extends PagedListAdapter<D2Error, D2ErrorAdapter.D2E
         this.dateFormat = new SimpleDateFormat("MM/dd hh:mm:ss", Locale.US);
     }
 
-    static class D2ErrorsHolder extends RecyclerView.ViewHolder {
-
-        TextView errorCode;
-        TextView errorDescription;
-        TextView created;
-        TextView component;
-
-        D2ErrorsHolder(@NonNull View view) {
-            super(view);
-            errorCode = view.findViewById(R.id.d2ErrorCode);
-            errorDescription = view.findViewById(R.id.d2ErrorDescription);
-            created = view.findViewById(R.id.d2ErrorCreation);
-            component = view.findViewById(R.id.d2ErrorComponent);
-        }
-    }
-
     @NonNull
     @Override
-    public D2ErrorsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ListItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.d2_error_item, parent, false);
-        return new D2ErrorsHolder(itemView);
+                .inflate(R.layout.list_item, parent, false);
+        return new ListItemHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull D2ErrorsHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ListItemHolder holder, int position) {
         D2Error d2Error = getItem(position);
-        holder.errorCode.setText(d2Error.errorCode().toString());
-        holder.errorDescription.setText(d2Error.errorDescription());
-        holder.component.setText(d2Error.errorComponent().toString());
-        holder.created.setText(dateFormat.format(d2Error.created()));
+        holder.title.setText(d2Error.errorCode().toString());
+        holder.subtitle1.setText(d2Error.errorDescription());
+        holder.subtitle2.setText(d2Error.errorComponent().toString());
+        holder.rightText.setText(dateFormat.format(d2Error.created()));
+        holder.icon.setImageResource(R.drawable.ic_error_outline_black_24dp);
     }
 }
