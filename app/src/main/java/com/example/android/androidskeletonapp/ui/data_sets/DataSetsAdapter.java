@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.ui.programs;
+package com.example.android.androidskeletonapp.ui.data_sets;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,20 +9,15 @@ import com.example.android.androidskeletonapp.data.service.StyleBinderHelper;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithStyleHolder;
 
-import org.hisp.dhis.android.core.program.Program;
-
-import java.text.MessageFormat;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
 
-public class ProgramsAdapter extends PagedListAdapter<Program, ListItemWithStyleHolder> {
+public class DataSetsAdapter extends PagedListAdapter<DataSet, ListItemWithStyleHolder> {
 
-    private final OnProgramSelectionListener programSelectionListener;
-
-    ProgramsAdapter(OnProgramSelectionListener programSelectionListener) {
+    DataSetsAdapter() {
         super(new DiffByIdItemCallback<>());
-        this.programSelectionListener = programSelectionListener;
     }
 
     @NonNull
@@ -35,11 +30,9 @@ public class ProgramsAdapter extends PagedListAdapter<Program, ListItemWithStyle
 
     @Override
     public void onBindViewHolder(@NonNull ListItemWithStyleHolder holder, int position) {
-        Program program = getItem(position);
-        holder.title.setText(program.displayName());
-        holder.subtitle1.setText(MessageFormat.format("{0} Program stages", program.programStages().size()));
-        StyleBinderHelper.bindStyle(holder, program.style());
-
-        holder.itemView.setOnClickListener(view -> programSelectionListener.onProgramSelected(program.uid()));
+        DataSet dataSet = getItem(position);
+        holder.title.setText(dataSet.displayName());
+        holder.subtitle1.setText(dataSet.periodType().name());
+        StyleBinderHelper.bindStyle(holder, dataSet.style());
     }
 }

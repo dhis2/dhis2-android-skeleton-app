@@ -42,10 +42,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/trackedEntityInstancesDownloadedText"
+        android:id="@+id/dataSetsDownloadedText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="260dp"
+        android:textSize="20sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/trackedEntityInstancesDownloadedText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
         android:textSize="20sp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"

@@ -24,6 +24,6 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:clipToPadding="false"
-        tools:listitem="@layout/program_item"/>
+        tools:listitem="@layout/list_item_with_style"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

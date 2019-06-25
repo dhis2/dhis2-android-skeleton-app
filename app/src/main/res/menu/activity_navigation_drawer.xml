@@ -17,6 +17,10 @@
             android:icon="@drawable/ic_search"
             android:title="@string/title_activity_tracked_entity_search" />
         <item
+            android:id="@+id/navDataSets"
+            android:icon="@drawable/ic_view_list_black_24dp"
+            android:title="@string/title_activity_data_sets" />
+        <item
             android:id="@+id/navD2Errors"
             android:icon="@drawable/ic_error_outline_black_24dp"
             android:title="@string/title_activity_d2_errors" />
