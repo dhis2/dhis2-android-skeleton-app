@@ -1,15 +1,15 @@
 package com.example.android.androidskeletonapp.ui.base;
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.Model;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 
-public class DiffByUidItemCallback<E extends ObjectWithUidInterface> extends DiffUtil.ItemCallback<E> {
+public class DiffByIdItemCallback<E extends Model> extends DiffUtil.ItemCallback<E> {
 
     @Override
     public boolean areItemsTheSame(@NonNull E oldItem, @NonNull E newItem) {
-        return oldItem.uid().equals(newItem.uid());
+        return oldItem.id().equals(newItem.id());
     }
 
     @Override

@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.ui.base.DiffByUidItemCallback;
+import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.program.Program;
@@ -26,7 +26,7 @@ public class ProgramsAdapter extends PagedListAdapter<Program, ProgramsAdapter.P
     private final OnProgramSelectionListener programSelectionListener;
 
     ProgramsAdapter(OnProgramSelectionListener programSelectionListener) {
-        super(new DiffByUidItemCallback<>());
+        super(new DiffByIdItemCallback<>());
         this.programSelectionListener = programSelectionListener;
     }
 

@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.ui.d2_errors;
+package com.example.android.androidskeletonapp.ui.foreign_key_violations;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemHolder;
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -16,11 +16,11 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
 
-public class D2ErrorAdapter extends PagedListAdapter<D2Error, ListItemHolder> {
+public class ForeignKeyViolationsAdapter extends PagedListAdapter<ForeignKeyViolation, ListItemHolder> {
 
     private SimpleDateFormat dateFormat;
 
-    D2ErrorAdapter() {
+    ForeignKeyViolationsAdapter() {
         super(new DiffByIdItemCallback<>());
         this.dateFormat = new SimpleDateFormat("MM/dd hh:mm:ss", Locale.US);
     }
@@ -35,11 +35,11 @@ public class D2ErrorAdapter extends PagedListAdapter<D2Error, ListItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ListItemHolder holder, int position) {
-        D2Error d2Error = getItem(position);
-        holder.title.setText(d2Error.errorCode().toString());
-        holder.subtitle1.setText(d2Error.errorDescription());
-        holder.subtitle2.setText(d2Error.errorComponent().toString());
-        holder.rightText.setText(dateFormat.format(d2Error.created()));
-        holder.icon.setImageResource(R.drawable.ic_error_outline_black_24dp);
+        ForeignKeyViolation fkViolation = getItem(position);
+        holder.title.setText(fkViolation.notFoundValue());
+        holder.subtitle1.setText(fkViolation.fromTable() + "." + fkViolation.fromColumn());
+        holder.subtitle2.setText(fkViolation.toTable() + "." + fkViolation.toColumn());
+        holder.rightText.setText(dateFormat.format(fkViolation.created()));
+        holder.icon.setImageResource(R.drawable.ic_foreign_key_black_24dp);
     }
 }
