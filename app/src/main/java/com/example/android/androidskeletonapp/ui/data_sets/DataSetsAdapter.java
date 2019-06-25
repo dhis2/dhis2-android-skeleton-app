@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.StyleBinderHelper;
-import com.example.android.androidskeletonapp.ui.base.DiffByUidItemCallback;
+import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithStyleHolder;
 
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -17,7 +17,7 @@ import androidx.paging.PagedListAdapter;
 public class DataSetsAdapter extends PagedListAdapter<DataSet, ListItemWithStyleHolder> {
 
     DataSetsAdapter() {
-        super(new DiffByUidItemCallback<>());
+        super(new DiffByIdItemCallback<>());
     }
 
     @NonNull
