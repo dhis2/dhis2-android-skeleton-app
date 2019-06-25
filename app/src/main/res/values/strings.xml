@@ -55,4 +55,7 @@
     <!-- Strings related to errors -->
     <string name="title_activity_fk_violations">Foreign key violations</string>
     <string name="no_fk_violations_found">No foreign key violations found</string>
+    <!-- Strings related to data sets -->
+    <string name="title_activity_data_sets">Your data sets</string>
+    <string name="no_data_sets_found">No data sets found</string>
 </resources>

@@ -12,6 +12,7 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
+import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
 import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
@@ -101,8 +102,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             syncButton.hide();
             syncMetadataText.setVisibility(View.GONE);
             TextView downloadedProgramsText = findViewById(R.id.programsDownloadedText);
+            TextView downloadedDataSetsText = findViewById(R.id.dataSetsDownloadedText);
             downloadedProgramsText.setText(MessageFormat.format("{0} Programs",
                     Sdk.d2().programModule().programs.count()));
+            downloadedDataSetsText.setText(MessageFormat.format("{0} Data sets",
+                    Sdk.d2().dataSetModule().dataSets.count()));
             if (SyncStatusHelper.isDataSynced()) {
                 syncDataButton.hide();
                 syncDataText.setVisibility(View.GONE);
@@ -183,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class);
         } else if (id == R.id.navTrackedEntitiesSearch) {
             ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class);
+        } else if (id == R.id.navDataSets) {
+            ActivityStarter.startActivity(this, DataSetsActivity.class);
         } else if (id == R.id.navD2Errors) {
             ActivityStarter.startActivity(this, D2ErrorActivity.class);
         } else if (id == R.id.navFKViolations) {
