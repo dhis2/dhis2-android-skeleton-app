@@ -9,7 +9,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 
 import androidx.core.content.ContextCompat;
 
-public class SyleBinderHelper {
+public class StyleBinderHelper {
 
     public static void bindStyle(ListItemWithStyleHolder holder, ObjectStyle style) {
         if (style != null) {

@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.service.SyleBinderHelper;
+import com.example.android.androidskeletonapp.data.service.StyleBinderHelper;
 import com.example.android.androidskeletonapp.ui.base.DiffByUidItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithStyleHolder;
 
@@ -33,6 +33,6 @@ public class DataSetsAdapter extends PagedListAdapter<DataSet, ListItemWithStyle
         DataSet dataSet = getItem(position);
         holder.title.setText(dataSet.displayName());
         holder.subtitle1.setText(dataSet.periodType().name());
-        SyleBinderHelper.bindStyle(holder, dataSet.style());
+        StyleBinderHelper.bindStyle(holder, dataSet.style());
     }
 }

@@ -24,7 +24,7 @@
         android:clipToPadding="false"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        tools:listitem="@layout/program_item" />
+        tools:listitem="@layout/list_item_with_style" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/enrollmentButton"
