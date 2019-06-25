@@ -43,8 +43,8 @@ public class TrackedEntityInstanceAdapter extends
 
         TrackedEntityInstancesHolder(@NonNull View view) {
             super(view);
-            trackedEntityInstanceName = view.findViewById(R.id.tracked_entity_instance_name);
-            uniqueId = view.findViewById(R.id.unique_id);
+            trackedEntityInstanceName = view.findViewById(R.id.trackedEntityInstanceName);
+            uniqueId = view.findViewById(R.id.uniqueId);
         }
     }
 

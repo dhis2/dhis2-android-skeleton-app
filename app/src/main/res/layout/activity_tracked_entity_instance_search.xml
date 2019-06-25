@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/tracked_entity_instances_toolbar"
+            android:id="@+id/trackedEntityInstancesToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -23,7 +23,7 @@
     <include layout="@layout/content_tracked_entity_instance_search" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/download_data_button"
+        android:id="@+id/downloadDataButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

@@ -29,13 +29,13 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUp(R.layout.activity_tracked_entity_instance_search, R.id.tracked_entity_instances_toolbar,
-                R.id.tracked_entity_instance_recycler_view);
+        setUp(R.layout.activity_tracked_entity_instance_search, R.id.trackedEntityInstancesToolbar,
+                R.id.trackedEntityInstanceRecyclerView);
 
-        notificator = findViewById(R.id.data_notificator);
-        downloadDataText = findViewById(R.id.download_data_text);
-        progressBar = findViewById(R.id.tracked_entity_instance_progress_bar);
-        FloatingActionButton downloadButton = findViewById(R.id.download_data_button);
+        notificator = findViewById(R.id.dataNotificator);
+        downloadDataText = findViewById(R.id.downloadDataText);
+        progressBar = findViewById(R.id.trackedEntityInstanceProgressBar);
+        FloatingActionButton downloadButton = findViewById(R.id.downloadDataButton);
 
         adapter = new TrackedEntityInstanceAdapter();
 

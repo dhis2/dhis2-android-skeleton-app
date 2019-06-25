@@ -24,7 +24,7 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUp(R.layout.activity_programs, R.id.programs_toolbar, R.id.programs_recycler_view);
+        setUp(R.layout.activity_programs, R.id.programsToolbar, R.id.programsRecyclerView);
         observePrograms();
     }
 
@@ -44,7 +44,7 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
                         .getPaged(20))
                 .subscribe(programs -> programs.observe(this, programPagedList -> {
                     adapter.submitList(programPagedList);
-                    findViewById(R.id.programs_notificator).setVisibility(
+                    findViewById(R.id.programsNotificator).setVisibility(
                             programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
                 }));
     }

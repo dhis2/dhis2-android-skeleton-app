@@ -41,8 +41,8 @@ public class TrackedEntityInstancesActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUp(R.layout.activity_tracked_entity_instances, R.id.tracked_entity_instances_toolbar,
-                R.id.tracked_entity_instances_recycler_view);
+        setUp(R.layout.activity_tracked_entity_instances, R.id.trackedEntityInstancesToolbar,
+                R.id.trackedEntityInstancesRecyclerView);
         selectedProgram = getIntent().getStringExtra(IntentExtra.PROGRAM.name());
         compositeDisposable = new CompositeDisposable();
         observeTrackedEntityInstances();
@@ -81,7 +81,7 @@ public class TrackedEntityInstancesActivity extends ListActivity {
 
         getTeiRepository().getPaged(20).observe(this, trackedEntityInstancePagedList -> {
             adapter.submitList(trackedEntityInstancePagedList);
-            findViewById(R.id.tracked_entity_instances_notificator).setVisibility(
+            findViewById(R.id.trackedEntityInstancesNotificator).setVisibility(
                     trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
         });
     }

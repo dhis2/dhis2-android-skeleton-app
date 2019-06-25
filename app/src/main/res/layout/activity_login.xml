@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/url_text"
+            android:id="@+id/urlText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_server_url"
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/url">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/username_text"
+            android:id="@+id/usernameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_username"
@@ -68,7 +68,7 @@
         app:layout_constraintTop_toBottomOf="@+id/username">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password_text"
+            android:id="@+id/passwordText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_password"
@@ -80,7 +80,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/login_button"
+        android:id="@+id/loginButton"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,12 +98,12 @@
         app:layout_constraintVertical_bias="0.2" />
 
     <ProgressBar
-        android:id="@+id/login_progress_bar"
+        android:id="@+id/loginProgressBar"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/login_button"
+        app:layout_constraintBottom_toBottomOf="@+id/loginButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />

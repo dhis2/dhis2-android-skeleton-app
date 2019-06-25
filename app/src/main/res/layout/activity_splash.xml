@@ -7,7 +7,7 @@
     tools:context=".ui.splash.SplashActivity">
 
     <ImageView
-        android:id="@+id/dhis2_icon"
+        android:id="@+id/dhis2Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,6 +28,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dhis2_icon" />
+        app:layout_constraintTop_toBottomOf="@+id/dhis2Icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
