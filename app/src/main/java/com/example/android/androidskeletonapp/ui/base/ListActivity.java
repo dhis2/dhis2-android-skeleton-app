@@ -24,12 +24,12 @@ public abstract class ListActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        ActivityStarter.startActivity(this, MainActivity.class);
+        onBackPressed();
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        ActivityStarter.startActivity(this, MainActivity.class);
+        super.onBackPressed();
     }
 }

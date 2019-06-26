@@ -8,9 +8,12 @@ import com.example.android.androidskeletonapp.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
 import java.util.Objects;
 
@@ -26,6 +29,23 @@ class TextFieldHolder extends FieldHolder {
     void bind(Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute,
             TrackedEntityAttributeValueObjectRepository> fieldItem) {
         super.bind(fieldItem);
+
+        if (fieldItem.getRight() != null && fieldItem.getRight().exists())
+            editText.setText(fieldItem.getRight().get().value());
+
+        editText.setEnabled(!fieldItem.getMiddle().generated());
+
+        editText.setOnFocusChangeListener((view, hasFocus) -> {
+            if (!hasFocus) {
+                if (!fieldItem.getRight().exists() || fieldItem.getRight().exists() && !Objects.equals(fieldItem.getRight().get().value(), editText.getText().toString()))
+                    valueSavedListener.onValueSaved(fieldItem.getMiddle().uid(), editText.getText().toString());
+            }
+        });
+    }
+
+    void bindEvents(Triple<ProgramStageDataElement, DataElement,
+            TrackedEntityDataValueObjectRepository> fieldItem) {
+        super.bindEvents(fieldItem);
 
         if (fieldItem.getRight() != null && fieldItem.getRight().exists())
             editText.setText(fieldItem.getRight().get().value());

@@ -12,17 +12,18 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay"
             app:layout_constraintTop_toTopOf="parent"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/formRecycler"
             android:layout_width="match_parent"
-            tools:listitem="@layout/item_field"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            tools:listitem="@layout/item_field" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonEnd"

@@ -6,10 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ActivityStarter {
 
-    public static void startActivity(AppCompatActivity activity, Class<?> activityClass) {
+    public static void startActivity(AppCompatActivity activity, Class<?> activityClass, boolean finishCurrent) {
         Intent intent = new Intent(activity.getApplicationContext(), activityClass);
         activity.startActivity(intent);
-        activity.finish();
+        if (finishCurrent)
+            activity.finish();
     }
 
     public static void startActivity(AppCompatActivity activity, Intent intent) {

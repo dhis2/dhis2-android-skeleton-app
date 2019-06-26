@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.ui.enrollment_form;
+package com.example.android.androidskeletonapp.ui.event_form;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,15 +12,16 @@ import androidx.databinding.DataBindingUtil;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService;
+import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
 import com.example.android.androidskeletonapp.data.service.forms.RuleEngineService;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
+import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.rules.RuleEngine;
 import org.hisp.dhis.rules.models.RuleAction;
 import org.hisp.dhis.rules.models.RuleActionHideField;
@@ -36,7 +37,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
 
-public class EnrollmentFormActivity extends AppCompatActivity {
+public class EventFormActivity extends AppCompatActivity {
 
     private ActivityEnrollmentFormBinding binding;
     private FormAdapter adapter;
@@ -46,13 +47,13 @@ public class EnrollmentFormActivity extends AppCompatActivity {
     private RuleEngine ruleEngine;
 
     private enum IntentExtra {
-        TEI_UID, PROGRAM_UID, OU_UID
+        EVENT_UID, PROGRAM_UID, OU_UID
     }
 
-    public static Intent getFormActivityIntent(Context context, String teiUid, String programUid,
+    public static Intent getFormActivityIntent(Context context, String eventUid, String programUid,
                                                String orgUnitUid) {
-        Intent intent = new Intent(context, EnrollmentFormActivity.class);
-        intent.putExtra(IntentExtra.TEI_UID.name(), teiUid);
+        Intent intent = new Intent(context, EventFormActivity.class);
+        intent.putExtra(IntentExtra.EVENT_UID.name(), eventUid);
         intent.putExtra(IntentExtra.PROGRAM_UID.name(), programUid);
         intent.putExtra(IntentExtra.OU_UID.name(), orgUnitUid);
         return intent;
@@ -70,23 +71,23 @@ public class EnrollmentFormActivity extends AppCompatActivity {
 
         adapter = new FormAdapter((fieldUid, value) -> {
             try {
-                Sdk.d2().trackedEntityModule().trackedEntityAttributeValues.value(fieldUid,
-                        getIntent().getStringExtra(IntentExtra.TEI_UID.name()))
+                Sdk.d2().trackedEntityModule().trackedEntityDataValues.value(
+                        EventFormService.getInstance().getEventUid(), fieldUid)
                         .set(value);
             } catch (D2Error d2Error) {
                 d2Error.printStackTrace();
             } finally {
                 engineInitialization.onNext(true);
             }
-        }, FormAdapter.FormType.ENROLLMENT);
+        }, FormAdapter.FormType.EVENT);
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
         binding.formRecycler.setAdapter(adapter);
 
         engineInitialization = PublishProcessor.create();
 
-        if (EnrollmentFormService.getInstance().init(
+        if (EventFormService.getInstance().init(
                 Sdk.d2(),
-                getIntent().getStringExtra(IntentExtra.TEI_UID.name()),
+                getIntent().getStringExtra(IntentExtra.EVENT_UID.name()),
                 getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
                 getIntent().getStringExtra(IntentExtra.OU_UID.name())))
             this.engineService = new RuleEngineService();
@@ -101,8 +102,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         disposable.add(
                 engineService.configure(Sdk.d2(),
                         getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
-                        EnrollmentFormService.getInstance().getEnrollmentUid(),
-                        null
+                        EventFormService.getInstance().getEventUid()
                 )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -119,25 +119,24 @@ public class EnrollmentFormActivity extends AppCompatActivity {
                 engineInitialization
                         .flatMap(next ->
                                 Flowable.zip(
-                                        EnrollmentFormService.getInstance().getEnrollmentFormFields().subscribeOn(Schedulers.io()),
-                                        engineService.ruleEnrollment().flatMap(ruleEnrollment ->
-                                                Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEnrollment).call())).subscribeOn(Schedulers.io()),
+                                        EventFormService.getInstance().getEventFormFields().subscribeOn(Schedulers.io()),
+                                        engineService.ruleEvent().flatMap(ruleEvent ->
+                                                Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEvent).call())).subscribeOn(Schedulers.io()),
                                         this::applyEffects
                                 ))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                fieldData -> adapter.updateData(fieldData),
+                                fieldData -> adapter.updateDataEvents(fieldData),
                                 Throwable::printStackTrace
                         )
         );
     }
 
-    private List<Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute,
-            TrackedEntityAttributeValueObjectRepository>> applyEffects(Map<String,
-            Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute,
-                    TrackedEntityAttributeValueObjectRepository>> fields,
-                                                                       List<RuleEffect> ruleEffects) {
+    private List<Triple<ProgramStageDataElement, DataElement,
+            TrackedEntityDataValueObjectRepository>> applyEffects(Map<String,
+            Triple<ProgramStageDataElement, DataElement,
+                    TrackedEntityDataValueObjectRepository>> fields, List<RuleEffect> ruleEffects) {
 
         for (RuleEffect ruleEffect : ruleEffects) {
             RuleAction ruleAction = ruleEffect.ruleAction();

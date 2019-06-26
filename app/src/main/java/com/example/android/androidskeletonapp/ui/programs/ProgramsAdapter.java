@@ -4,6 +4,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.StyleBinderHelper;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
@@ -12,9 +15,6 @@ import com.example.android.androidskeletonapp.ui.base.ListItemWithStyleHolder;
 import org.hisp.dhis.android.core.program.Program;
 
 import java.text.MessageFormat;
-
-import androidx.annotation.NonNull;
-import androidx.paging.PagedListAdapter;
 
 public class ProgramsAdapter extends PagedListAdapter<Program, ListItemWithStyleHolder> {
 
@@ -40,6 +40,6 @@ public class ProgramsAdapter extends PagedListAdapter<Program, ListItemWithStyle
         holder.subtitle1.setText(MessageFormat.format("{0} Program stages", program.programStages().size()));
         StyleBinderHelper.bindStyle(holder, program.style());
 
-        holder.itemView.setOnClickListener(view -> programSelectionListener.onProgramSelected(program.uid()));
+        holder.itemView.setOnClickListener(view -> programSelectionListener.onProgramSelected(program.uid(), program.programType()));
     }
 }

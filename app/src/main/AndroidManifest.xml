@@ -49,7 +49,10 @@
             android:name=".ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity"
             android:label="@string/title_activity_tracked_entity_search"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.enrollment_form.EnrollmentFormActivity" />
+        <activity
+            android:name=".ui.enrollment_form.EnrollmentFormActivity"
+            android:label="@string/title_activity_enrollment_form"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.data_sets.DataSetsActivity"
             android:label="@string/title_activity_data_sets"
@@ -61,6 +64,9 @@
         <activity
             android:name=".ui.foreign_key_violations.ForeignKeyViolationsActivity"
             android:label="@string/title_activity_fk_violations"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.event_form.EventFormActivity"
+            android:label="@string/title_activity_event_form"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

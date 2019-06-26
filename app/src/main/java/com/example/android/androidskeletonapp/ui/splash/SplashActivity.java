@@ -35,13 +35,13 @@ public class SplashActivity extends AppCompatActivity {
                 .andThen(isLogged())
                 .doOnSuccess(isLogged -> {
                     if(isLogged) {
-                        ActivityStarter.startActivity(this, MainActivity.class);
+                        ActivityStarter.startActivity(this, MainActivity.class,true);
                     } else {
-                        ActivityStarter.startActivity(this, LoginActivity.class);
+                        ActivityStarter.startActivity(this, LoginActivity.class,true);
                     }
                 }).doOnError(throwable -> {
                     throwable.printStackTrace();
-                    ActivityStarter.startActivity(this, LoginActivity.class);
+                    ActivityStarter.startActivity(this, LoginActivity.class,true);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
