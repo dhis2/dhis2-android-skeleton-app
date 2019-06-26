@@ -6,10 +6,8 @@ import android.view.View;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
-import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorAdapter;
 
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
@@ -20,10 +18,10 @@ public class DataSetsActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUp(R.layout.activity_data_sets, R.id.dataSetsToolbar, R.id.dataSetsRecyclerView);
-        observeD2Errors();
+        observeDataSets();
     }
 
-    private void observeD2Errors() {
+    private void observeDataSets() {
         DataSetsAdapter adapter = new DataSetsAdapter();
         recyclerView.setAdapter(adapter);
 

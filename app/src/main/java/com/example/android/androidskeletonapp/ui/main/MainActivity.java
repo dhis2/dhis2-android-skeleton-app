@@ -7,18 +7,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
+import com.example.android.androidskeletonapp.ui.data_sets.reports.DataSetReportsActivity;
 import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
@@ -27,10 +22,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -112,8 +113,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 syncDataButton.hide();
                 syncDataText.setVisibility(View.GONE);
                 TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
+                TextView downloadedDataValuesText = findViewById(R.id.dataValuesDownloadedText);
                 downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances",
-                        Sdk.d2().trackedEntityModule().trackedEntityInstances.count()));
+                        Sdk.d2().trackedEntityModule().trackedEntityInstances.byState()
+                                .neq(State.RELATIONSHIP).count()));
+                downloadedDataValuesText.setText(MessageFormat.format("{0} Data values",
+                        Sdk.d2().dataValueModule().dataValues.count()));
             } else {
                 syncDataText.setVisibility(View.VISIBLE);
                 syncDataButton.show();
@@ -171,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void downloadData() {
         compositeDisposable.add(Observable.defer(() -> Sdk.d2().trackedEntityModule()
                 .downloadTrackedEntityInstances(10, false, false))
+                .mergeWith(Observable.defer(() -> Sdk.d2().aggregatedModule().data().download()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false))
@@ -190,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class,false);
         } else if (id == R.id.navDataSets) {
             ActivityStarter.startActivity(this, DataSetsActivity.class,false);
+        } else if (id == R.id.navDataSetReports) {
+            ActivityStarter.startActivity(this, DataSetReportsActivity.class,false);
         } else if (id == R.id.navD2Errors) {
             ActivityStarter.startActivity(this, D2ErrorActivity.class,false);
         } else if (id == R.id.navFKViolations) {

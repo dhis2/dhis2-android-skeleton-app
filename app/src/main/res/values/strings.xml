@@ -58,6 +58,9 @@
     <!-- Strings related to data sets -->
     <string name="title_activity_data_sets">Your data sets</string>
     <string name="no_data_sets_found">No data sets found</string>
+    <!-- Strings related to data set reports -->
+    <string name="title_activity_data_set_reports">Your data set reports</string>
+    <string name="no_data_set_reports_found">No data set reports found</string>
     <!-- Strings related to enrollment forms -->
     <string name="title_activity_enrollment_form">Enrollment form</string>
     <string name="title_activity_event_form">Event form</string>
