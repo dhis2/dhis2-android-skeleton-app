@@ -28,10 +28,10 @@ public class DataSetReportsActivity extends ListActivity {
         LiveData<PagedList<DataSetReport>> liveData = Sdk.d2().dataValueModule().dataSetReports
                 .getPaged(20);
 
-        liveData.observe(this, dataSetPagedList -> {
-            adapter.submitList(dataSetPagedList);
+        liveData.observe(this, dataSetReportPagedList -> {
+            adapter.submitList(dataSetReportPagedList);
             findViewById(R.id.dataSetReportsNotificator).setVisibility(
-                    dataSetPagedList.isEmpty() ? View.VISIBLE : View.GONE);
+                    dataSetReportPagedList.isEmpty() ? View.VISIBLE : View.GONE);
         });
     }
 }

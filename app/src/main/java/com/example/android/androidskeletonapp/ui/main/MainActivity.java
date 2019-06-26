@@ -22,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
@@ -112,8 +113,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 syncDataButton.hide();
                 syncDataText.setVisibility(View.GONE);
                 TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
+                TextView downloadedDataValuesText = findViewById(R.id.dataValuesDownloadedText);
                 downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances",
-                        Sdk.d2().trackedEntityModule().trackedEntityInstances.count()));
+                        Sdk.d2().trackedEntityModule().trackedEntityInstances.byState()
+                                .neq(State.RELATIONSHIP).count()));
+                downloadedDataValuesText.setText(MessageFormat.format("{0} Data values",
+                        Sdk.d2().dataValueModule().dataValues.count()));
             } else {
                 syncDataText.setVisibility(View.VISIBLE);
                 syncDataButton.show();
@@ -171,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void downloadData() {
         compositeDisposable.add(Observable.defer(() -> Sdk.d2().trackedEntityModule()
                 .downloadTrackedEntityInstances(10, false, false))
+                .mergeWith(Observable.defer(() -> Sdk.d2().aggregatedModule().data().download()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false))

@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/navPrograms"
-            android:icon="@drawable/ic_assignment_black_24dp"
+            android:icon="@drawable/ic_programs_black_24dp"
             android:title="@string/title_activity_programs" />
         <item
             android:id="@+id/navTrackedEntities"
@@ -22,7 +22,7 @@
             android:title="@string/title_activity_data_sets" />
         <item
             android:id="@+id/navDataSetReports"
-            android:icon="@drawable/ic_view_list_black_24dp"
+            android:icon="@drawable/ic_assignment_black_24dp"
             android:title="@string/title_activity_data_set_reports" />
         <item
             android:id="@+id/navD2Errors"

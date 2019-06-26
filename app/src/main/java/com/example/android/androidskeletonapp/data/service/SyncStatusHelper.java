@@ -9,6 +9,7 @@ public class SyncStatusHelper {
     }
 
     public static boolean isDataSynced() {
-        return Sdk.d2().trackedEntityModule().trackedEntityInstances.count() > 0;
+        return Sdk.d2().trackedEntityModule().trackedEntityInstances.count() > 0 &&
+                Sdk.d2().dataValueModule().dataValues.count() > 0;
     }
 }

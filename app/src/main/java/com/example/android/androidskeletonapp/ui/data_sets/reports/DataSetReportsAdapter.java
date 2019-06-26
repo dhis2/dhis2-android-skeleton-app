@@ -34,8 +34,10 @@ public class DataSetReportsAdapter extends PagedListAdapter<DataSetReport, ListI
         DataSetReport dataSetReport = getItem(position);
         holder.title.setText(MessageFormat.format("{0} - {1}",
                 dataSetReport.period(), dataSetReport.organisationUnitDisplayName()));
-        holder.subtitle1.setText(dataSetReport.periodType().name());
-        holder.subtitle2.setText(dataSetReport.attributeOptionComboDisplayName());
-        holder.rightText.setText(dataSetReport.valueCount());
+        holder.subtitle1.setText(dataSetReport.attributeOptionComboDisplayName());
+        holder.subtitle2.setText(MessageFormat.format("{0} - {1}",
+                dataSetReport.periodType().name(), dataSetReport.state().name()));
+        holder.icon.setImageResource(R.drawable.ic_assignment_black_24dp);
+        holder.rightText.setText(dataSetReport.valueCount().toString());
     }
 }
