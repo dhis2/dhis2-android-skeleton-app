@@ -1,6 +1,9 @@
 package com.example.android.androidskeletonapp.data.service;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithStyleHolder;
@@ -42,5 +45,12 @@ public class StyleBinderHelper {
             holder.icon.setBackgroundColor(emptyColor);
             holder.cardFrame.setBackgroundColor(emptyColor);
         }
+    }
+
+    public static void setBackgroundColor(int color, ImageView imageView) {
+        int col = ContextCompat.getColor(imageView.getContext(), color);
+        Drawable drawable = imageView.getBackground();
+        drawable.setColorFilter(col, PorterDuff.Mode.ADD);
+        imageView.setBackground(drawable);
     }
 }

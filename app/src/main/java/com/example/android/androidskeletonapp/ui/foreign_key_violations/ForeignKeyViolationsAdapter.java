@@ -5,24 +5,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemHolder;
 
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
 
-public class ForeignKeyViolationsAdapter extends PagedListAdapter<ForeignKeyViolation, ListItemHolder> {
+import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
 
-    private SimpleDateFormat dateFormat;
+public class ForeignKeyViolationsAdapter extends PagedListAdapter<ForeignKeyViolation, ListItemHolder> {
 
     ForeignKeyViolationsAdapter() {
         super(new DiffByIdItemCallback<>());
-        this.dateFormat = new SimpleDateFormat("MM/dd hh:mm:ss", Locale.US);
     }
 
     @NonNull
@@ -39,7 +36,8 @@ public class ForeignKeyViolationsAdapter extends PagedListAdapter<ForeignKeyViol
         holder.title.setText(fkViolation.notFoundValue());
         holder.subtitle1.setText(fkViolation.fromTable() + "." + fkViolation.fromColumn());
         holder.subtitle2.setText(fkViolation.toTable() + "." + fkViolation.toColumn());
-        holder.rightText.setText(dateFormat.format(fkViolation.created()));
+        holder.rightText.setText(DateFormatHelper.formatDate(fkViolation.created()));
         holder.icon.setImageResource(R.drawable.ic_foreign_key_black_24dp);
+        setBackgroundColor(R.color.colorAccentDark, holder.icon);
     }
 }

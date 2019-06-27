@@ -15,6 +15,8 @@ import java.text.MessageFormat;
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
 
+import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
+
 public class DataSetReportsAdapter extends PagedListAdapter<DataSetReport, ListItemHolder> {
 
     DataSetReportsAdapter() {
@@ -38,6 +40,7 @@ public class DataSetReportsAdapter extends PagedListAdapter<DataSetReport, ListI
         holder.subtitle2.setText(MessageFormat.format("{0} - {1}",
                 dataSetReport.periodType().name(), dataSetReport.state().name()));
         holder.icon.setImageResource(R.drawable.ic_assignment_black_24dp);
+        setBackgroundColor(R.color.colorAccentDark, holder.icon);
         holder.rightText.setText(dataSetReport.valueCount().toString());
     }
 }
