@@ -40,11 +40,11 @@
 
             <ImageView
                 android:id="@+id/syncIcon"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_below="@+id/itemIcon"
-                android:layout_marginStart="-12dp"
-                android:layout_marginTop="-12dp"
+                android:layout_marginStart="-14dp"
+                android:layout_marginTop="-14dp"
                 android:layout_marginBottom="-12dp"
                 android:layout_toEndOf="@+id/itemIcon"
                 android:background="@drawable/circle_shape"
