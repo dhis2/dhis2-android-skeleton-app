@@ -38,6 +38,20 @@
                 android:padding="3dp"
                 app:tint="@color/colorWhite"/>
 
+            <ImageView
+                android:id="@+id/syncIcon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_below="@+id/itemIcon"
+                android:layout_marginStart="-12dp"
+                android:layout_marginTop="-12dp"
+                android:layout_marginBottom="-12dp"
+                android:layout_toEndOf="@+id/itemIcon"
+                android:background="@drawable/circle_shape"
+                android:contentDescription="@string/sync_icon"
+                android:padding="3dp"
+                app:tint="@color/colorWhite" />
+
         </RelativeLayout>
 
         <RelativeLayout

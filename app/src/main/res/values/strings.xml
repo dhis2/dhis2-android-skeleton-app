@@ -15,6 +15,7 @@
     <string name="auto_fill_username">"android"</string>
     <string name="auto_fill_password">"Android123"</string>
     <!-- Strings related to list item -->
+    <string name="sync_icon">Sync icon</string>
     <string name="item_icon">Icon</string>
     <string name="item_title">D2 error code</string>
     <string name="item_right_text">12/03 23:05:12</string>
