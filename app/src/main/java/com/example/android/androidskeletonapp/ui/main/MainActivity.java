@@ -32,7 +32,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -166,11 +165,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void syncMetadata() {
-        compositeDisposable.add(Completable.fromCallable(() -> Sdk.d2().syncMetaData().call())
+        compositeDisposable.add(Sdk.d2().syncMetaData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> ActivityStarter.startActivity(this, ProgramsActivity.class, false),
-                        Throwable::printStackTrace));
+                .doOnError(Throwable::printStackTrace)
+                .doOnComplete(() -> ActivityStarter.startActivity(this, ProgramsActivity.class, false))
+                .subscribe());
     }
 
     private void downloadData() {
