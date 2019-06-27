@@ -8,4 +8,5 @@
     <color name="colorAccentLight">#d8f7f7</color>
     <color name="colorAccentDark">#393d4d</color>
     <color name="colorAccentAlt">#f78f05</color>
+    <color name="colorWarn">#e91e63</color>
 </resources>
