@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="4dp"
@@ -17,101 +18,119 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/iconLayout"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp">
-
-            <ImageView
-                android:id="@+id/itemIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/circle_shape"
-                android:contentDescription="@string/item_icon"
-                android:padding="3dp"
-                app:tint="@color/colorWhite"/>
-
-            <ImageView
-                android:id="@+id/syncIcon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_below="@+id/itemIcon"
-                android:layout_marginStart="-14dp"
-                android:layout_marginTop="-14dp"
-                android:layout_marginBottom="-12dp"
-                android:layout_toEndOf="@+id/itemIcon"
-                android:background="@drawable/circle_shape"
-                android:contentDescription="@string/sync_icon"
-                android:padding="3dp"
-                app:tint="@color/colorWhite" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingStart="0dp"
-            android:paddingEnd="8dp">
+            android:baselineAligned="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/iconLayout"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp">
+
+                <ImageView
+                    android:id="@+id/itemIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/circle_shape"
+                    android:contentDescription="@string/item_icon"
+                    android:padding="3dp"
+                    app:tint="@color/colorWhite"/>
+
+                <ImageView
+                    android:id="@+id/syncIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/itemIcon"
+                    android:layout_marginStart="-14dp"
+                    android:layout_marginTop="-14dp"
+                    android:layout_marginBottom="-12dp"
+                    android:layout_toEndOf="@+id/itemIcon"
+                    android:background="@drawable/circle_shape"
+                    android:contentDescription="@string/sync_icon"
+                    android:padding="3dp"
+                    app:tint="@color/colorWhite" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/itemLinearLayout">
+                android:layout_weight="2"
+                android:paddingStart="0dp"
+                android:paddingEnd="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/itemLinearLayout">
+
+                    <TextView
+                        android:id="@+id/itemTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/item_title"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/rightText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/item_right_text"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/itemTitle"
-                    android:layout_width="0dp"
+                    android:id="@+id/itemSubtitle1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_below="@id/itemLinearLayout"
+                    android:layout_alignParentStart="true"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@string/item_title"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/rightText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@string/item_right_text"
+                    android:text="@string/item_subtitle_1"
                     android:textSize="12sp" />
-            </LinearLayout>
 
-            <TextView
-                android:id="@+id/itemSubtitle1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/itemLinearLayout"
-                android:layout_alignParentStart="true"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/item_subtitle_1"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/itemSubtitle2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/itemSubtitle1"
+                    android:layout_alignParentStart="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/item_subtitle_2"
+                    android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/itemSubtitle2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/itemSubtitle1"
-                android:layout_alignParentStart="true"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/item_subtitle_2"
-                android:textSize="12sp" />
+            </RelativeLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/importConflictsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginStart="16dp"
+            tools:listitem="@layout/sub_list_item" />
 
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

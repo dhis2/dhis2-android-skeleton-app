@@ -3,14 +3,12 @@ package com.example.android.androidskeletonapp.ui.tracked_entity_instances;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
 
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
