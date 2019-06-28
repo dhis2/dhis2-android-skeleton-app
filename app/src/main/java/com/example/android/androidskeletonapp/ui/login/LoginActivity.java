@@ -17,10 +17,17 @@ import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.hisp.dhis.android.core.common.Unit;
+
+import java.util.Observable;
+import java.util.concurrent.Callable;
+
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
+import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -97,10 +104,14 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                loadingProgressBar.setVisibility(View.VISIBLE);
+                loginButton.setVisibility(View.INVISIBLE);
                 disposable = loginViewModel.login(
                         usernameEditText.getText().toString(),
                         passwordEditText.getText().toString(),
-                        serverUrlEditText.getText().toString());
+                        serverUrlEditText.getText().toString())
+                        .doOnTerminate(() -> loginButton.setVisibility(View.VISIBLE))
+                        .subscribe(u -> {}, t -> {});
             }
             return false;
         });
@@ -111,7 +122,9 @@ public class LoginActivity extends AppCompatActivity {
             disposable = loginViewModel.login(
                     usernameEditText.getText().toString(),
                     passwordEditText.getText().toString(),
-                    serverUrlEditText.getText().toString());
+                    serverUrlEditText.getText().toString())
+            .doOnTerminate(() -> loginButton.setVisibility(View.VISIBLE))
+            .subscribe(u -> {}, t -> {});
         });
     }
 
