@@ -174,14 +174,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void downloadData() {
-        compositeDisposable.add(Observable.defer(() -> Sdk.d2().trackedEntityModule()
-                .downloadTrackedEntityInstances(10, false, false))
-                .mergeWith(Observable.defer(() -> Sdk.d2().aggregatedModule().data().download()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false))
-                .doOnError(Throwable::printStackTrace)
-                .subscribe());
+        compositeDisposable.add(
+                Observable.merge(
+                        Sdk.d2().trackedEntityModule().downloadTrackedEntityInstances(10, false, false),
+                        Sdk.d2().aggregatedModule().data().download()
+                )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false))
+                        .doOnError(Throwable::printStackTrace)
+                        .subscribe());
     }
 
     @Override
