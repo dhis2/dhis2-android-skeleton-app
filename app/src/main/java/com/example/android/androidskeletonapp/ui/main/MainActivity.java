@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Snackbar.make(view, "Syncing data", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             syncStatusText.setText(R.string.syncing_data);
+            syncStatusText.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             downloadData();
         });
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             syncStatusText.setText(R.string.syncing_metadata);
+            syncStatusText.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             syncMetadata();
         });
