@@ -43,7 +43,7 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
             view.setEnabled(Boolean.FALSE);
             view.setVisibility(View.GONE);
             downloadDataText.setVisibility(View.GONE);
-            Snackbar.make(view, "Downloading data", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "Searching data...", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             notificator.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
@@ -70,10 +70,12 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
         Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery
                 .query(query)
                 .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
+            adapter.submitList(trackedEntityInstancePagedList);
             downloadDataText.setVisibility(View.GONE);
             notificator.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
-            adapter.submitList(trackedEntityInstancePagedList);
+            findViewById(R.id.searchNotificator).setVisibility(
+                    trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
         });
     }
 }
