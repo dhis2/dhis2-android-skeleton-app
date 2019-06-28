@@ -1,8 +1,5 @@
 package com.example.android.androidskeletonapp.ui.base;
 
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.main.MainActivity;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;

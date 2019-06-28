@@ -15,11 +15,12 @@
     <string name="auto_fill_username">"android"</string>
     <string name="auto_fill_password">"Android123"</string>
     <!-- Strings related to list item -->
+    <string name="sync_icon">Sync icon</string>
     <string name="item_icon">Icon</string>
-    <string name="item_title">D2 error code</string>
+    <string name="item_title">Item title</string>
     <string name="item_right_text">12/03 23:05:12</string>
-    <string name="item_subtitle_1">D2 error description</string>
-    <string name="item_subtitle_2">D2 error component</string>
+    <string name="item_subtitle_1">Item subtitle 1</string>
+    <string name="item_subtitle_2">Item subtitle 2</string>
     <!-- Strings related to main -->
     <string name="title_activity_main">Home</string>
     <string name="welcome">"Welcome!"</string>
@@ -58,6 +59,9 @@
     <!-- Strings related to data sets -->
     <string name="title_activity_data_sets">Your data sets</string>
     <string name="no_data_sets_found">No data sets found</string>
+    <!-- Strings related to data set reports -->
+    <string name="title_activity_data_set_reports">Your data set reports</string>
+    <string name="no_data_set_reports_found">No data set reports found</string>
     <!-- Strings related to enrollment forms -->
     <string name="title_activity_enrollment_form">Enrollment form</string>
     <string name="title_activity_event_form">Event form</string>

@@ -7,18 +7,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
+import com.example.android.androidskeletonapp.ui.data_sets.reports.DataSetReportsActivity;
 import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
@@ -27,11 +22,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
 
-import io.reactivex.Completable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -42,6 +42,14 @@ import static com.example.android.androidskeletonapp.data.service.LogOutService.
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private CompositeDisposable compositeDisposable;
+
+    private FloatingActionButton syncMetadataButton;
+    private TextView syncMetadataText;
+    private FloatingActionButton syncDataButton;
+    private TextView syncDataText;
+
+    private TextView syncStatusText;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +64,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         inflateMainView();
         createNavigationView(user);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateSyncDataAndButtons();
     }
 
     private User getUser() {
@@ -92,15 +106,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void inflateMainView() {
-        TextView notificator = findViewById(R.id.notificator);
-        TextView syncMetadataText = findViewById(R.id.syncMetadataText);
-        TextView syncDataText = findViewById(R.id.syncDataText);
-        ProgressBar progressBar = findViewById(R.id.syncProgressBar);
-        FloatingActionButton syncButton = findViewById(R.id.syncButton);
-        FloatingActionButton syncDataButton = findViewById(R.id.syncDataButton);
+        syncMetadataButton = findViewById(R.id.syncButton);
+        syncMetadataText = findViewById(R.id.syncMetadataText);
+        syncDataButton = findViewById(R.id.syncDataButton);
+        syncDataText = findViewById(R.id.syncDataText);
+
+        syncStatusText = findViewById(R.id.notificator);
+        progressBar = findViewById(R.id.syncProgressBar);
+
+        syncDataButton.setOnClickListener(view -> {
+            view.setEnabled(Boolean.FALSE);
+            view.setVisibility(View.GONE);
+            syncDataText.setVisibility(View.GONE);
+            Snackbar.make(view, "Syncing data", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            syncStatusText.setText(R.string.syncing_data);
+            syncStatusText.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+            downloadData();
+        });
+
+        syncMetadataButton.setOnClickListener(view -> {
+            view.setEnabled(Boolean.FALSE);
+            view.setVisibility(View.GONE);
+            syncMetadataText.setVisibility(View.GONE);
+            Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            syncStatusText.setText(R.string.syncing_metadata);
+            syncStatusText.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+            syncMetadata();
+        });
+    }
+
+    private void updateSyncDataAndButtons() {
+        progressBar.setVisibility(View.GONE);
+        syncStatusText.setVisibility(View.GONE);
 
         if (SyncStatusHelper.isMetadataSynced()) {
-            syncButton.hide();
+            syncMetadataButton.hide();
             syncMetadataText.setVisibility(View.GONE);
             TextView downloadedProgramsText = findViewById(R.id.programsDownloadedText);
             TextView downloadedDataSetsText = findViewById(R.id.dataSetsDownloadedText);
@@ -112,33 +156,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 syncDataButton.hide();
                 syncDataText.setVisibility(View.GONE);
                 TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
+                TextView downloadedDataValuesText = findViewById(R.id.dataValuesDownloadedText);
                 downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances",
-                        Sdk.d2().trackedEntityModule().trackedEntityInstances.count()));
+                        Sdk.d2().trackedEntityModule().trackedEntityInstances.byState()
+                                .neq(State.RELATIONSHIP).count()));
+                downloadedDataValuesText.setText(MessageFormat.format("{0} Data values",
+                        Sdk.d2().dataValueModule().dataValues.count()));
             } else {
                 syncDataText.setVisibility(View.VISIBLE);
                 syncDataButton.show();
-                syncDataButton.setOnClickListener(view -> {
-                    view.setEnabled(Boolean.FALSE);
-                    view.setVisibility(View.GONE);
-                    syncDataText.setVisibility(View.GONE);
-                    Snackbar.make(view, "Syncing data", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    notificator.setText(R.string.syncing_data);
-                    progressBar.setVisibility(View.VISIBLE);
-                    downloadData();
-                });
             }
-        } else {
-            syncButton.setOnClickListener(view -> {
-                view.setEnabled(Boolean.FALSE);
-                view.setVisibility(View.GONE);
-                syncMetadataText.setVisibility(View.GONE);
-                Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                notificator.setText(R.string.syncing_metadata);
-                progressBar.setVisibility(View.VISIBLE);
-                syncMetadata();
-            });
         }
     }
 
@@ -161,21 +188,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void syncMetadata() {
-        compositeDisposable.add(Completable.fromCallable(() -> Sdk.d2().syncMetaData().call())
+        compositeDisposable.add(Sdk.d2().syncMetaData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> ActivityStarter.startActivity(this, ProgramsActivity.class, false),
-                        Throwable::printStackTrace));
+                .doOnError(Throwable::printStackTrace)
+                .doOnComplete(() -> {
+                    updateSyncDataAndButtons();
+                    ActivityStarter.startActivity(this, ProgramsActivity.class, false);
+                })
+                .subscribe());
     }
 
     private void downloadData() {
-        compositeDisposable.add(Observable.defer(() -> Sdk.d2().trackedEntityModule()
-                .downloadTrackedEntityInstances(10, false, false))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false))
-                .doOnError(Throwable::printStackTrace)
-                .subscribe());
+        compositeDisposable.add(
+                Observable.merge(
+                        Sdk.d2().trackedEntityModule().downloadTrackedEntityInstances(10, false, false),
+                        Sdk.d2().aggregatedModule().data().download()
+                )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(() -> {
+                            updateSyncDataAndButtons();
+                            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false);
+                        })
+                        .doOnError(Throwable::printStackTrace)
+                        .subscribe());
     }
 
     @Override
@@ -190,6 +227,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class,false);
         } else if (id == R.id.navDataSets) {
             ActivityStarter.startActivity(this, DataSetsActivity.class,false);
+        } else if (id == R.id.navDataSetReports) {
+            ActivityStarter.startActivity(this, DataSetReportsActivity.class,false);
         } else if (id == R.id.navD2Errors) {
             ActivityStarter.startActivity(this, D2ErrorActivity.class,false);
         } else if (id == R.id.navFKViolations) {

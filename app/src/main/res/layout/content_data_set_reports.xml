@@ -5,20 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.data_sets.DataSetsActivity"
-    tools:showIn="@layout/activity_data_sets">
+    tools:context=".ui.data_sets.reports.DataSetReportsActivity"
+    tools:showIn="@layout/activity_data_set_reports">
 
     <TextView
-        android:id="@+id/dataSetsNotificator"
+        android:id="@+id/dataSetReportsNotificator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="@string/no_data_sets_found" />
+        android:text="@string/no_data_set_reports_found" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dataSetsRecyclerView"
+        android:id="@+id/dataSetReportsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="4dp"

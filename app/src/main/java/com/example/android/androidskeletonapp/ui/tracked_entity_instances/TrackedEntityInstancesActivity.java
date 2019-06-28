@@ -8,6 +8,7 @@ import android.view.View;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
+import com.example.android.androidskeletonapp.data.service.upload.DataCreator;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.enrollment_form.EnrollmentFormActivity;
 
@@ -41,6 +42,7 @@ public class TrackedEntityInstancesActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DataCreator.createTEI();
         setUp(R.layout.activity_tracked_entity_instances, R.id.trackedEntityInstancesToolbar,
                 R.id.trackedEntityInstancesRecyclerView);
         selectedProgram = getIntent().getStringExtra(IntentExtra.PROGRAM.name());
