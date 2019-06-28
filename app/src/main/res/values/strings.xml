@@ -24,11 +24,15 @@
     <!-- Strings related to main -->
     <string name="title_activity_main">Home</string>
     <string name="welcome">"Welcome!"</string>
+    <string name="lorem_ipsum">"Lorem ipsum dolor sit amet"</string>
     <string name="syncing_metadata">Syncing metadata…</string>
     <string name="syncing_data">Syncing data…</string>
     <string name="sync_metadata">Sync metadata</string>
     <string name="sync_data">Sync data</string>
+    <string name="upload_data">Upload data</string>
+    <string name="uploading_data">Uploading data…</string>
     <string name="log_out">Log out</string>
+    <string name="wipe_data">Wipe data</string>
     <!-- Strings related to programs -->
     <string name="title_activity_programs">Your programs</string>
     <string name="program_name">Program Name</string>
@@ -49,6 +53,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">User name</string>
     <string name="nav_header_subtitle">user@email.com</string>
+    <string name="data_management">Data management</string>
     <string name="session">Session</string>
     <!-- Strings related to errors -->
     <string name="title_activity_d2_errors">Your errors</string>
