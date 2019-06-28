@@ -296,26 +296,33 @@ public class RuleEngineService {
                     break;
             }
 
+            if (mimeType == null) {
+                mimeType = RuleValueType.TEXT;
+            }
+            String name = prv.name();
+
             switch (prv.programRuleVariableSourceType()) {
                 case TEI_ATTRIBUTE:
-                    ruleVariables.add(RuleVariableAttribute.create(attr.name(), attr.uid(), mimeType));
+                    ruleVariables.add(RuleVariableAttribute.create(name, attr.uid(), mimeType));
                     break;
                 case DATAELEMENT_CURRENT_EVENT:
-                    ruleVariables.add(RuleVariableCurrentEvent.create(de.name(), de.uid(), mimeType));
+                    ruleVariables.add(RuleVariableCurrentEvent.create(name, de.uid(), mimeType));
                     break;
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM:
-                    ruleVariables.add(RuleVariableNewestEvent.create(de.name(), de.uid(), mimeType));
+                    ruleVariables.add(RuleVariableNewestEvent.create(name, de.uid(), mimeType));
                     break;
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE:
                     if (stage != null)
-                        ruleVariables.add(RuleVariableNewestStageEvent.create(de.name(), de.uid(), stage, mimeType));
+                        ruleVariables.add(RuleVariableNewestStageEvent.create(name, de.uid(), stage, mimeType));
                     break;
                 case DATAELEMENT_PREVIOUS_EVENT:
-                    ruleVariables.add(RuleVariablePreviousEvent.create(de.name(), de.uid(), mimeType));
+                    ruleVariables.add(RuleVariablePreviousEvent.create(name, de.uid(), mimeType));
                     break;
                 case CALCULATED_VALUE:
-                    String variable = de != null ? de.uid() : attr.uid();
-                    String name = de != null ? de.name() : attr.name();
+                    String variable = "";
+                    if (de != null || attr != null) {
+                        variable = de != null ? de.uid() : attr.uid();
+                    }
                     ruleVariables.add(RuleVariableCalculatedValue.create(name, variable != null ? variable : "", mimeType));
                     break;
                 default:

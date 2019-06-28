@@ -11,20 +11,27 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 
+import org.apache.commons.lang3.tuple.Triple;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-class OptionSetFieldHolder extends FieldHolder {
+class OptionImageHolder extends FieldHolder {
 
     private final Spinner spinner;
     private List<Option> optionList;
     private String fieldUid;
     private String fieldCurrentValue;
 
-    OptionSetFieldHolder(@NonNull View itemView, FormAdapter.OnValueSaved valueSavedListener) {
+    OptionImageHolder(@NonNull View itemView, FormAdapter.OnValueSaved valueSavedListener) {
         super(itemView, valueSavedListener);
         this.spinner = itemView.findViewById(R.id.spinner);
     }
@@ -36,8 +43,11 @@ class OptionSetFieldHolder extends FieldHolder {
 
         setUpSpinner(fieldItem.getOptionSetUid());
 
+        //initial value
         if (fieldCurrentValue != null)
             setInitialValue(fieldCurrentValue);
+        else
+            spinner.setSelection(0);
     }
 
     private void setUpSpinner(String optionSetUid) {

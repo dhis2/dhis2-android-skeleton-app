@@ -13,14 +13,11 @@ import androidx.databinding.DataBindingUtil;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService;
+import com.example.android.androidskeletonapp.data.service.forms.FormField;
 import com.example.android.androidskeletonapp.data.service.forms.RuleEngineService;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 
-import org.apache.commons.lang3.tuple.Triple;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 import org.hisp.dhis.rules.RuleEngine;
 import org.hisp.dhis.rules.models.RuleAction;
 import org.hisp.dhis.rules.models.RuleActionHideField;
@@ -78,7 +75,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
             } finally {
                 engineInitialization.onNext(true);
             }
-        }, FormAdapter.FormType.ENROLLMENT);
+        });
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
         binding.formRecycler.setAdapter(adapter);
 
@@ -133,11 +130,21 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         );
     }
 
-    private List<Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute,
-            TrackedEntityAttributeValueObjectRepository>> applyEffects(Map<String,
-            Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute,
-                    TrackedEntityAttributeValueObjectRepository>> fields,
-                                                                       List<RuleEffect> ruleEffects) {
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        disposable.clear();
+    }
+
+    @Override
+    protected void onDestroy() {
+        EnrollmentFormService.clear();
+        super.onDestroy();
+    }
+
+    private List<FormField> applyEffects(Map<String, FormField> fields,
+                                         List<RuleEffect> ruleEffects) {
 
         for (RuleEffect ruleEffect : ruleEffects) {
             RuleAction ruleAction = ruleEffect.ruleAction();
@@ -147,12 +154,6 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         }
 
         return new ArrayList<>(fields.values());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        disposable.clear();
     }
 
     private void finishEnrollment(View view) {

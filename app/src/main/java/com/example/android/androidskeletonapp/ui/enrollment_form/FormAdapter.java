@@ -8,15 +8,9 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.service.forms.FormField;
 
-import org.apache.commons.lang3.tuple.Triple;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,23 +18,16 @@ import java.util.List;
 public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
     private final int OPTIONSET = 98;
+    private final int OPTIONSETIMAGE = 99;
     private final OnValueSaved valueSavedListener;
-    private final FormType formType;
+    private boolean isListingRendering = true;
 
-    private List<Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute, TrackedEntityAttributeValueObjectRepository>> fields;
-    private List<Triple<ProgramStageDataElement, DataElement, TrackedEntityDataValueObjectRepository>> fieldsEvents;
+    private List<FormField> fields;
 
-    public enum FormType {
-        ENROLLMENT, EVENT
-    }
-
-    public FormAdapter(OnValueSaved valueSavedListener, FormType formType) {
-        if (formType == FormType.ENROLLMENT)
-            fields = new ArrayList<>();
-        else
-            fieldsEvents = new ArrayList<>();
+    public FormAdapter(OnValueSaved valueSavedListener) {
+        this.fields = new ArrayList<>();
         this.valueSavedListener = valueSavedListener;
-        this.formType = formType;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -48,6 +35,9 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     public FieldHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == OPTIONSET) {
             return new OptionSetFieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field_optionset, parent, false),
+                    valueSavedListener);
+        } else if (viewType == OPTIONSETIMAGE) {
+            return new OptionSetImageFieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field_optionset_image, parent, false),
                     valueSavedListener);
         } else
             switch (ValueType.values()[viewType]) {
@@ -63,21 +53,20 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull FieldHolder holder, int position) {
-        if (formType == FormType.ENROLLMENT)
-            holder.bind(fields.get(position));
-        else
-            holder.bindEvents(fieldsEvents.get(position));
+        holder.bind(fields.get(position));
     }
 
     @Override
     public int getItemCount() {
-        if (formType == FormType.ENROLLMENT)
-            return fields.size();
-        else
-            return fieldsEvents.size();
+        return fields.size();
     }
 
-    public void updateData(List<Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute, TrackedEntityAttributeValueObjectRepository>> updates) {
+    @Override
+    public long getItemId(int position) {
+        return fields.get(position).getUid().hashCode();
+    }
+
+    public void updateData(List<FormField> updates) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
             public int getOldListSize() {
@@ -91,7 +80,7 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return fields.get(oldItemPosition).getMiddle().uid().equals(updates.get(newItemPosition).getMiddle().uid());
+                return fields.get(oldItemPosition).getUid().equals(updates.get(newItemPosition).getUid());
             }
 
             @Override
@@ -106,49 +95,22 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
         diffResult.dispatchUpdatesTo(this);
     }
 
-    public void updateDataEvents(List<Triple<ProgramStageDataElement, DataElement, TrackedEntityDataValueObjectRepository>> updates) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
-                return fieldsEvents.size();
-            }
-
-            @Override
-            public int getNewListSize() {
-                return fieldsEvents.size();
-            }
-
-            @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return fieldsEvents.get(oldItemPosition).getMiddle().uid().equals(updates.get(newItemPosition).getMiddle().uid());
-            }
-
-            @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                return fieldsEvents.get(oldItemPosition) == updates.get(newItemPosition);
-            }
-        });
-
-        fieldsEvents.clear();
-        fieldsEvents.addAll(updates);
-
-        diffResult.dispatchUpdatesTo(this);
-    }
 
     @Override
     public int getItemViewType(int position) {
-        if (formType == FormType.ENROLLMENT)
-            if (fields.get(position).getMiddle().optionSet() != null && fields.get(position).getMiddle().optionSet().uid() != null)
+        if (fields.get(position).getOptionSetUid() != null && fields.get(position).getOptionSetUid() != null)
+            if (isListingRendering)
                 return OPTIONSET;
             else
-                return fields.get(position).getMiddle().valueType().ordinal();
-        else {
-            if (fieldsEvents.get(position).getMiddle().optionSet() != null && fieldsEvents.get(position).getMiddle().optionSet().uid() != null)
-                return OPTIONSET;
-            else
-                return fieldsEvents.get(position).getMiddle().valueType().ordinal();
-        }
+                return OPTIONSETIMAGE;
+        else
+            return fields.get(position).getValueType().ordinal();
 
+
+    }
+
+    public void setListingRendering(boolean isListingRendering) {
+        this.isListingRendering = isListingRendering;
     }
 
     public interface OnValueSaved {

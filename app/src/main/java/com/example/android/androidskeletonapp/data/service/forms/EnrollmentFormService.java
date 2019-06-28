@@ -2,13 +2,11 @@ package com.example.android.androidskeletonapp.data.service.forms;
 
 import android.text.TextUtils;
 
-import org.apache.commons.lang3.tuple.Triple;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 
@@ -23,8 +21,7 @@ public class EnrollmentFormService {
     private D2 d2;
     private EnrollmentObjectRepository enrollmentRepository;
     private static EnrollmentFormService instance;
-    private final Map<String,
-            Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute, TrackedEntityAttributeValueObjectRepository>> fieldMap;
+    private final Map<String, FormField> fieldMap;
 
     private EnrollmentFormService() {
         fieldMap = new HashMap<>();
@@ -58,9 +55,7 @@ public class EnrollmentFormService {
     }
 
 
-    public Flowable<Map<String,
-            Triple<ProgramTrackedEntityAttribute, TrackedEntityAttribute,
-                    TrackedEntityAttributeValueObjectRepository>>> getEnrollmentFormFields() {
+    public Flowable<Map<String, FormField>> getEnrollmentFormFields() {
         if (d2 == null)
             return Flowable.error(
                     new NullPointerException("D2 is null. EnrollmentForm has not been initialized, use init() function.")
@@ -77,6 +72,7 @@ public class EnrollmentFormService {
                         TrackedEntityAttribute attribute = d2.trackedEntityModule().trackedEntityAttributes
                                 .uid(
                                         programAttribute.trackedEntityAttribute().uid())
+                                .withAllChildren()
                                 .get();
                         TrackedEntityAttributeValueObjectRepository valueRepository = d2.trackedEntityModule().trackedEntityAttributeValues
                                 .value(programAttribute.trackedEntityAttribute().uid(),
@@ -89,10 +85,16 @@ public class EnrollmentFormService {
                             valueRepository.set(value);
                         }
 
-                        Triple<ProgramTrackedEntityAttribute,
-                                TrackedEntityAttribute,
-                                TrackedEntityAttributeValueObjectRepository> field =
-                                Triple.of(programAttribute, attribute, valueRepository);
+                        FormField field = new FormField(
+                                attribute.uid(),
+                                attribute.optionSet() != null ? attribute.optionSet().uid() : null,
+                                attribute.valueType(),
+                                attribute.formName(),
+                                valueRepository.exists() ? valueRepository.get().value() : null,
+                                null,
+                                !attribute.generated(),
+                                attribute.style()
+                        );
 
 
                         fieldMap.put(programAttribute.trackedEntityAttribute().uid(), field);

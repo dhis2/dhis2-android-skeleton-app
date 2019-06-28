@@ -13,15 +13,13 @@ import androidx.databinding.DataBindingUtil;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
+import com.example.android.androidskeletonapp.data.service.forms.FormField;
 import com.example.android.androidskeletonapp.data.service.forms.RuleEngineService;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
-import org.apache.commons.lang3.tuple.Triple;
-import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.apache.commons.lang3.tuple.Pair;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.rules.RuleEngine;
 import org.hisp.dhis.rules.models.RuleAction;
 import org.hisp.dhis.rules.models.RuleActionHideField;
@@ -79,7 +77,7 @@ public class EventFormActivity extends AppCompatActivity {
             } finally {
                 engineInitialization.onNext(true);
             }
-        }, FormAdapter.FormType.EVENT);
+        });
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
         binding.formRecycler.setAdapter(adapter);
 
@@ -100,15 +98,19 @@ public class EventFormActivity extends AppCompatActivity {
         disposable = new CompositeDisposable();
 
         disposable.add(
-                engineService.configure(Sdk.d2(),
-                        getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
-                        EventFormService.getInstance().getEventUid()
+                Flowable.zip(
+                        engineService.configure(Sdk.d2(),
+                                getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
+                                EventFormService.getInstance().getEventUid()),
+                        EventFormService.getInstance().isListingRendering(),
+                        Pair::of
                 )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                ruleEngine -> {
-                                    this.ruleEngine = ruleEngine;
+                                ruleEngineANDrendering -> {
+                                    this.ruleEngine = ruleEngineANDrendering.getLeft();
+                                    this.adapter.setListingRendering(ruleEngineANDrendering.getRight());
                                     engineInitialization.onNext(true);
                                 },
                                 Throwable::printStackTrace
@@ -127,16 +129,14 @@ public class EventFormActivity extends AppCompatActivity {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                fieldData -> adapter.updateDataEvents(fieldData),
+                                fieldData -> adapter.updateData(fieldData),
                                 Throwable::printStackTrace
                         )
         );
     }
 
-    private List<Triple<ProgramStageDataElement, DataElement,
-            TrackedEntityDataValueObjectRepository>> applyEffects(Map<String,
-            Triple<ProgramStageDataElement, DataElement,
-                    TrackedEntityDataValueObjectRepository>> fields, List<RuleEffect> ruleEffects) {
+    private List<FormField> applyEffects(Map<String, FormField> fields,
+                                              List<RuleEffect> ruleEffects) {
 
         for (RuleEffect ruleEffect : ruleEffects) {
             RuleAction ruleAction = ruleEffect.ruleAction();
@@ -152,6 +152,12 @@ public class EventFormActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         disposable.clear();
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventFormService.clear();
+        super.onDestroy();
     }
 
     private void finishEnrollment(View view) {
