@@ -3,12 +3,14 @@ package com.example.android.androidskeletonapp.data.service;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithStyleHolder;
 
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.State;
 
 import androidx.core.content.ContextCompat;
 
@@ -52,5 +54,23 @@ public class StyleBinderHelper {
         Drawable drawable = imageView.getBackground();
         drawable.setColorFilter(col, PorterDuff.Mode.ADD);
         imageView.setBackground(drawable);
+    }
+
+    public static void setState(State state, ImageView syncIcon) {
+        if (state == null) {
+            syncIcon.setVisibility(View.GONE);
+        } else {
+            syncIcon.setVisibility(View.VISIBLE);
+            if (state.equals(State.TO_UPDATE) || state.equals(State.TO_POST)|| state.equals(State.TO_DELETE)) {
+                syncIcon.setImageResource(R.drawable.ic_not_sync);
+                setBackgroundColor(R.color.colorAccentAlt, syncIcon);
+            } else if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
+                syncIcon.setImageResource(R.drawable.ic_sync_problem);
+                setBackgroundColor(R.color.colorWarn, syncIcon);
+            } else {
+                syncIcon.setImageResource(R.drawable.ic_sync);
+                setBackgroundColor(R.color.colorAccent, syncIcon);
+            }
+        }
     }
 }
