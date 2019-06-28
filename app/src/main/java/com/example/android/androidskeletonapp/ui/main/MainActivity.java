@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         downloadedProgramsText.setText(MessageFormat.format("{0} Programs", programCount));
         downloadedDataSetsText.setText(MessageFormat.format("{0} Data sets", dataSetCount));
         downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances", trackedEntityInstanceCount));
-        singleEventsDownloadedText.setText(MessageFormat.format("{0} Single events", singleEventCount));
+        singleEventsDownloadedText.setText(MessageFormat.format("{0} Events without registration", singleEventCount));
         downloadedDataValuesText.setText(MessageFormat.format("{0} Data values", dataValueCount));
     }
 

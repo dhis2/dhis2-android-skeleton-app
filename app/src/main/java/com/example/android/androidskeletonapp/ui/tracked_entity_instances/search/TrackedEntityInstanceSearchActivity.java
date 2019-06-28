@@ -55,12 +55,11 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
         recyclerView.setAdapter(adapter);
 
         TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
-                .orgUnits(Collections.singletonList("DiszpKrYNg8"))
+                .orgUnits(Collections.singletonList("YuQRtpLP10I"))
                 .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
                 .pageSize(15)
                 .paging(true)
                 .page(1)
-                .program("IpHINAT79UW")
                 .query(QueryFilter.builder()
                         .filter("a")
                         .operator(QueryOperator.LIKE)
