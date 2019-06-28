@@ -15,6 +15,7 @@ import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.reports.DataSetReportsActivity;
 import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity;
+import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity;
@@ -22,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
@@ -250,6 +252,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .subscribe());
     }
 
+    private void wipeData() {
+        compositeDisposable.add(
+                Observable.fromCallable(() -> Sdk.d2().wipeModule().wipeData())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(Throwable::printStackTrace)
+                        .doOnComplete(this::setSyncingFinished)
+                        .subscribe());
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -268,6 +280,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityStarter.startActivity(this, D2ErrorActivity.class,false);
         } else if (id == R.id.navFKViolations) {
             ActivityStarter.startActivity(this, ForeignKeyViolationsActivity.class,false);
+        } else if (id == R.id.navWipeData) {
+            syncStatusText.setText(R.string.wiping_data);
+            wipeData();
         } else if (id == R.id.navExit) {
             compositeDisposable.add(logOut(this));
         }
