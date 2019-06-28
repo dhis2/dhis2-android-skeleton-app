@@ -116,9 +116,11 @@ public class EnrollmentFormActivity extends AppCompatActivity {
                 engineInitialization
                         .flatMap(next ->
                                 Flowable.zip(
-                                        EnrollmentFormService.getInstance().getEnrollmentFormFields().subscribeOn(Schedulers.io()),
+                                        EnrollmentFormService.getInstance().getEnrollmentFormFields()
+                                                .subscribeOn(Schedulers.io()),
                                         engineService.ruleEnrollment().flatMap(ruleEnrollment ->
-                                                Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEnrollment).call())).subscribeOn(Schedulers.io()),
+                                                Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEnrollment).call()))
+                                                .subscribeOn(Schedulers.io()),
                                         this::applyEffects
                                 ))
                         .subscribeOn(Schedulers.io())
@@ -154,6 +156,12 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         }
 
         return new ArrayList<>(fields.values());
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void finishEnrollment(View view) {

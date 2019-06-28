@@ -41,7 +41,8 @@ public class EventFormService {
     public boolean init(D2 d2, String eventUid, String programUid, String ouUid) {
         this.d2 = d2;
         ProgramStage programStage = d2.programModule().programStages.byProgramUid().eq(programUid).one().get();
-        String defaultOptionCombo = d2.categoryModule().categoryOptionCombos.byDisplayName().eq("default").one().get().uid();
+        String defaultOptionCombo = d2.categoryModule().categoryOptionCombos
+                .byDisplayName().eq("default").one().get().uid();
         try {
             if (eventUid == null)
                 eventUid = d2.eventModule().events.add(
@@ -77,15 +78,18 @@ public class EventFormService {
                     .flatMapIterable(programStageDataElements -> programStageDataElements)
                     .map(programStageDataElement -> {
 
-                        DataElement dataElement = d2.dataElementModule().dataElements.uid(programStageDataElement.dataElement().uid())
+                        DataElement dataElement = d2.dataElementModule().dataElements
+                                .uid(programStageDataElement.dataElement().uid())
                                 .withAllChildren()
                                 .get();
 
-                        TrackedEntityDataValueObjectRepository valueRepository = d2.trackedEntityModule().trackedEntityDataValues
-                                .value(eventRepository.get().uid(), dataElement.uid());
+                        TrackedEntityDataValueObjectRepository valueRepository =
+                                d2.trackedEntityModule().trackedEntityDataValues
+                                        .value(eventRepository.get().uid(), dataElement.uid());
 
                         if (dataElement.optionSetUid() != null && !isListingRendering) {
-                            for (Option option : d2.optionModule().options.byOptionSetUid().eq(dataElement.optionSetUid()).withStyle().get()) {
+                            for (Option option : d2.optionModule().options
+                                    .byOptionSetUid().eq(dataElement.optionSetUid()).withStyle().get()) {
                                 FormField formField = new FormField(
                                         dataElement.uid(), dataElement.optionSetUid(),
                                         dataElement.valueType(), option.displayName(),
