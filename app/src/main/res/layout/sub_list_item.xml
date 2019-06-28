@@ -3,16 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp"
+    android:layout_marginBottom="8dp"
     app:cardBackgroundColor="@color/colorEmpty">
 
     <FrameLayout
         android:id="@+id/cardFrame"
-        android:background="@color/colorAccentAlt"
+        android:background="@color/colorWarn"
         android:layout_width="8dp"
         android:layout_height="match_parent" />
 
@@ -22,7 +20,8 @@
         android:baselineAligned="false"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:layout_marginStart="24dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp">
 
         <TextView
             android:id="@+id/subItemTitle"
@@ -30,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:ellipsize="end"
-            android:maxLines="1"
             android:text="@string/item_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="16sp" />
