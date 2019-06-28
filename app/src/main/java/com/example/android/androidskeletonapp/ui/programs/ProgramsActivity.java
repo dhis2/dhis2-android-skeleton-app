@@ -35,7 +35,7 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
         recyclerView.setAdapter(adapter);
 
         disposable = Sdk.d2().organisationUnitModule().organisationUnits
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).getAsync()
+                /*.byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)*/.getAsync()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(organisationUnitUids -> Sdk.d2().programModule().programs

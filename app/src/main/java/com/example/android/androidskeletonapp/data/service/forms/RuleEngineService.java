@@ -46,6 +46,8 @@ import javax.annotation.Nonnull;
 
 import io.reactivex.Flowable;
 
+import static android.text.TextUtils.isEmpty;
+
 public class RuleEngineService {
 
     private D2 d2;
@@ -101,60 +103,72 @@ public class RuleEngineService {
 
         jexlEngine = new JexlEngine();
 
-        return Flowable.zip(
-                getRuleVariables(),
-                getRules(),
-                getOtherEvents(eventUid),
-                ruleEnrollment(),
-                (ruleVariables, rules, events, enrollment) -> {
-                    RuleEngine.Builder builder = RuleEngineContext.builder(new RuleExpressionEvaluator() {
-                        @Nonnull
-                        @Override
-                        public String evaluate(@Nonnull String expression) {
-                            return jexlEngine.createExpression(expression).evaluate(null).toString();
-                        }
-                    })
-                            .ruleVariables(ruleVariables)
-                            .rules(rules)
-                            .supplementaryData(new HashMap<>())
-                            .calculatedValueMap(new HashMap<>())
-                            .build().toEngineBuilder()
-                            .triggerEnvironment(TriggerEnvironment.ANDROIDCLIENT)
-                            .events(events);
-                    if (enrollment != null)
-                        builder.enrollment(enrollment);
-                    return builder.build();
-                }
-        );
+        Flowable<RuleEngine> initialFlowable;
+
+        if (isEmpty(enrollmentUid))
+            initialFlowable = Flowable.zip(
+                    getRuleVariables(),
+                    getRules(),
+                    getOtherEvents(eventUid),
+                    (ruleVariables, rules, events) -> setUp(ruleVariables, rules, events, null));
+        else
+            initialFlowable = Flowable.zip(
+                    getRuleVariables(),
+                    getRules(),
+                    getOtherEvents(eventUid),
+                    ruleEnrollment(),
+                    this::setUp);
+
+        return initialFlowable;
+    }
+
+    public RuleEngine setUp(List<RuleVariable> ruleVariables,
+                            List<Rule> rules,
+                            List<RuleEvent> events,
+                            RuleEnrollment enrollment) {
+        RuleEngine.Builder builder = RuleEngineContext.builder(new RuleExpressionEvaluator() {
+            @Nonnull
+            @Override
+            public String evaluate(@Nonnull String expression) {
+                return jexlEngine.createExpression(expression).evaluate(null).toString();
+            }
+        })
+                .ruleVariables(ruleVariables)
+                .rules(rules)
+                .supplementaryData(new HashMap<>())
+                .calculatedValueMap(new HashMap<>())
+                .build().toEngineBuilder()
+                .triggerEnvironment(TriggerEnvironment.ANDROIDCLIENT)
+                .events(events);
+        if (enrollment != null)
+            builder.enrollment(enrollment);
+        return builder.build();
     }
 
     public Flowable<RuleEnrollment> ruleEnrollment() {
-        if (enrollmentUid == null)
-            return Flowable.empty();
-        else
-            return Flowable.fromCallable(() -> {
-                Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrollmentUid).get();
-                String ouCode = d2.organisationUnitModule().organisationUnits.uid(enrollment.organisationUnit()).get().code();
-                Program program = d2.programModule().programs.uid(enrollment.program()).withAllChildren().get();
-                List<String> programAttributesUids = getProgramTrackedEntityAttributesUids(program.programTrackedEntityAttributes());
+        return Flowable.fromCallable(() -> {
+            Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrollmentUid).get();
+            String ouCode = d2.organisationUnitModule().organisationUnits.uid(enrollment.organisationUnit()).get().code();
+            Program program = d2.programModule().programs.uid(enrollment.program()).withAllChildren().get();
+            List<String> programAttributesUids = getProgramTrackedEntityAttributesUids(program.programTrackedEntityAttributes());
 
-                List<RuleAttributeValue> attributeValues = transformToRuleAttributeValues(
-                        d2.trackedEntityModule().trackedEntityAttributeValues
-                                .byTrackedEntityInstance().eq(enrollment.trackedEntityInstance())
-                                .byTrackedEntityAttribute().in(programAttributesUids)
-                                .get()
-                );
-                return RuleEnrollment.create(
-                        enrollment.uid(),
-                        enrollment.incidentDate(),
-                        enrollment.enrollmentDate(),
-                        enrollment.status() != null ? RuleEnrollment.Status.valueOf(enrollment.status().name()) : RuleEnrollment.Status.ACTIVE,
-                        enrollment.organisationUnit(),
-                        ouCode,
-                        attributeValues,
-                        program.name()
-                );
-            });
+            List<RuleAttributeValue> attributeValues = transformToRuleAttributeValues(
+                    d2.trackedEntityModule().trackedEntityAttributeValues
+                            .byTrackedEntityInstance().eq(enrollment.trackedEntityInstance())
+                            .byTrackedEntityAttribute().in(programAttributesUids)
+                            .get()
+            );
+            return RuleEnrollment.create(
+                    enrollment.uid(),
+                    enrollment.incidentDate(),
+                    enrollment.enrollmentDate(),
+                    enrollment.status() != null ? RuleEnrollment.Status.valueOf(enrollment.status().name()) : RuleEnrollment.Status.ACTIVE,
+                    enrollment.organisationUnit(),
+                    ouCode,
+                    attributeValues,
+                    program.name()
+            );
+        });
     }
 
     public Flowable<RuleEvent> ruleEvent() {
@@ -216,7 +230,7 @@ public class RuleEngineService {
                 event.programStage(),
                 RuleEvent.Status.valueOf(event.status().name()),
                 event.eventDate(),
-                event.dueDate(),
+                event.dueDate() != null ? event.dueDate() : event.eventDate(),
                 event.organisationUnit(),
                 code,
                 ruleDataValues,
@@ -296,26 +310,33 @@ public class RuleEngineService {
                     break;
             }
 
+            if (mimeType == null) {
+                mimeType = RuleValueType.TEXT;
+            }
+            String name = prv.name();
+
             switch (prv.programRuleVariableSourceType()) {
                 case TEI_ATTRIBUTE:
-                    ruleVariables.add(RuleVariableAttribute.create(attr.name(), attr.uid(), mimeType));
+                    ruleVariables.add(RuleVariableAttribute.create(name, attr.uid(), mimeType));
                     break;
                 case DATAELEMENT_CURRENT_EVENT:
-                    ruleVariables.add(RuleVariableCurrentEvent.create(de.name(), de.uid(), mimeType));
+                    ruleVariables.add(RuleVariableCurrentEvent.create(name, de.uid(), mimeType));
                     break;
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM:
-                    ruleVariables.add(RuleVariableNewestEvent.create(de.name(), de.uid(), mimeType));
+                    ruleVariables.add(RuleVariableNewestEvent.create(name, de.uid(), mimeType));
                     break;
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE:
                     if (stage != null)
-                        ruleVariables.add(RuleVariableNewestStageEvent.create(de.name(), de.uid(), stage, mimeType));
+                        ruleVariables.add(RuleVariableNewestStageEvent.create(name, de.uid(), stage, mimeType));
                     break;
                 case DATAELEMENT_PREVIOUS_EVENT:
-                    ruleVariables.add(RuleVariablePreviousEvent.create(de.name(), de.uid(), mimeType));
+                    ruleVariables.add(RuleVariablePreviousEvent.create(name, de.uid(), mimeType));
                     break;
                 case CALCULATED_VALUE:
-                    String variable = de != null ? de.uid() : attr.uid();
-                    String name = de != null ? de.name() : attr.name();
+                    String variable = "";
+                    if (de != null || attr != null) {
+                        variable = de != null ? de.uid() : attr.uid();
+                    }
                     ruleVariables.add(RuleVariableCalculatedValue.create(name, variable != null ? variable : "", mimeType));
                     break;
                 default:
