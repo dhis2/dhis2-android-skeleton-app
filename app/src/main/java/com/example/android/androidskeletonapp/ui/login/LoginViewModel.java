@@ -5,12 +5,13 @@ import android.util.Patterns;
 import com.example.android.androidskeletonapp.R;
 
 import org.hisp.dhis.android.core.d2manager.D2Manager;
+import org.hisp.dhis.android.core.user.User;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class LoginViewModel extends ViewModel {
@@ -29,18 +30,18 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
-    public Disposable login(String username, String password, String serverUrl) {
+    public Single<User> login(String username, String password, String serverUrl) {
         return D2Manager.setServerUrl(serverUrl).andThen(D2Manager.instantiateD2()).flatMap(d2 ->
             d2.userModule().logIn(username, password))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(user -> {
+                .doOnSuccess(user -> {
                     if (user != null) {
                         loginResult.postValue(new LoginResult(user));
                     } else {
                         loginResult.postValue(new LoginResult(R.string.login_failed));
                     }
-                }, throwable -> {
+                }).doOnError(throwable -> {
                     loginResult.postValue(new LoginResult(R.string.login_failed));
                     throwable.printStackTrace();
                 });
