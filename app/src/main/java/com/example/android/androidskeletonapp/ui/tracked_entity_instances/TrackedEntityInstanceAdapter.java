@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
 
 import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
+import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setState;
 
 public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntityInstance, ListItemWithSyncHolder> {
 
@@ -45,24 +46,6 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         holder.icon.setImageResource(R.drawable.ic_person_black_24dp);
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
         setState(trackedEntityInstance.state(), holder.syncIcon);
-    }
-
-    private void setState(State state, ImageView syncIcon) {
-        if (state == null) {
-            syncIcon.setVisibility(View.GONE);
-        } else {
-            syncIcon.setVisibility(View.VISIBLE);
-             if (state.equals(State.TO_UPDATE) || state.equals(State.TO_POST)|| state.equals(State.TO_DELETE)) {
-                syncIcon.setImageResource(R.drawable.ic_not_sync);
-                setBackgroundColor(R.color.colorAccentAlt, syncIcon);
-            } else if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
-                syncIcon.setImageResource(R.drawable.ic_sync_problem);
-                setBackgroundColor(R.color.colorWarn, syncIcon);
-            } else {
-                syncIcon.setImageResource(R.drawable.ic_sync);
-                setBackgroundColor(R.color.colorAccent, syncIcon);
-            }
-        }
     }
 
     private String valueAt(List<TrackedEntityAttributeValue> values, int index) {
