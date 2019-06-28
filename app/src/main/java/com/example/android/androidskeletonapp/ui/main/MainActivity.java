@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int programCount = SyncStatusHelper.programCount();
         int dataSetCount = SyncStatusHelper.dataSetCount();
         int trackedEntityInstanceCount = SyncStatusHelper.trackedEntityInstanceCount();
+        int singleEventCount = SyncStatusHelper.singleEventCount();
         int dataValueCount = SyncStatusHelper.dataValueCount();
 
         enablePossibleButtons(programCount + dataSetCount > 0);
@@ -189,10 +190,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView downloadedProgramsText = findViewById(R.id.programsDownloadedText);
         TextView downloadedDataSetsText = findViewById(R.id.dataSetsDownloadedText);
         TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
+        TextView singleEventsDownloadedText = findViewById(R.id.singleEventsDownloadedText);
         TextView downloadedDataValuesText = findViewById(R.id.dataValuesDownloadedText);
         downloadedProgramsText.setText(MessageFormat.format("{0} Programs", programCount));
         downloadedDataSetsText.setText(MessageFormat.format("{0} Data sets", dataSetCount));
         downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances", trackedEntityInstanceCount));
+        singleEventsDownloadedText.setText(MessageFormat.format("{0} Single events", singleEventCount));
         downloadedDataValuesText.setText(MessageFormat.format("{0} Data values", dataValueCount));
     }
 

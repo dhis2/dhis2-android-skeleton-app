@@ -54,7 +54,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/dataValuesDownloadedText"
+        android:id="@+id/singleEventsDownloadedText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
@@ -65,10 +65,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/dataValuesDownloadedText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="240dp"
+        android:textSize="20sp"
+        android:text="@string/lorem_ipsum"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/notificator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="260dp"
         android:text="@string/lorem_ipsum"
         android:textSize="20sp"
         android:visibility="gone"
@@ -82,7 +93,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="260dp"
         android:layout_marginEnd="12dp"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/notificator"
