@@ -22,7 +22,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
@@ -33,6 +32,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -44,12 +44,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CompositeDisposable compositeDisposable;
 
     private FloatingActionButton syncMetadataButton;
-    private TextView syncMetadataText;
     private FloatingActionButton syncDataButton;
-    private TextView syncDataText;
+    private FloatingActionButton uploadDataButton;
 
     private TextView syncStatusText;
     private ProgressBar progressBar;
+
+    private boolean isSyncing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,67 +107,88 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void inflateMainView() {
-        syncMetadataButton = findViewById(R.id.syncButton);
-        syncMetadataText = findViewById(R.id.syncMetadataText);
+        syncMetadataButton = findViewById(R.id.syncMetadataButton);
         syncDataButton = findViewById(R.id.syncDataButton);
-        syncDataText = findViewById(R.id.syncDataText);
+        uploadDataButton = findViewById(R.id.uploadDataButton);
 
         syncStatusText = findViewById(R.id.notificator);
         progressBar = findViewById(R.id.syncProgressBar);
 
-        syncDataButton.setOnClickListener(view -> {
-            view.setEnabled(Boolean.FALSE);
-            view.setVisibility(View.GONE);
-            syncDataText.setVisibility(View.GONE);
-            Snackbar.make(view, "Syncing data", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-            syncStatusText.setText(R.string.syncing_data);
-            syncStatusText.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
-            downloadData();
-        });
-
         syncMetadataButton.setOnClickListener(view -> {
-            view.setEnabled(Boolean.FALSE);
-            view.setVisibility(View.GONE);
-            syncMetadataText.setVisibility(View.GONE);
+            setSyncing();
             Snackbar.make(view, "Syncing metadata", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             syncStatusText.setText(R.string.syncing_metadata);
-            syncStatusText.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
             syncMetadata();
+        });
+
+        syncDataButton.setOnClickListener(view -> {
+            setSyncing();
+            Snackbar.make(view, "Syncing data", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            syncStatusText.setText(R.string.syncing_data);
+            downloadData();
+        });
+
+        uploadDataButton.setOnClickListener(view -> {
+            setSyncing();
+            Snackbar.make(view, "Uploading data", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            syncStatusText.setText(R.string.uploading_data);
+            uploadData();
         });
     }
 
-    private void updateSyncDataAndButtons() {
+    private void setSyncing() {
+        isSyncing = true;
+        progressBar.setVisibility(View.VISIBLE);
+        syncStatusText.setVisibility(View.VISIBLE);
+        updateSyncDataAndButtons();
+    }
+
+    private void setSyncingFinished() {
+        isSyncing = false;
         progressBar.setVisibility(View.GONE);
         syncStatusText.setVisibility(View.GONE);
+        updateSyncDataAndButtons();
+    }
 
-        if (SyncStatusHelper.isMetadataSynced()) {
-            syncMetadataButton.hide();
-            syncMetadataText.setVisibility(View.GONE);
-            TextView downloadedProgramsText = findViewById(R.id.programsDownloadedText);
-            TextView downloadedDataSetsText = findViewById(R.id.dataSetsDownloadedText);
-            downloadedProgramsText.setText(MessageFormat.format("{0} Programs",
-                    Sdk.d2().programModule().programs.count()));
-            downloadedDataSetsText.setText(MessageFormat.format("{0} Data sets",
-                    Sdk.d2().dataSetModule().dataSets.count()));
-            if (SyncStatusHelper.isDataSynced()) {
-                syncDataButton.hide();
-                syncDataText.setVisibility(View.GONE);
-                TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
-                TextView downloadedDataValuesText = findViewById(R.id.dataValuesDownloadedText);
-                downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances",
-                        Sdk.d2().trackedEntityModule().trackedEntityInstances.byState()
-                                .neq(State.RELATIONSHIP).count()));
-                downloadedDataValuesText.setText(MessageFormat.format("{0} Data values",
-                        Sdk.d2().dataValueModule().dataValues.count()));
-            } else {
-                syncDataText.setVisibility(View.VISIBLE);
-                syncDataButton.show();
+    private void disableAllButtons() {
+        syncMetadataButton.setEnabled(false);
+        syncDataButton.setEnabled(false);
+        uploadDataButton.setEnabled(false);
+    }
+
+    private void enablePossibleButtons(boolean metadataSynced) {
+        if (!isSyncing) {
+            syncMetadataButton.setEnabled(true);
+            if (metadataSynced) {
+                syncDataButton.setEnabled(true);
+                if (SyncStatusHelper.isThereDataToUpload()) {
+                    uploadDataButton.setEnabled(true);
+                }
             }
         }
+    }
+
+    private void updateSyncDataAndButtons() {
+        disableAllButtons();
+
+        int programCount = SyncStatusHelper.programCount();
+        int dataSetCount = SyncStatusHelper.dataSetCount();
+        int trackedEntityInstanceCount = SyncStatusHelper.trackedEntityInstanceCount();
+        int dataValueCount = SyncStatusHelper.dataValueCount();
+
+        enablePossibleButtons(programCount + dataSetCount > 0);
+
+        TextView downloadedProgramsText = findViewById(R.id.programsDownloadedText);
+        TextView downloadedDataSetsText = findViewById(R.id.dataSetsDownloadedText);
+        TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
+        TextView downloadedDataValuesText = findViewById(R.id.dataValuesDownloadedText);
+        downloadedProgramsText.setText(MessageFormat.format("{0} Programs", programCount));
+        downloadedDataSetsText.setText(MessageFormat.format("{0} Data sets", dataSetCount));
+        downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances", trackedEntityInstanceCount));
+        downloadedDataValuesText.setText(MessageFormat.format("{0} Data values", dataValueCount));
     }
 
     private void createNavigationView(User user) {
@@ -193,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(Throwable::printStackTrace)
                 .doOnComplete(() -> {
-                    updateSyncDataAndButtons();
+                    setSyncingFinished();
                     ActivityStarter.startActivity(this, ProgramsActivity.class, false);
                 })
                 .subscribe());
@@ -208,9 +230,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete(() -> {
-                            updateSyncDataAndButtons();
+                            setSyncingFinished();
                             ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false);
                         })
+                        .doOnError(Throwable::printStackTrace)
+                        .subscribe());
+    }
+
+    private void uploadData() {
+        compositeDisposable.add(
+                Single.merge(
+                        Single.fromCallable(Sdk.d2().trackedEntityModule().trackedEntityInstances.upload()),
+                        Single.fromCallable(Sdk.d2().dataValueModule().dataValues.upload())
+                )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(this::setSyncingFinished)
                         .doOnError(Throwable::printStackTrace)
                         .subscribe());
     }
