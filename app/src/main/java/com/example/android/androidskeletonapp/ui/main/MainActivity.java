@@ -15,7 +15,6 @@ import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.reports.DataSetReportsActivity;
 import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity;
-import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity;
@@ -23,7 +22,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
@@ -63,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         User user = getUser();
         TextView greeting = findViewById(R.id.greeting);
-        greeting.setText(String.format("Hi %s!", user.firstName()));
+        greeting.setText(String.format("Hi %s!", user.displayName()));
 
         inflateMainView();
         createNavigationView(user);
@@ -156,21 +154,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void disableAllButtons() {
-        syncMetadataButton.setEnabled(false);
-        syncDataButton.setEnabled(false);
-        uploadDataButton.setEnabled(false);
+        setEnabledButton(syncMetadataButton, false);
+        setEnabledButton(syncDataButton, false);
+        setEnabledButton(uploadDataButton, false);
     }
 
     private void enablePossibleButtons(boolean metadataSynced) {
         if (!isSyncing) {
-            syncMetadataButton.setEnabled(true);
+            setEnabledButton(syncMetadataButton, true);
             if (metadataSynced) {
-                syncDataButton.setEnabled(true);
+                setEnabledButton(syncDataButton, true);
                 if (SyncStatusHelper.isThereDataToUpload()) {
-                    uploadDataButton.setEnabled(true);
+                    setEnabledButton(uploadDataButton, true);
                 }
             }
         }
+    }
+
+    private void setEnabledButton(FloatingActionButton floatingActionButton, boolean enabled) {
+        floatingActionButton.setEnabled(enabled);
+        floatingActionButton.setAlpha(enabled ? 1.0f : 0.3f);
     }
 
     private void updateSyncDataAndButtons() {
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int programCount = SyncStatusHelper.programCount();
         int dataSetCount = SyncStatusHelper.dataSetCount();
         int trackedEntityInstanceCount = SyncStatusHelper.trackedEntityInstanceCount();
+        int singleEventCount = SyncStatusHelper.singleEventCount();
         int dataValueCount = SyncStatusHelper.dataValueCount();
 
         enablePossibleButtons(programCount + dataSetCount > 0);
@@ -186,10 +190,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView downloadedProgramsText = findViewById(R.id.programsDownloadedText);
         TextView downloadedDataSetsText = findViewById(R.id.dataSetsDownloadedText);
         TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
+        TextView singleEventsDownloadedText = findViewById(R.id.singleEventsDownloadedText);
         TextView downloadedDataValuesText = findViewById(R.id.dataValuesDownloadedText);
         downloadedProgramsText.setText(MessageFormat.format("{0} Programs", programCount));
         downloadedDataSetsText.setText(MessageFormat.format("{0} Data sets", dataSetCount));
         downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances", trackedEntityInstanceCount));
+        singleEventsDownloadedText.setText(MessageFormat.format("{0} Events without registration", singleEventCount));
         downloadedDataValuesText.setText(MessageFormat.format("{0} Data values", dataValueCount));
     }
 

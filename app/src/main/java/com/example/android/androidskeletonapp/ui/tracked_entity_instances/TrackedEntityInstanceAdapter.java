@@ -14,6 +14,7 @@ import com.example.android.androidskeletonapp.ui.tracker_import_conflicts.Tracke
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -40,9 +41,10 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
     public void onBindViewHolder(@NonNull ListItemWithSyncHolder holder, int position) {
         TrackedEntityInstance trackedEntityInstance = getItem(position);
         List<TrackedEntityAttributeValue> values = trackedEntityInstance.trackedEntityAttributeValues();
-        holder.title.setText(valueAt(values, 0));
-        holder.subtitle1.setText(valueAt(values, 1));
-        holder.subtitle2.setText(valueAt(values, 2));
+        holder.title.setText(valueAt(values, 2));
+        holder.subtitle1.setText(valueAt(values, 3));
+        holder.subtitle2.setText(MessageFormat.format("{0} - {1}",
+                valueAt(values, 1), valueAt(values, 0)));
         holder.rightText.setText(DateFormatHelper.formatDate(trackedEntityInstance.created()));
         holder.icon.setImageResource(R.drawable.ic_person_black_24dp);
         setBackgroundColor(R.color.colorAccentDark, holder.icon);

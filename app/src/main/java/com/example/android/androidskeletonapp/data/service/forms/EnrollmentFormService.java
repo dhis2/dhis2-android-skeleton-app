@@ -74,14 +74,17 @@ public class EnrollmentFormService {
                                         programAttribute.trackedEntityAttribute().uid())
                                 .withAllChildren()
                                 .get();
-                        TrackedEntityAttributeValueObjectRepository valueRepository = d2.trackedEntityModule().trackedEntityAttributeValues
-                                .value(programAttribute.trackedEntityAttribute().uid(),
-                                        enrollmentRepository.get().trackedEntityInstance());
+                        TrackedEntityAttributeValueObjectRepository valueRepository =
+                                d2.trackedEntityModule().trackedEntityAttributeValues
+                                        .value(programAttribute.trackedEntityAttribute().uid(),
+                                                enrollmentRepository.get().trackedEntityInstance());
 
-                        if (attribute.generated() && (valueRepository.get() == null || (valueRepository.get() != null && TextUtils.isEmpty(valueRepository.get().value())))) {
+                        if (attribute.generated() && (valueRepository.get() == null || (valueRepository.get() != null &&
+                                TextUtils.isEmpty(valueRepository.get().value())))) {
                             //get reserved value
-                            String value = d2.trackedEntityModule().reservedValueManager.getValue(programAttribute.trackedEntityAttribute().uid(),
-                                    enrollmentRepository.get().organisationUnit());
+                            String value = d2.trackedEntityModule().reservedValueManager
+                                    .getValue(programAttribute.trackedEntityAttribute().uid(),
+                                            enrollmentRepository.get().organisationUnit());
                             valueRepository.set(value);
                         }
 

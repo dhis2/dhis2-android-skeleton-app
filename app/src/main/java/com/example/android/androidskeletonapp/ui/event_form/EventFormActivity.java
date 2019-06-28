@@ -121,9 +121,11 @@ public class EventFormActivity extends AppCompatActivity {
                 engineInitialization
                         .flatMap(next ->
                                 Flowable.zip(
-                                        EventFormService.getInstance().getEventFormFields().subscribeOn(Schedulers.io()),
+                                        EventFormService.getInstance().getEventFormFields()
+                                                .subscribeOn(Schedulers.io()),
                                         engineService.ruleEvent().flatMap(ruleEvent ->
-                                                Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEvent).call())).subscribeOn(Schedulers.io()),
+                                                Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEvent).call()))
+                                                .subscribeOn(Schedulers.io()),
                                         this::applyEffects
                                 ))
                         .subscribeOn(Schedulers.io())
@@ -164,6 +166,12 @@ public class EventFormActivity extends AppCompatActivity {
     protected void onDestroy() {
         EventFormService.clear();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void finishEnrollment(View view) {

@@ -18,6 +18,10 @@ public class SyncStatusHelper {
         return Sdk.d2().trackedEntityModule().trackedEntityInstances.byState().neq(State.RELATIONSHIP).count();
     }
 
+    public static int singleEventCount() {
+        return Sdk.d2().eventModule().events.byEnrollmentUid().isNull().count();
+    }
+
     public static int dataValueCount() {
         return Sdk.d2().dataValueModule().dataValues.count();
     }
