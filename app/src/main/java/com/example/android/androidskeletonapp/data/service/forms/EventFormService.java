@@ -13,7 +13,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public class EventFormService {
     private boolean isListingRendering;
 
     private EventFormService() {
-        fieldMap = new HashMap<>();
+        fieldMap = new LinkedHashMap<>();
     }
 
     public static EventFormService getInstance() {
@@ -50,7 +50,6 @@ public class EventFormService {
                                 .programStage(programStage.uid())
                                 .program(programUid)
                                 .organisationUnit(ouUid)
-                                .enrollment("")
                                 .build()
                 );
             eventRepository = d2.eventModule().events.uid(eventUid);
@@ -78,7 +77,7 @@ public class EventFormService {
                     .flatMapIterable(programStageDataElements -> programStageDataElements)
                     .map(programStageDataElement -> {
 
-                        DataElement dataElement = d2.dataElementModule().dataElements.uid(programStageDataElement.uid())
+                        DataElement dataElement = d2.dataElementModule().dataElements.uid(programStageDataElement.dataElement().uid())
                                 .withAllChildren()
                                 .get();
 

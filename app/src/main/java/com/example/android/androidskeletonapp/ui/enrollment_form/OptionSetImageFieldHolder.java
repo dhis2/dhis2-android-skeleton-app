@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 
+import java.util.Objects;
+
 class OptionSetImageFieldHolder extends FieldHolder {
 
     private final ImageView optionImage;
@@ -42,7 +44,7 @@ class OptionSetImageFieldHolder extends FieldHolder {
         }
 
         //initial value
-        setInitialValue(fieldCurrentValue == fieldItem.getOptionCode());
+        setInitialValue(Objects.equals(fieldCurrentValue, fieldItem.getOptionCode()));
 
         itemView.setOnClickListener(v -> valueSavedListener.onValueSaved(fieldUid, fieldItem.getOptionCode()));
     }

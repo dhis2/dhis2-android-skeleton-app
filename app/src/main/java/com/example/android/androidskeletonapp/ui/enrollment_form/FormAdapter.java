@@ -63,7 +63,7 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
     @Override
     public long getItemId(int position) {
-        return fields.get(position).getUid().hashCode();
+        return fields.get(position).hashCode();
     }
 
     public void updateData(List<FormField> updates) {

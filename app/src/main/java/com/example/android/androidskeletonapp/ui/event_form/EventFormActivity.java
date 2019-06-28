@@ -142,10 +142,16 @@ public class EventFormActivity extends AppCompatActivity {
             RuleAction ruleAction = ruleEffect.ruleAction();
             if (ruleEffect.ruleAction() instanceof RuleActionHideField) {
                 fields.remove(((RuleActionHideField) ruleAction).field());
+                for(String key : fields.keySet()) //For image options
+                    if(key.contains(((RuleActionHideField) ruleAction).field()))
+                        fields.remove(key);
             }
+
         }
 
-        return new ArrayList<>(fields.values());
+        List<FormField> finalFields = new ArrayList<>(fields.values());
+
+        return finalFields;
     }
 
     @Override

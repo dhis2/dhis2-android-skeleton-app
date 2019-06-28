@@ -40,6 +40,6 @@ public class ProgramsAdapter extends PagedListAdapter<Program, ListItemWithStyle
         holder.subtitle1.setText(MessageFormat.format("{0} Program stages", program.programStages().size()));
         StyleBinderHelper.bindStyle(holder, program.style());
 
-        holder.itemView.setOnClickListener(view -> programSelectionListener.onProgramSelected(program.uid(), program.programType()));
+        holder.card.setOnClickListener(view -> programSelectionListener.onProgramSelected(program.uid(), program.programType()));
     }
 }
