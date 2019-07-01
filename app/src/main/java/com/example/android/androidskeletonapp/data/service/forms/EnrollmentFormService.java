@@ -45,8 +45,8 @@ public class EnrollmentFormService {
                             .build()
             );
             enrollmentRepository = d2.enrollmentModule().enrollments.uid(enrollmentUid);
-            enrollmentRepository.setEnrollmentDate(new Date()); //TODO: ALWAYS USE TODAY DATE??
-            enrollmentRepository.setIncidentDate(new Date());//TODO: CHECK WITH PROGRAM
+            enrollmentRepository.setEnrollmentDate(new Date());
+            enrollmentRepository.setIncidentDate(new Date());
             return true;
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();
