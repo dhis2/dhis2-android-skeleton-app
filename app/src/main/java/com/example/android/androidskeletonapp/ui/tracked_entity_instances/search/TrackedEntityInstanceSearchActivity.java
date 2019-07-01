@@ -12,12 +12,21 @@ import com.example.android.androidskeletonapp.ui.tracked_entity_instances.Tracke
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
+import org.hisp.dhis.android.core.trackedentity.search.QueryItem;
 import org.hisp.dhis.android.core.trackedentity.search.QueryOperator;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientNameUid;
 
 public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
@@ -54,16 +63,33 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
     private void syncData() {
         recyclerView.setAdapter(adapter);
 
+        List<OrganisationUnit> organisationUnits = Sdk.d2().organisationUnitModule().organisationUnits
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .byRootOrganisationUnit(true)
+                .get();
+
+        Program program = Sdk.d2().programModule()
+                .programs
+                .byProgramType().eq(ProgramType.WITH_REGISTRATION)
+                .one().get();
+
+        List<String> organisationUids = new ArrayList<>();
+        if (!organisationUnits.isEmpty()) {
+            organisationUids = UidsHelper.getUidsList(organisationUnits);
+        }
+
         TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
-                .orgUnits(Collections.singletonList("YuQRtpLP10I"))
+                .orgUnits(organisationUids)
                 .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
                 .pageSize(15)
                 .paging(true)
                 .page(1)
-                .query(QueryFilter.builder()
-                        .filter("a")
-                        .operator(QueryOperator.LIKE)
-                        .build())
+                .program(program.uid())
+                .filter(Collections.singletonList(
+                        QueryItem.create(attributePatientNameUid(), QueryFilter.builder()
+                                .filter("a")
+                                .operator(QueryOperator.LIKE)
+                                .build())))
                 .build();
 
         Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery
