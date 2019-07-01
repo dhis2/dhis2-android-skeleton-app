@@ -249,7 +249,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         compositeDisposable.add(
                 Single.merge(
                         Single.fromCallable(Sdk.d2().trackedEntityModule().trackedEntityInstances.upload()),
-                        Single.fromCallable(Sdk.d2().dataValueModule().dataValues.upload())
+                        Single.fromCallable(Sdk.d2().dataValueModule().dataValues.upload()),
+                        Single.fromCallable(Sdk.d2().eventModule().events.upload())
                 )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
