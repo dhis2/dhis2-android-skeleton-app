@@ -71,4 +71,7 @@
     <!-- Strings related to enrollment forms -->
     <string name="title_activity_enrollment_form">Enrollment form</string>
     <string name="title_activity_event_form">Event form</string>
+    <string name="date_button_text">Click to select date</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

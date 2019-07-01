@@ -3,10 +3,6 @@ package com.example.android.androidskeletonapp.ui.enrollment_form;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 
@@ -14,6 +10,10 @@ import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
@@ -34,20 +34,23 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     @Override
     public FieldHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == OPTIONSET) {
-            return new OptionSetFieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field_optionset, parent, false),
-                    valueSavedListener);
+            return new OptionSetFieldHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_field_optionset, parent, false), valueSavedListener);
         } else if (viewType == OPTIONSETIMAGE) {
-            return new OptionSetImageFieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field_optionset_image, parent, false),
-                    valueSavedListener);
+            return new OptionSetImageFieldHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_field_optionset_image, parent, false), valueSavedListener);
         } else
             switch (ValueType.values()[viewType]) {
-                case TEXT:
-                case LONG_TEXT:
-                    return new TextFieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field, parent, false),
-                            valueSavedListener);
+                case DATE:
+                    return new DateFieldHolder(LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.item_date_field, parent, false), valueSavedListener);
+                case BOOLEAN:
+                case TRUE_ONLY:
+                    return new BooleanFieldHolder(LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.item_boolean_field, parent, false), valueSavedListener);
                 default:
-                    return new FieldHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_field, parent, false),
-                            valueSavedListener);
+                    return new TextFieldHolder(LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.item_field, parent, false), valueSavedListener);
             }
     }
 
