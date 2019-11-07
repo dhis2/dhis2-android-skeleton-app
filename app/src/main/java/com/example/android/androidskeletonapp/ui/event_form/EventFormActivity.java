@@ -69,9 +69,9 @@ public class EventFormActivity extends AppCompatActivity {
 
         adapter = new FormAdapter((fieldUid, value) -> {
             try {
-                Sdk.d2().trackedEntityModule().trackedEntityDataValues.value(
+                Sdk.d2().trackedEntityModule().trackedEntityDataValues().value(
                         EventFormService.getInstance().getEventUid(), fieldUid)
-                        .set(value);
+                        .blockingSet(value);
             } catch (D2Error d2Error) {
                 d2Error.printStackTrace();
             } finally {
@@ -151,9 +151,7 @@ public class EventFormActivity extends AppCompatActivity {
 
         }
 
-        List<FormField> finalFields = new ArrayList<>(fields.values());
-
-        return finalFields;
+        return new ArrayList<>(fields.values());
     }
 
     @Override

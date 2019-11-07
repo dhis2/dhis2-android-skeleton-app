@@ -3,7 +3,7 @@ package com.example.android.androidskeletonapp.data.service.forms;
 import android.text.TextUtils;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -37,14 +37,14 @@ public class EnrollmentFormService {
     public boolean init(D2 d2, String teiUid, String programUid, String ouUid) {
         this.d2 = d2;
         try {
-            String enrollmentUid = d2.enrollmentModule().enrollments.add(
+            String enrollmentUid = d2.enrollmentModule().enrollments().blockingAdd(
                     EnrollmentCreateProjection.builder()
                             .organisationUnit(ouUid)
                             .program(programUid)
                             .trackedEntityInstance(teiUid)
                             .build()
             );
-            enrollmentRepository = d2.enrollmentModule().enrollments.uid(enrollmentUid);
+            enrollmentRepository = d2.enrollmentModule().enrollments().uid(enrollmentUid);
             enrollmentRepository.setEnrollmentDate(new Date());
             enrollmentRepository.setIncidentDate(new Date());
             return true;
@@ -62,29 +62,26 @@ public class EnrollmentFormService {
             );
         else
             return Flowable.fromCallable(() ->
-                    d2.programModule().programs.uid(enrollmentRepository.get().program())
-                            .withAllChildren().get()
-                            .programTrackedEntityAttributes()
+                    d2.programModule().programTrackedEntityAttributes()
+                            .byProgram().eq(enrollmentRepository.blockingGet().program()).blockingGet()
             )
                     .flatMapIterable(programTrackedEntityAttributes -> programTrackedEntityAttributes)
                     .map(programAttribute -> {
 
-                        TrackedEntityAttribute attribute = d2.trackedEntityModule().trackedEntityAttributes
-                                .uid(
-                                        programAttribute.trackedEntityAttribute().uid())
-                                .withAllChildren()
-                                .get();
+                        TrackedEntityAttribute attribute = d2.trackedEntityModule().trackedEntityAttributes()
+                                .withObjectStyle().uid(programAttribute.trackedEntityAttribute().uid())
+                                .blockingGet();
                         TrackedEntityAttributeValueObjectRepository valueRepository =
-                                d2.trackedEntityModule().trackedEntityAttributeValues
+                                d2.trackedEntityModule().trackedEntityAttributeValues()
                                         .value(programAttribute.trackedEntityAttribute().uid(),
-                                                enrollmentRepository.get().trackedEntityInstance());
+                                                enrollmentRepository.blockingGet().trackedEntityInstance());
 
                         if (attribute.generated() && (valueRepository.get() == null || (valueRepository.get() != null &&
-                                TextUtils.isEmpty(valueRepository.get().value())))) {
+                                TextUtils.isEmpty(valueRepository.blockingGet().value())))) {
                             //get reserved value
-                            String value = d2.trackedEntityModule().reservedValueManager
-                                    .getValue(programAttribute.trackedEntityAttribute().uid(),
-                                            enrollmentRepository.get().organisationUnit());
+                            String value = d2.trackedEntityModule().reservedValueManager()
+                                    .blockingGetValue(programAttribute.trackedEntityAttribute().uid(),
+                                            enrollmentRepository.blockingGet().organisationUnit());
                             valueRepository.set(value);
                         }
 
@@ -93,7 +90,7 @@ public class EnrollmentFormService {
                                 attribute.optionSet() != null ? attribute.optionSet().uid() : null,
                                 attribute.valueType(),
                                 attribute.formName(),
-                                valueRepository.exists() ? valueRepository.get().value() : null,
+                                valueRepository.blockingExists() ? valueRepository.blockingGet().value() : null,
                                 null,
                                 !attribute.generated(),
                                 attribute.style()
@@ -108,7 +105,7 @@ public class EnrollmentFormService {
 
     public void saveCoordinates(double lat, double lon) {
         try {
-            enrollmentRepository.setCoordinate(Coordinates.create(lat, lon));
+            enrollmentRepository.setGeometry(GeometryHelper.createPointGeometry(lon, lat));
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();
         }
@@ -131,12 +128,12 @@ public class EnrollmentFormService {
     }
 
     public String getEnrollmentUid() {
-        return enrollmentRepository.get().uid();
+        return enrollmentRepository.blockingGet().uid();
     }
 
     public void delete() {
         try {
-            enrollmentRepository.delete();
+            enrollmentRepository.blockingDelete();
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();
         }

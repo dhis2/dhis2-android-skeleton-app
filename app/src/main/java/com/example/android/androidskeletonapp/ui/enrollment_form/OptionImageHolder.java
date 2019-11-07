@@ -11,14 +11,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 
-import org.apache.commons.lang3.tuple.Triple;
-import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +44,12 @@ class OptionImageHolder extends FieldHolder {
     }
 
     private void setUpSpinner(String optionSetUid) {
-        optionList = Sdk.d2().optionModule().options.byOptionSetUid().eq(optionSetUid).get();
+        optionList = Sdk.d2().optionModule().options().byOptionSetUid().eq(optionSetUid).blockingGet();
         List<String> optionListNames = new ArrayList<>();
         optionListNames.add(label.getText().toString());
         for (Option option : optionList) optionListNames.add(option.displayName());
-        spinner.setAdapter(new ArrayAdapter<>(itemView.getContext(), android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, optionListNames));
+        spinner.setAdapter(new ArrayAdapter<>(itemView.getContext(),
+                android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, optionListNames));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

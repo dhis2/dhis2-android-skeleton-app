@@ -5,8 +5,8 @@ import android.content.Context;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.d2manager.D2Configuration;
-import org.hisp.dhis.android.core.d2manager.D2Manager;
+import org.hisp.dhis.android.core.D2Configuration;
+import org.hisp.dhis.android.core.D2Manager;
 
 import java.util.Collections;
 

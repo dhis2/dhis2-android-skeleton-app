@@ -4,6 +4,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
@@ -16,9 +19,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.text.MessageFormat;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.paging.PagedListAdapter;
 
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientIdUid;
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientNameUid;
@@ -86,7 +86,7 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
     private void setConflicts(String trackedEntityInstanceUid, ListItemWithSyncHolder holder) {
         TrackerImportConflictsAdapter adapter = new TrackerImportConflictsAdapter();
         holder.recyclerView.setAdapter(adapter);
-        adapter.setTrackerImportConflicts(Sdk.d2().importModule().trackerImportConflicts
-                .byTrackedEntityInstanceUid().eq(trackedEntityInstanceUid).get());
+        adapter.setTrackerImportConflicts(Sdk.d2().importModule().trackerImportConflicts()
+                .byTrackedEntityInstanceUid().eq(trackedEntityInstanceUid).blockingGet());
     }
 }

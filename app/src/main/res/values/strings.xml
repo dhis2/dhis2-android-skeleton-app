@@ -11,9 +11,9 @@
     <string name="invalid_password">Password must have more than 5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <!-- Strings related to autoFill -->
-    <string name="auto_fill_url">"http://android2.dhis2.org:8080"</string>
-    <string name="auto_fill_username">"android_"</string>
-    <string name="auto_fill_password">"Android2019xx.."</string>
+    <string name="auto_fill_url">"https://play.dhis2.org/2.33.0/"</string>
+    <string name="auto_fill_username">"android"</string>
+    <string name="auto_fill_password">"Android123"</string>
     <!-- Strings related to list item -->
     <string name="sync_icon">Sync icon</string>
     <string name="item_icon">Icon</string>
@@ -65,9 +65,9 @@
     <!-- Strings related to data sets -->
     <string name="title_activity_data_sets">Your data sets</string>
     <string name="no_data_sets_found">No data sets found</string>
-    <!-- Strings related to data set reports -->
-    <string name="title_activity_data_set_reports">Your data set reports</string>
-    <string name="no_data_set_reports_found">No data set reports found</string>
+    <!-- Strings related to data set instances -->
+    <string name="title_activity_data_set_instances">Your data set instances</string>
+    <string name="no_data_set_instances_found">No data set instances found</string>
     <!-- Strings related to enrollment forms -->
     <string name="title_activity_enrollment_form">Enrollment form</string>
     <string name="title_activity_event_form">Event form</string>

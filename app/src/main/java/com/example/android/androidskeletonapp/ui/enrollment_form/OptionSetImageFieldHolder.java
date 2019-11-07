@@ -17,7 +17,6 @@ class OptionSetImageFieldHolder extends FieldHolder {
     private final ImageView optionImage;
 
     private String fieldUid;
-    private String fieldCurrentValue;
 
     OptionSetImageFieldHolder(@NonNull View itemView, FormAdapter.OnValueSaved valueSavedListener) {
         super(itemView, valueSavedListener);
@@ -27,7 +26,7 @@ class OptionSetImageFieldHolder extends FieldHolder {
     void bind(FormField fieldItem) {
         super.bind(fieldItem);
         fieldUid = fieldItem.getUid();
-        fieldCurrentValue = fieldItem.getValue();
+        String fieldCurrentValue = fieldItem.getValue();
 
         if (fieldItem.getObjectStyle().color() != null) {
             String color = fieldItem.getObjectStyle().color().startsWith("#") ?
@@ -49,9 +48,10 @@ class OptionSetImageFieldHolder extends FieldHolder {
         itemView.setOnClickListener(v -> valueSavedListener.onValueSaved(fieldUid, fieldItem.getOptionCode()));
     }
 
-
     private void setInitialValue(boolean isSelected) {
-        label.setTextColor(isSelected ? ContextCompat.getColor(itemView.getContext(), R.color.colorAccentAlt) : Color.BLACK);
+        label.setTextColor(isSelected ?
+                ContextCompat.getColor(itemView.getContext(), R.color.colorAccentAlt) :
+                Color.BLACK);
     }
 
 }

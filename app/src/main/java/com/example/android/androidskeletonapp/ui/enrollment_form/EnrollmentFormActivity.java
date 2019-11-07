@@ -67,9 +67,9 @@ public class EnrollmentFormActivity extends AppCompatActivity {
 
         adapter = new FormAdapter((fieldUid, value) -> {
             try {
-                Sdk.d2().trackedEntityModule().trackedEntityAttributeValues.value(fieldUid,
+                Sdk.d2().trackedEntityModule().trackedEntityAttributeValues().value(fieldUid,
                         getIntent().getStringExtra(IntentExtra.TEI_UID.name()))
-                        .set(value);
+                        .blockingSet(value);
             } catch (D2Error d2Error) {
                 d2Error.printStackTrace();
             } finally {

@@ -5,15 +5,15 @@ import com.example.android.androidskeletonapp.data.Sdk;
 public class AttributeHelper {
 
     public static String attributePatientNameUid() {
-        return getAttributeUid("Malaria patient name");
+        return getAttributeUid("First Name");
     }
 
     public static String attributePatientIdUid() {
-        return getAttributeUid("Malaria patient id");
+        return getAttributeUid("National identifier");
     }
 
     public static String attributeYearOfBirthUid() {
-        return getAttributeUid("Malaria patient: Year of birth");
+        return getAttributeUid("Date of birth");
     }
 
     public static String attributeLegalGuardianUid() {
@@ -21,15 +21,15 @@ public class AttributeHelper {
     }
 
     public static String attributeResidentInCatchmentAreaUid() {
-        return getAttributeUid("MAL - Resident in catchment area");
+        return getAttributeUid("Residence location");
     }
 
 
     private static String getAttributeUid(String attributeDisplayName) {
-        return Sdk.d2().trackedEntityModule().trackedEntityAttributes
+        return Sdk.d2().trackedEntityModule().trackedEntityAttributes()
                 .byName().eq(attributeDisplayName)
                 .one()
-                .get()
+                .blockingGet()
                 .uid();
     }
 }

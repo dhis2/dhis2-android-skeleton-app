@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.data_sets.reports.DataSetReportsActivity">
+    tools:context=".ui.data_sets.instances.DataSetInstancesActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/dataSetReportsToolbar"
+            android:id="@+id/dataSetInstancesToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -20,6 +20,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_data_set_reports" />
+    <include layout="@layout/content_data_set_instances" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

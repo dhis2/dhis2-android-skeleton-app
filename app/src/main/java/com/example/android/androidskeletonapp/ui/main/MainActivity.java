@@ -7,13 +7,19 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
-import com.example.android.androidskeletonapp.ui.data_sets.reports.DataSetReportsActivity;
+import com.example.android.androidskeletonapp.ui.data_sets.instances.DataSetInstancesActivity;
 import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
@@ -26,13 +32,7 @@ import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private User getUser() {
-        return Sdk.d2().userModule().user.getWithoutChildren();
+        return Sdk.d2().userModule().user().getWithoutChildren();
     }
 
     private User getUserFromCursor() {
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void syncMetadata() {
-        compositeDisposable.add(Sdk.d2().syncMetaData()
+        compositeDisposable.add(Sdk.d2().metadataModule().download()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(Throwable::printStackTrace)
@@ -232,7 +232,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void downloadData() {
         compositeDisposable.add(
                 Observable.merge(
-                        Sdk.d2().trackedEntityModule().downloadTrackedEntityInstances(10, false, false),
+                        Sdk.d2().trackedEntityModule().trackedEntityInstanceDownloader()
+                                .limit(10).limitByOrgunit(false).limitByProgram(false).download(),
                         Sdk.d2().aggregatedModule().data().download()
                 )
                         .subscribeOn(Schedulers.io())
@@ -247,11 +248,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void uploadData() {
         compositeDisposable.add(
-                Single.merge(
-                        Single.fromCallable(Sdk.d2().trackedEntityModule().trackedEntityInstances.upload()),
-                        Single.fromCallable(Sdk.d2().dataValueModule().dataValues.upload()),
-                        Single.fromCallable(Sdk.d2().eventModule().events.upload())
-                )
+                Sdk.d2().trackedEntityModule().trackedEntityInstances().upload()
+                        .concatWith(Sdk.d2().dataValueModule().dataValues().upload())
+                        .concatWith(Sdk.d2().eventModule().events().upload())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete(this::setSyncingFinished)
@@ -281,8 +280,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class,false);
         } else if (id == R.id.navDataSets) {
             ActivityStarter.startActivity(this, DataSetsActivity.class,false);
-        } else if (id == R.id.navDataSetReports) {
-            ActivityStarter.startActivity(this, DataSetReportsActivity.class,false);
+        } else if (id == R.id.navDataSetInstances) {
+            ActivityStarter.startActivity(this, DataSetInstancesActivity.class,false);
         } else if (id == R.id.navD2Errors) {
             ActivityStarter.startActivity(this, D2ErrorActivity.class,false);
         } else if (id == R.id.navFKViolations) {

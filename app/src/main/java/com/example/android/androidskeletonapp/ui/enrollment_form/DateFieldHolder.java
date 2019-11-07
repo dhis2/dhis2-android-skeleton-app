@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
@@ -11,8 +13,6 @@ import com.example.android.androidskeletonapp.data.service.forms.FormField;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-
-import androidx.annotation.NonNull;
 
 class DateFieldHolder extends FieldHolder {
 
@@ -36,9 +36,11 @@ class DateFieldHolder extends FieldHolder {
 
         dateButton.setOnClickListener(view -> {
             Calendar calendar = Calendar.getInstance();
-            new DatePickerDialog(itemView.getContext(), (datePicker, year, month, day) -> {
-                valueSavedListener.onValueSaved(fieldItem.getUid(), getDate(year, month, day));
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            new DatePickerDialog(itemView.getContext(), (datePicker, year, month, day) ->
+                    valueSavedListener.onValueSaved(fieldItem.getUid(), getDate(year, month, day)),
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
     }
