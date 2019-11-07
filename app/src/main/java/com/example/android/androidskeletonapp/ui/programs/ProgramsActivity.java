@@ -41,7 +41,6 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
                         .byOrganisationUnitList(UidsHelper.getUidsList(organisationUnitUids))
                         .orderByName(RepositoryScope.OrderByDirection.ASC)
                         .withStyle()
-                        .withProgramStages()
                         .getPaged(20))
                 .subscribe(programs -> programs.observe(this, programPagedList -> {
                     adapter.submitList(programPagedList);
