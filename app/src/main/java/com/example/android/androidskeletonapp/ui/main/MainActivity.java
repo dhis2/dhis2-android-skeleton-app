@@ -7,6 +7,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
@@ -26,13 +32,7 @@ import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private User getUser() {
-        return Sdk.d2().userModule().user.getWithoutChildren();
+        return Sdk.d2().userModule().user().getWithoutChildren();
     }
 
     private User getUserFromCursor() {
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void syncMetadata() {
-        compositeDisposable.add(Sdk.d2().syncMetaData()
+        compositeDisposable.add(Sdk.d2().metadataModule().download()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(Throwable::printStackTrace)
@@ -232,7 +232,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void downloadData() {
         compositeDisposable.add(
                 Observable.merge(
-                        Sdk.d2().trackedEntityModule().downloadTrackedEntityInstances(10, false, false),
+                        Sdk.d2().trackedEntityModule().trackedEntityInstanceDownloader()
+                                .limit(10).limitByOrgunit(false).limitByProgram(false).download(),
                         Sdk.d2().aggregatedModule().data().download()
                 )
                         .subscribeOn(Schedulers.io())
@@ -247,11 +248,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void uploadData() {
         compositeDisposable.add(
-                Single.merge(
-                        Single.fromCallable(Sdk.d2().trackedEntityModule().trackedEntityInstances.upload()),
-                        Single.fromCallable(Sdk.d2().dataValueModule().dataValues.upload()),
-                        Single.fromCallable(Sdk.d2().eventModule().events.upload())
-                )
+                Sdk.d2().trackedEntityModule().trackedEntityInstances().upload()
+                        .concatWith(Sdk.d2().dataValueModule().dataValues().upload())
+                        .concatWith(Sdk.d2().eventModule().events().upload())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete(this::setSyncingFinished)
