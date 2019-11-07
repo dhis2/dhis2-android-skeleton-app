@@ -3,14 +3,14 @@ package com.example.android.androidskeletonapp.ui.data_sets;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 
 import org.hisp.dhis.android.core.dataset.DataSet;
-
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
 
 public class DataSetsActivity extends ListActivity {
 
@@ -25,7 +25,7 @@ public class DataSetsActivity extends ListActivity {
         DataSetsAdapter adapter = new DataSetsAdapter();
         recyclerView.setAdapter(adapter);
 
-        LiveData<PagedList<DataSet>> liveData = Sdk.d2().dataSetModule().dataSets
+        LiveData<PagedList<DataSet>> liveData = Sdk.d2().dataSetModule().dataSets()
                 .withStyle()
                 .getPaged(20);
 

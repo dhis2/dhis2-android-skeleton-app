@@ -59,8 +59,8 @@
             android:label="@string/title_activity_data_sets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.data_sets.reports.DataSetReportsActivity"
-            android:label="@string/title_activity_data_set_reports"
+            android:name=".ui.data_sets.instances.DataSetInstancesActivity"
+            android:label="@string/title_activity_data_set_instances"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.d2_errors.D2ErrorActivity"
