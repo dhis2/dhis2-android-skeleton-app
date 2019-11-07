@@ -3,14 +3,14 @@ package com.example.android.androidskeletonapp.ui.d2_errors;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import androidx.lifecycle.LiveData;
-import androidx.paging.PagedList;
 
 public class D2ErrorActivity extends ListActivity {
 
@@ -25,7 +25,7 @@ public class D2ErrorActivity extends ListActivity {
         D2ErrorAdapter adapter = new D2ErrorAdapter();
         recyclerView.setAdapter(adapter);
 
-        LiveData<PagedList<D2Error>> liveData = Sdk.d2().maintenanceModule().d2Errors
+        LiveData<PagedList<D2Error>> liveData = Sdk.d2().maintenanceModule().d2Errors()
                 .getPaged(20);
 
         liveData.observe(this, d2ErrorPagedList -> {
