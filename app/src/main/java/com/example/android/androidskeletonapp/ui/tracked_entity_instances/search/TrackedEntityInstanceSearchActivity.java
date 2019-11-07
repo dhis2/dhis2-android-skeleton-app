@@ -17,13 +17,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
-import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
-import org.hisp.dhis.android.core.trackedentity.search.QueryItem;
-import org.hisp.dhis.android.core.trackedentity.search.QueryOperator;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientNameUid;
@@ -63,37 +58,26 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
     private void syncData() {
         recyclerView.setAdapter(adapter);
 
-        List<OrganisationUnit> organisationUnits = Sdk.d2().organisationUnitModule().organisationUnits
+        List<OrganisationUnit> organisationUnits = Sdk.d2().organisationUnitModule().organisationUnits()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
                 .byRootOrganisationUnit(true)
-                .get();
+                .blockingGet();
 
         Program program = Sdk.d2().programModule()
-                .programs
+                .programs()
                 .byProgramType().eq(ProgramType.WITH_REGISTRATION)
-                .one().get();
+                .one().blockingGet();
 
         List<String> organisationUids = new ArrayList<>();
         if (!organisationUnits.isEmpty()) {
             organisationUids = UidsHelper.getUidsList(organisationUnits);
         }
 
-        TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
-                .orgUnits(organisationUids)
-                .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
-                .pageSize(15)
-                .paging(true)
-                .page(1)
-                .program(program.uid())
-                .filter(Collections.singletonList(
-                        QueryItem.create(attributePatientNameUid(), QueryFilter.builder()
-                                .filter("a")
-                                .operator(QueryOperator.LIKE)
-                                .build())))
-                .build();
-
-        Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery
-                .query(query)
+        Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery()
+                .byOrgUnits().in(organisationUids)
+                .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
+                .byProgram().eq(program.uid())
+                .byQuery().eq(attributePatientNameUid())
                 .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
             adapter.submitList(trackedEntityInstancePagedList);
             downloadDataText.setVisibility(View.GONE);

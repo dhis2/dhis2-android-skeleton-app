@@ -51,12 +51,12 @@ public class TrackedEntityInstancesActivity extends ListActivity {
             findViewById(R.id.enrollmentButton).setVisibility(View.GONE);
 
         findViewById(R.id.enrollmentButton).setOnClickListener(view -> compositeDisposable.add(
-                Sdk.d2().programModule().programs.uid(selectedProgram).getAsync()
-                        .map(program -> Sdk.d2().trackedEntityModule().trackedEntityInstances
-                                .add(
+                Sdk.d2().programModule().programs().uid(selectedProgram).get()
+                        .map(program -> Sdk.d2().trackedEntityModule().trackedEntityInstances()
+                                .blockingAdd(
                                         TrackedEntityInstanceCreateProjection.builder()
-                                                .organisationUnit(Sdk.d2().organisationUnitModule().organisationUnits
-                                                        .one().get().uid())
+                                                .organisationUnit(Sdk.d2().organisationUnitModule().organisationUnits()
+                                                        .one().blockingGet().uid())
                                                 .trackedEntityType(program.trackedEntityType().uid())
                                                 .build()
                                 ))
@@ -64,13 +64,14 @@ public class TrackedEntityInstancesActivity extends ListActivity {
                                 TrackedEntityInstancesActivity.this,
                                 teiUid,
                                 selectedProgram,
-                                Sdk.d2().organisationUnitModule().organisationUnits.one().get().uid()
+                                Sdk.d2().organisationUnitModule().organisationUnits().one().blockingGet().uid()
                                 ))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 activityIntent ->
-                                        ActivityStarter.startActivity(TrackedEntityInstancesActivity.this, activityIntent),
+                                        ActivityStarter.startActivity(
+                                                TrackedEntityInstancesActivity.this, activityIntent),
                                 Throwable::printStackTrace
                         )
         ));
@@ -89,7 +90,7 @@ public class TrackedEntityInstancesActivity extends ListActivity {
 
     private TrackedEntityInstanceCollectionRepository getTeiRepository() {
         TrackedEntityInstanceCollectionRepository teiRepository =
-                Sdk.d2().trackedEntityModule().trackedEntityInstances.withTrackedEntityAttributeValues();
+                Sdk.d2().trackedEntityModule().trackedEntityInstances().withTrackedEntityAttributeValues();
         if (!isEmpty(selectedProgram)) {
             List<String> programUids = new ArrayList<>();
             programUids.add(selectedProgram);
