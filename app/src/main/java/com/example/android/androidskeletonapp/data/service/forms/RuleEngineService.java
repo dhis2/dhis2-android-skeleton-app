@@ -97,7 +97,7 @@ public class RuleEngineService {
     public Flowable<RuleEngine> configure(D2 d2, String programUid, String eventUid) {
         this.d2 = d2;
         this.programUid = programUid;
-        this.enrollmentUid = d2.eventModule().events.uid(eventUid).get().enrollment();
+        this.enrollmentUid = d2.eventModule().events().uid(eventUid).blockingGet().enrollment();
         this.eventUid = eventUid;
         this.stage = null;
 
@@ -147,22 +147,28 @@ public class RuleEngineService {
 
     public Flowable<RuleEnrollment> ruleEnrollment() {
         return Flowable.fromCallable(() -> {
-            Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrollmentUid).get();
-            String ouCode = d2.organisationUnitModule().organisationUnits.uid(enrollment.organisationUnit()).get().code();
-            Program program = d2.programModule().programs.uid(enrollment.program()).withAllChildren().get();
-            List<String> programAttributesUids = getProgramTrackedEntityAttributesUids(program.programTrackedEntityAttributes());
+            Enrollment enrollment = d2.enrollmentModule().enrollments().uid(enrollmentUid).blockingGet();
+            String ouCode = d2.organisationUnitModule().organisationUnits().uid(enrollment.organisationUnit())
+                    .blockingGet().code();
+            Program program = d2.programModule().programs().uid(enrollment.program()).blockingGet();
+            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
+                    d2.programModule().programTrackedEntityAttributes()
+                            .byProgram().eq(enrollment.program()).blockingGet();
+            List<String> programAttributesUids = getProgramTrackedEntityAttributesUids(programTrackedEntityAttributes);
 
             List<RuleAttributeValue> attributeValues = transformToRuleAttributeValues(
-                    d2.trackedEntityModule().trackedEntityAttributeValues
+                    d2.trackedEntityModule().trackedEntityAttributeValues()
                             .byTrackedEntityInstance().eq(enrollment.trackedEntityInstance())
                             .byTrackedEntityAttribute().in(programAttributesUids)
-                            .get()
+                            .blockingGet()
             );
             return RuleEnrollment.create(
                     enrollment.uid(),
                     enrollment.incidentDate(),
                     enrollment.enrollmentDate(),
-                    enrollment.status() != null ? RuleEnrollment.Status.valueOf(enrollment.status().name()) : RuleEnrollment.Status.ACTIVE,
+                    enrollment.status() != null ?
+                            RuleEnrollment.Status.valueOf(enrollment.status().name()) :
+                            RuleEnrollment.Status.ACTIVE,
                     enrollment.organisationUnit(),
                     ouCode,
                     attributeValues,
@@ -176,10 +182,11 @@ public class RuleEngineService {
             return Flowable.empty();
         else
             return Flowable.fromCallable(() ->
-                    transformToRuleEvent(d2.eventModule().events.uid(eventUid).get()));
+                    transformToRuleEvent(d2.eventModule().events().uid(eventUid).blockingGet()));
     }
 
-    private List<String> getProgramTrackedEntityAttributesUids(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
+    private List<String> getProgramTrackedEntityAttributesUids(
+            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
         List<String> attrUids = new ArrayList<>();
         for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes)
             attrUids.add(programTrackedEntityAttribute.uid());
@@ -198,33 +205,34 @@ public class RuleEngineService {
     }
 
     private Flowable<List<RuleEvent>> getEvents(String enrollmentUid) {
-        return Flowable.fromCallable(() -> d2.eventModule().events
+        return Flowable.fromCallable(() -> d2.eventModule().events()
                 .byEnrollmentUid().eq(enrollmentUid)
                 .byStatus().in(EventStatus.ACTIVE, EventStatus.COMPLETED)
-                .get()).flatMapIterable(events -> events)
+                .blockingGet()).flatMapIterable(events -> events)
                 .map(this::transformToRuleEvent)
                 .toList().toFlowable();
     }
 
     private Flowable<List<RuleEvent>> getOtherEvents(String eventUid) {
-        return Flowable.fromCallable(() -> d2.eventModule().events.uid(eventUid).get())
+        return Flowable.fromCallable(() -> d2.eventModule().events().uid(eventUid).blockingGet())
                 .flatMap(event ->
-                        Flowable.fromCallable(() -> d2.eventModule().events
+                        Flowable.fromCallable(() -> d2.eventModule().events()
                                 .byProgramUid().eq(event.program())
                                 .byUid().notIn(event.uid())
                                 .byEventDate().before(event.eventDate())
                                 .byStatus().in(EventStatus.ACTIVE, EventStatus.COMPLETED)
-                                .get()))
+                                .blockingGet()))
                 .flatMapIterable(events -> events)
                 .map(this::transformToRuleEvent)
                 .toList().toFlowable();
     }
 
     private RuleEvent transformToRuleEvent(Event event) {
-        String code = d2.organisationUnitModule().organisationUnits.uid(event.organisationUnit()).get().code();
-        String stageName = d2.programModule().programStages.uid(event.programStage()).get().name();
-        List<TrackedEntityDataValue> eventDataValue = d2.trackedEntityModule().trackedEntityDataValues
-                .byEvent().eq(event.uid()).get();
+        String code = d2.organisationUnitModule().organisationUnits()
+                .uid(event.organisationUnit()).blockingGet().code();
+        String stageName = d2.programModule().programStages().uid(event.programStage()).blockingGet().name();
+        List<TrackedEntityDataValue> eventDataValue = d2.trackedEntityModule().trackedEntityDataValues()
+                .byEvent().eq(event.uid()).blockingGet();
         List<RuleDataValue> ruleDataValues = transformToRuleDataValue(event, eventDataValue);
         return RuleEvent.create(event.uid(),
                 event.programStage(),
@@ -240,20 +248,22 @@ public class RuleEngineService {
     private List<RuleDataValue> transformToRuleDataValue(Event event, List<TrackedEntityDataValue> eventDataValues) {
         List<RuleDataValue> ruleDataValues = new ArrayList<>();
         for (TrackedEntityDataValue dataValue : eventDataValues) {
-            ruleDataValues.add(
-                    RuleDataValue.create(event.eventDate(), event.programStage(), dataValue.dataElement(), dataValue.value())
+            ruleDataValues.add(RuleDataValue.create(
+                    event.eventDate(), event.programStage(), dataValue.dataElement(), dataValue.value())
             );
         }
         return ruleDataValues;
     }
 
     private Flowable<List<Rule>> getRules() {
-        return Flowable.fromCallable(() -> d2.programModule().programRules.byProgramUid().eq(programUid).withProgramRuleActions().get())
+        return Flowable.fromCallable(() -> d2.programModule().programRules()
+                .byProgramUid().eq(programUid).withProgramRuleActions().blockingGet())
                 .map(this::transformToRule);
     }
 
     private Flowable<List<RuleVariable>> getRuleVariables() {
-        return Flowable.fromCallable(() -> d2.programModule().programRuleVariables.byProgramUid().eq(programUid).get())
+        return Flowable.fromCallable(() -> d2.programModule().programRuleVariables()
+                .byProgramUid().eq(programUid).blockingGet())
                 .map(this::transformToRuleVariable);
     }
 
@@ -262,7 +272,9 @@ public class RuleEngineService {
         for (ProgramRule rule : programRules) {
             List<RuleAction> ruleActions = transformToRuleAction(rule.programRuleActions());
             rules.add(
-                    Rule.create(rule.programStage() != null ? rule.programStage().uid() : null, rule.priority(), rule.condition(), ruleActions, rule.name())
+                    Rule.create(rule.programStage() != null ?
+                            rule.programStage().uid() :
+                            null, rule.priority(), rule.condition(), ruleActions, rule.name())
             );
         }
         return rules;
@@ -274,7 +286,8 @@ public class RuleEngineService {
         for (ProgramRuleAction pra : programRuleActions) {
             switch (pra.programRuleActionType()) {
                 case HIDEFIELD:
-                    String field = pra.dataElement() != null ? pra.dataElement().uid() : pra.trackedEntityAttribute().uid();
+                    String field = pra.dataElement() != null ?
+                            pra.dataElement().uid() : pra.trackedEntityAttribute().uid();
                     ruleActions.add(RuleActionHideField.create(pra.content(), field));
                     break;
             }
@@ -294,7 +307,8 @@ public class RuleEngineService {
 
             switch (prv.programRuleVariableSourceType()) {
                 case TEI_ATTRIBUTE:
-                    attr = d2.trackedEntityModule().trackedEntityAttributes.uid(prv.trackedEntityAttribute().uid()).get();
+                    attr = d2.trackedEntityModule().trackedEntityAttributes()
+                            .uid(prv.trackedEntityAttribute().uid()).blockingGet();
                     if (attr != null)
                         mimeType = convertType(attr.valueType());
                     break;
@@ -302,7 +316,7 @@ public class RuleEngineService {
                 case DATAELEMENT_PREVIOUS_EVENT:
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM:
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE:
-                    de = d2.dataElementModule().dataElements.uid(prv.dataElement().uid()).get();
+                    de = d2.dataElementModule().dataElements().uid(prv.dataElement().uid()).blockingGet();
                     if (de != null)
                         mimeType = convertType(de.valueType());
                     break;
@@ -337,7 +351,8 @@ public class RuleEngineService {
                     if (de != null || attr != null) {
                         variable = de != null ? de.uid() : attr.uid();
                     }
-                    ruleVariables.add(RuleVariableCalculatedValue.create(name, variable != null ? variable : "", mimeType));
+                    ruleVariables.add(RuleVariableCalculatedValue.create(
+                            name, variable != null ? variable : "", mimeType));
                     break;
                 default:
                     throw new IllegalArgumentException("Unsupported variable " +
@@ -358,5 +373,4 @@ public class RuleEngineService {
             return RuleValueType.TEXT;
         }
     }
-
 }

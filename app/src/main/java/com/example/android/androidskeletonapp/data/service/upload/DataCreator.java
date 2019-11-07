@@ -12,25 +12,25 @@ import java.util.List;
 public class DataCreator {
 
     private static String addTEIProjection() throws D2Error {
-        String orgUnitUid = Sdk.d2().organisationUnitModule().organisationUnits.one().get().uid();
-        String tackedEntityTypeUid = Sdk.d2().trackedEntityModule().trackedEntityTypes.one().get().uid();
+        String orgUnitUid = Sdk.d2().organisationUnitModule().organisationUnits().one().blockingGet().uid();
+        String tackedEntityTypeUid = Sdk.d2().trackedEntityModule().trackedEntityTypes().one().blockingGet().uid();
         TrackedEntityInstanceCreateProjection projection
                 = TrackedEntityInstanceCreateProjection.create(orgUnitUid, tackedEntityTypeUid);
-        return Sdk.d2().trackedEntityModule().trackedEntityInstances.add(projection);
+        return Sdk.d2().trackedEntityModule().trackedEntityInstances().blockingAdd(projection);
     }
 
     public static void createTEI() {
         try {
             String teiUid = addTEIProjection();
             TrackedEntityModule module = Sdk.d2().trackedEntityModule();
-            List<TrackedEntityAttribute> attributes = module.trackedEntityAttributes.get();
+            List<TrackedEntityAttribute> attributes = module.trackedEntityAttributes().blockingGet();
             if (attributes.size() > 0) {
                 String att0 = attributes.get(0).uid();
-                module.trackedEntityAttributeValues.value(att0, teiUid).set("Android");
+                module.trackedEntityAttributeValues().value(att0, teiUid).set("Android");
             }
             if (attributes.size() > 1) {
                 String att1 = attributes.get(1).uid();
-                module.trackedEntityAttributeValues.value(att1, teiUid).set("" + Math.round(100 * Math.random()));
+                module.trackedEntityAttributeValues().value(att1, teiUid).set("" + Math.round(100 * Math.random()));
             }
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();

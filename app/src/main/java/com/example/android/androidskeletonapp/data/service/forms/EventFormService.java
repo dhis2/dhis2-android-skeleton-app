@@ -1,7 +1,7 @@
 package com.example.android.androidskeletonapp.data.service.forms;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.event.EventObjectRepository;
@@ -40,12 +40,13 @@ public class EventFormService {
 
     public boolean init(D2 d2, String eventUid, String programUid, String ouUid) {
         this.d2 = d2;
-        ProgramStage programStage = d2.programModule().programStages.byProgramUid().eq(programUid).one().get();
-        String defaultOptionCombo = d2.categoryModule().categoryOptionCombos
-                .byDisplayName().eq("default").one().get().uid();
+        ProgramStage programStage = d2.programModule().programStages()
+                .byProgramUid().eq(programUid).one().blockingGet();
+        String defaultOptionCombo = d2.categoryModule().categoryOptionCombos()
+                .byDisplayName().eq("default").one().blockingGet().uid();
         try {
             if (eventUid == null)
-                eventUid = d2.eventModule().events.add(
+                eventUid = d2.eventModule().events().blockingAdd(
                         EventCreateProjection.builder()
                                 .attributeOptionCombo(defaultOptionCombo)
                                 .programStage(programStage.uid())
@@ -53,8 +54,8 @@ public class EventFormService {
                                 .organisationUnit(ouUid)
                                 .build()
                 );
-            eventRepository = d2.eventModule().events.uid(eventUid);
-            if (eventRepository.get().eventDate() == null)
+            eventRepository = d2.eventModule().events().uid(eventUid);
+            if (eventRepository.blockingGet().eventDate() == null)
                 eventRepository.setEventDate(new Date());
             return true;
         } catch (D2Error d2Error) {
@@ -66,34 +67,32 @@ public class EventFormService {
 
     public Flowable<Map<String, FormField>> getEventFormFields() {
         if (d2 == null)
-            return Flowable.error(
-                    new NullPointerException("D2 is null. EnrollmentForm has not been initialized, use init() function.")
+            return Flowable.error(new NullPointerException(
+                    "D2 is null. EnrollmentForm has not been initialized, use init() function.")
             );
         else
             return Flowable.fromCallable(() ->
-                    d2.programModule().programStages.uid(eventRepository.get().programStage())
-                            .withAllChildren().get().programStageDataElements()
-
+                    d2.programModule().programStageDataElements()
+                            .byProgramStage().eq(eventRepository.blockingGet().programStage()).blockingGet()
             )
                     .flatMapIterable(programStageDataElements -> programStageDataElements)
                     .map(programStageDataElement -> {
 
-                        DataElement dataElement = d2.dataElementModule().dataElements
+                        DataElement dataElement = d2.dataElementModule().dataElements()
                                 .uid(programStageDataElement.dataElement().uid())
-                                .withAllChildren()
-                                .get();
+                                .blockingGet();
 
                         TrackedEntityDataValueObjectRepository valueRepository =
-                                d2.trackedEntityModule().trackedEntityDataValues
-                                        .value(eventRepository.get().uid(), dataElement.uid());
+                                d2.trackedEntityModule().trackedEntityDataValues()
+                                        .value(eventRepository.blockingGet().uid(), dataElement.uid());
 
                         if (dataElement.optionSetUid() != null && !isListingRendering) {
-                            for (Option option : d2.optionModule().options
-                                    .byOptionSetUid().eq(dataElement.optionSetUid()).withStyle().get()) {
+                            for (Option option : d2.optionModule().options()
+                                    .byOptionSetUid().eq(dataElement.optionSetUid()).withStyle().blockingGet()) {
                                 FormField formField = new FormField(
                                         dataElement.uid(), dataElement.optionSetUid(),
                                         dataElement.valueType(), option.displayName(),
-                                        valueRepository.exists() ? valueRepository.get().value() : null,
+                                        valueRepository.blockingExists() ? valueRepository.blockingGet().value() : null,
                                         option.code(), true,
                                         option.style()
                                 );
@@ -103,7 +102,7 @@ public class EventFormService {
                             fieldMap.put(dataElement.uid(), new FormField(
                                     dataElement.uid(), dataElement.optionSetUid(),
                                     dataElement.valueType(), dataElement.displayName(),
-                                    valueRepository.exists() ? valueRepository.get().value() : null,
+                                    valueRepository.blockingExists() ? valueRepository.blockingGet().value() : null,
                                     null, true,
                                     dataElement.style())
                             );
@@ -115,7 +114,7 @@ public class EventFormService {
 
     public void saveCoordinates(double lat, double lon) {
         try {
-            eventRepository.setCoordinate(Coordinates.create(lat, lon));
+            eventRepository.setGeometry(GeometryHelper.createPointGeometry(lon, lat));
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();
         }
@@ -130,12 +129,12 @@ public class EventFormService {
     }
 
     public String getEventUid() {
-        return eventRepository.get().uid();
+        return eventRepository.blockingGet().uid();
     }
 
     public void delete() {
         try {
-            eventRepository.delete();
+            eventRepository.blockingDelete();
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();
         }
@@ -147,10 +146,10 @@ public class EventFormService {
 
     public Flowable<Boolean> isListingRendering() {
         return Flowable.fromCallable(() -> {
-            List<ProgramStageSection> matrixRenderingSections = d2.programModule().programStageSections
-                    .byProgramStageUid().eq(eventRepository.get().programStage())
+            List<ProgramStageSection> matrixRenderingSections = d2.programModule().programStageSections()
+                    .byProgramStageUid().eq(eventRepository.blockingGet().programStage())
                     .byMobileRenderType().notIn(ProgramStageSectionRenderingType.LISTING.name())
-                    .get();
+                    .blockingGet();
             this.isListingRendering = matrixRenderingSections.isEmpty();
             return isListingRendering;
         });

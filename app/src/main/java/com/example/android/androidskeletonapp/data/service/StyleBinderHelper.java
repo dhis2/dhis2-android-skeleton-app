@@ -6,13 +6,13 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.core.content.ContextCompat;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithStyleHolder;
 
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.State;
-
-import androidx.core.content.ContextCompat;
 
 public class StyleBinderHelper {
 
@@ -61,7 +61,7 @@ public class StyleBinderHelper {
             syncIcon.setVisibility(View.GONE);
         } else {
             syncIcon.setVisibility(View.VISIBLE);
-            if (state.equals(State.TO_UPDATE) || state.equals(State.TO_POST)|| state.equals(State.TO_DELETE)) {
+            if (state.equals(State.TO_UPDATE) || state.equals(State.TO_POST)|| state.equals(State.UPLOADING)) {
                 syncIcon.setImageResource(R.drawable.ic_not_sync);
                 setBackgroundColor(R.color.colorAccentAlt, syncIcon);
             } else if (state.equals(State.ERROR) || state.equals(State.WARNING)) {

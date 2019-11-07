@@ -26,10 +26,10 @@ public class AttributeHelper {
 
 
     private static String getAttributeUid(String attributeDisplayName) {
-        return Sdk.d2().trackedEntityModule().trackedEntityAttributes
+        return Sdk.d2().trackedEntityModule().trackedEntityAttributes()
                 .byName().eq(attributeDisplayName)
                 .one()
-                .get()
+                .blockingGet()
                 .uid();
     }
 }
