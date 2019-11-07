@@ -12,7 +12,6 @@ import com.example.android.androidskeletonapp.ui.tracked_entity_instances.Tracke
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.ProgramType;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -34,11 +33,11 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
         ProgramsAdapter adapter = new ProgramsAdapter(this);
         recyclerView.setAdapter(adapter);
 
-        disposable = Sdk.d2().organisationUnitModule().organisationUnits
-                /*.byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)*/.getAsync()
+        disposable = Sdk.d2().organisationUnitModule().organisationUnits()
+                /*.byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)*/.get()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(organisationUnitUids -> Sdk.d2().programModule().programs
+                .map(organisationUnitUids -> Sdk.d2().programModule().programs()
                         .byOrganisationUnitList(UidsHelper.getUidsList(organisationUnitUids))
                         .orderByName(RepositoryScope.OrderByDirection.ASC)
                         .withStyle()
@@ -70,6 +69,6 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
                     EventFormActivity.getFormActivityIntent(this,
                             null,
                             programUid,
-                            Sdk.d2().organisationUnitModule().organisationUnits.one().get().uid()));
+                            Sdk.d2().organisationUnitModule().organisationUnits().one().blockingGet().uid()));
     }
 }
