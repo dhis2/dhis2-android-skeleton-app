@@ -40,7 +40,6 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
                 .map(organisationUnitUids -> Sdk.d2().programModule().programs()
                         .byOrganisationUnitList(UidsHelper.getUidsList(organisationUnitUids))
                         .orderByName(RepositoryScope.OrderByDirection.ASC)
-                        .withStyle()
                         .getPaged(20))
                 .subscribe(programs -> programs.observe(this, programPagedList -> {
                     adapter.submitList(programPagedList);

@@ -77,7 +77,7 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
                 .byOrgUnits().in(organisationUids)
                 .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
                 .byProgram().eq(program.uid())
-                .byQuery().eq(attributePatientNameUid())
+                .byFilter(attributePatientNameUid()).eq("Maria")
                 .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
             adapter.submitList(trackedEntityInstancePagedList);
             downloadDataText.setVisibility(View.GONE);

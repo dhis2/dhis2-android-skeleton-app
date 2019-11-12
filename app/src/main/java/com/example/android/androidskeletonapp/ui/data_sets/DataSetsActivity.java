@@ -26,7 +26,6 @@ public class DataSetsActivity extends ListActivity {
         recyclerView.setAdapter(adapter);
 
         LiveData<PagedList<DataSet>> liveData = Sdk.d2().dataSetModule().dataSets()
-                .withStyle()
                 .getPaged(20);
 
         liveData.observe(this, dataSetPagedList -> {
