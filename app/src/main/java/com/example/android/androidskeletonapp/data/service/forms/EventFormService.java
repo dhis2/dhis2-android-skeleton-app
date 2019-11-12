@@ -88,7 +88,7 @@ public class EventFormService {
 
                         if (dataElement.optionSetUid() != null && !isListingRendering) {
                             for (Option option : d2.optionModule().options()
-                                    .byOptionSetUid().eq(dataElement.optionSetUid()).withStyle().blockingGet()) {
+                                    .byOptionSetUid().eq(dataElement.optionSetUid()).blockingGet()) {
                                 FormField formField = new FormField(
                                         dataElement.uid(), dataElement.optionSetUid(),
                                         dataElement.valueType(), option.displayName(),

@@ -69,7 +69,7 @@ public class EnrollmentFormService {
                     .map(programAttribute -> {
 
                         TrackedEntityAttribute attribute = d2.trackedEntityModule().trackedEntityAttributes()
-                                .withObjectStyle().uid(programAttribute.trackedEntityAttribute().uid())
+                                .uid(programAttribute.trackedEntityAttribute().uid())
                                 .blockingGet();
                         TrackedEntityAttributeValueObjectRepository valueRepository =
                                 d2.trackedEntityModule().trackedEntityAttributeValues()
