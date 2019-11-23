@@ -165,6 +165,14 @@ public class EnrollmentFormActivity extends AppCompatActivity {
     }
 
     private void finishEnrollment(View view) {
-        onBackPressed();
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        EnrollmentFormService.getInstance().delete();
+        setResult(RESULT_CANCELED);
+        finish();
     }
 }

@@ -87,6 +87,7 @@ public class RuleEngineService {
                         .rules(rules)
                         .supplementaryData(new HashMap<>())
                         .calculatedValueMap(new HashMap<>())
+                        .constantsValue(new HashMap<>())
                         .build().toEngineBuilder()
                         .triggerEnvironment(TriggerEnvironment.ANDROIDCLIENT)
                         .events(events)
@@ -137,6 +138,7 @@ public class RuleEngineService {
                 .rules(rules)
                 .supplementaryData(new HashMap<>())
                 .calculatedValueMap(new HashMap<>())
+                .constantsValue(new HashMap<>())
                 .build().toEngineBuilder()
                 .triggerEnvironment(TriggerEnvironment.ANDROIDCLIENT)
                 .events(events);
