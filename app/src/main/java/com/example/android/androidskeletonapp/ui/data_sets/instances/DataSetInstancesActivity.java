@@ -29,7 +29,7 @@ public class DataSetInstancesActivity extends ListActivity {
     }
 
     private void observeDataSetInstances() {
-        DataSetInstancesAdapter adapter = new DataSetInstancesAdapter();
+        DataSetInstancesAdapter adapter = new DataSetInstancesAdapter(this);
         recyclerView.setAdapter(adapter);
 
         LiveData<PagedList<DataSetInstance>> liveData = Sdk.d2().dataSetModule().dataSetInstances()

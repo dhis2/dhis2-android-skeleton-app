@@ -5,11 +5,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.paging.PagedListAdapter;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
+import com.example.android.androidskeletonapp.ui.data_sets.instances.data_set_form.DataSetFormActivity;
 
 import org.hisp.dhis.android.core.dataset.DataSetInstance;
 
@@ -20,8 +23,11 @@ import static com.example.android.androidskeletonapp.data.service.StyleBinderHel
 
 public class DataSetInstancesAdapter extends PagedListAdapter<DataSetInstance, ListItemWithSyncHolder> {
 
-    DataSetInstancesAdapter() {
+    private final AppCompatActivity activity;
+
+    DataSetInstancesAdapter(AppCompatActivity activity) {
         super(new DiffByIdItemCallback<>());
+        this.activity = activity;
     }
 
     @NonNull
@@ -43,5 +49,18 @@ public class DataSetInstancesAdapter extends PagedListAdapter<DataSetInstance, L
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
         holder.rightText.setText(dataSetInstance.valueCount().toString());
         setState(dataSetInstance.state(), holder.syncIcon);
+
+        holder.itemView.setOnClickListener(view -> {
+            ActivityStarter.startActivity(
+                    activity,
+                    DataSetFormActivity.getFormActivityIntent(
+                            activity,
+                            dataSetInstance.dataSetUid(),
+                            dataSetInstance.period(),
+                            dataSetInstance.organisationUnitUid(),
+                            dataSetInstance.attributeOptionComboUid()),
+                    false
+            );
+        });
     }
 }
