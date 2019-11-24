@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.foreign_key_violations;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,6 +15,10 @@ import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 
 public class ForeignKeyViolationsActivity extends ListActivity {
+
+    public static Intent getIntent(Context context) {
+        return new Intent(context, ForeignKeyViolationsActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

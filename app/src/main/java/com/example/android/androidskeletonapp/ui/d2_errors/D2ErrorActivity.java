@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.d2_errors;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -9,10 +11,15 @@ import androidx.paging.PagedList;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
+import com.example.android.androidskeletonapp.ui.main.MainActivity;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 public class D2ErrorActivity extends ListActivity {
+
+    public static Intent getIntent(Context context) {
+        return new Intent(context,D2ErrorActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

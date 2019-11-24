@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.main;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -51,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ProgressBar progressBar;
 
     private boolean isSyncing = false;
+
+    public static Intent getMainActivityIntent(Context context) {
+        return new Intent(context, MainActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .doOnError(Throwable::printStackTrace)
                 .doOnComplete(() -> {
                     setSyncingFinished();
-                    ActivityStarter.startActivity(this, ProgramsActivity.class, false);
+                    ActivityStarter.startActivity(this, ProgramsActivity.getProgramActivityIntent(this), false);
                 })
                 .subscribe());
     }
@@ -240,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete(() -> {
                             setSyncingFinished();
-                            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false);
+                            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(this,null), false);
                         })
                         .doOnError(Throwable::printStackTrace)
                         .subscribe());
@@ -273,19 +279,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.navPrograms) {
-            ActivityStarter.startActivity(this, ProgramsActivity.class,false);
+            ActivityStarter.startActivity(this, ProgramsActivity.getProgramActivityIntent(this), false);
         } else if (id == R.id.navTrackedEntities) {
-            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class,false);
+            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(this,null), false);
         } else if (id == R.id.navTrackedEntitiesSearch) {
-            ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class,false);
+            ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.getIntent(this), false);
         } else if (id == R.id.navDataSets) {
-            ActivityStarter.startActivity(this, DataSetsActivity.class,false);
+            ActivityStarter.startActivity(this, DataSetsActivity.getIntent(this), false);
         } else if (id == R.id.navDataSetInstances) {
-            ActivityStarter.startActivity(this, DataSetInstancesActivity.class,false);
+            ActivityStarter.startActivity(this, DataSetInstancesActivity.getIntent(this), false);
         } else if (id == R.id.navD2Errors) {
-            ActivityStarter.startActivity(this, D2ErrorActivity.class,false);
+            ActivityStarter.startActivity(this, D2ErrorActivity.getIntent(this), false);
         } else if (id == R.id.navFKViolations) {
-            ActivityStarter.startActivity(this, ForeignKeyViolationsActivity.class,false);
+            ActivityStarter.startActivity(this, ForeignKeyViolationsActivity.getIntent(this), false);
         } else if (id == R.id.navWipeData) {
             syncStatusText.setText(R.string.wiping_data);
             wipeData();
