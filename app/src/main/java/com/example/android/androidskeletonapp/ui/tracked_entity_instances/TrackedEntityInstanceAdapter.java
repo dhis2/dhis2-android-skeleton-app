@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.paging.DataSource;
 import androidx.paging.PagedListAdapter;
 
 import com.example.android.androidskeletonapp.R;
@@ -14,6 +15,7 @@ import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
 import com.example.android.androidskeletonapp.ui.tracker_import_conflicts.TrackerImportConflictsAdapter;
 
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
@@ -28,6 +30,8 @@ import static com.example.android.androidskeletonapp.data.service.StyleBinderHel
 import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setState;
 
 public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntityInstance, ListItemWithSyncHolder> {
+
+    private DataSource<?, TrackedEntityInstance> source;
 
     public TrackedEntityInstanceAdapter() {
         super(new DiffByIdItemCallback<>());
@@ -50,6 +54,16 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         holder.subtitle2.setText(setSubtitle2(values));
         holder.rightText.setText(DateFormatHelper.formatDate(trackedEntityInstance.created()));
         holder.icon.setImageResource(R.drawable.ic_person_black_24dp);
+        holder.delete.setVisibility(View.VISIBLE);
+        holder.delete.setOnClickListener(view ->{
+            try {
+                Sdk.d2().trackedEntityModule().trackedEntityInstances().uid(trackedEntityInstance.uid()).blockingDelete();
+                invalidateSource();
+                notifyDataSetChanged();
+            } catch (D2Error d2Error) {
+                d2Error.printStackTrace();
+            }
+        });
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
         setState(trackedEntityInstance.state(), holder.syncIcon);
         setConflicts(trackedEntityInstance.uid(), holder);
@@ -88,5 +102,13 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         holder.recyclerView.setAdapter(adapter);
         adapter.setTrackerImportConflicts(Sdk.d2().importModule().trackerImportConflicts()
                 .byTrackedEntityInstanceUid().eq(trackedEntityInstanceUid).blockingGet());
+    }
+
+    public void setSource(DataSource<?, TrackedEntityInstance> dataSource) {
+        this.source = dataSource;
+    }
+
+    public void invalidateSource() {
+        source.invalidate();
     }
 }

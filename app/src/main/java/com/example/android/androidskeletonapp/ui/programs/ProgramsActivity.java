@@ -61,12 +61,14 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
         if (programType == ProgramType.WITH_REGISTRATION)
             ActivityStarter.startActivity(this,
                     TrackedEntityInstancesActivity
-                            .getTrackedEntityInstancesActivityIntent(this, programUid));
+                            .getTrackedEntityInstancesActivityIntent(this, programUid),
+                    false);
         else
             ActivityStarter.startActivity(this,
                     EventFormActivity.getFormActivityIntent(this,
                             null,
                             programUid,
-                            Sdk.d2().organisationUnitModule().organisationUnits().one().blockingGet().uid()));
+                            Sdk.d2().organisationUnitModule().organisationUnits().one().blockingGet().uid()),
+                    false);
     }
 }

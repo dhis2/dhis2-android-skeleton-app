@@ -93,6 +93,16 @@
                         android:maxLines="1"
                         android:text="@string/item_right_text"
                         android:textSize="12sp" />
+
+                    <ImageButton
+                        android:id="@+id/deleteButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_clear"
+                        android:background="@android:drawable/list_selector_background"
+                        android:layout_marginStart="8dp"
+                        android:visibility="gone"
+                        />
                 </LinearLayout>
 
                 <TextView

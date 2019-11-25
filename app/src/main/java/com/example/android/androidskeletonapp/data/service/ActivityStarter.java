@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ActivityStarter {
 
+    @Deprecated
     public static void startActivity(AppCompatActivity activity, Class<?> activityClass, boolean finishCurrent) {
         Intent intent = new Intent(activity.getApplicationContext(), activityClass);
         activity.startActivity(intent);
@@ -13,8 +14,13 @@ public class ActivityStarter {
             activity.finish();
     }
 
-    public static void startActivity(AppCompatActivity activity, Intent intent) {
+    public static void startActivity(AppCompatActivity activity, Intent intent, boolean finishCurrent) {
         activity.startActivity(intent);
-        activity.finish();
+        if (finishCurrent)
+            activity.finish();
+    }
+
+    public static void startActivityForResult(AppCompatActivity activity, Intent intent, int requestCode){
+        activity.startActivityForResult(intent,requestCode);
     }
 }

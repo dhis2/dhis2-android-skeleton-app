@@ -76,7 +76,7 @@ public class EnrollmentFormService {
                                         .value(programAttribute.trackedEntityAttribute().uid(),
                                                 enrollmentRepository.blockingGet().trackedEntityInstance());
 
-                        if (attribute.generated() && (valueRepository.get() == null || (valueRepository.get() != null &&
+                        if (attribute.generated() && (valueRepository.get() == null || (valueRepository.blockingGet() != null &&
                                 TextUtils.isEmpty(valueRepository.blockingGet().value())))) {
                             //get reserved value
                             String value = d2.trackedEntityModule().reservedValueManager()

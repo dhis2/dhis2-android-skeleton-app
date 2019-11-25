@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
@@ -27,6 +29,8 @@ public class TrackedEntityInstancesActivity extends ListActivity {
 
     private CompositeDisposable compositeDisposable;
     private String selectedProgram;
+    private final int ENROLLMENT_RQ = 1210;
+    private TrackedEntityInstanceAdapter adapter;
 
     private enum IntentExtra {
         PROGRAM
@@ -70,18 +74,19 @@ public class TrackedEntityInstancesActivity extends ListActivity {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 activityIntent ->
-                                        ActivityStarter.startActivity(
-                                                TrackedEntityInstancesActivity.this, activityIntent),
+                                        ActivityStarter.startActivityForResult(
+                                                TrackedEntityInstancesActivity.this, activityIntent,ENROLLMENT_RQ),
                                 Throwable::printStackTrace
                         )
         ));
     }
 
     private void observeTrackedEntityInstances() {
-        TrackedEntityInstanceAdapter adapter = new TrackedEntityInstanceAdapter();
+        adapter = new TrackedEntityInstanceAdapter();
         recyclerView.setAdapter(adapter);
 
         getTeiRepository().getPaged(20).observe(this, trackedEntityInstancePagedList -> {
+            adapter.setSource(trackedEntityInstancePagedList.getDataSource());
             adapter.submitList(trackedEntityInstancePagedList);
             findViewById(R.id.trackedEntityInstancesNotificator).setVisibility(
                     trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
@@ -106,5 +111,13 @@ public class TrackedEntityInstancesActivity extends ListActivity {
         if (compositeDisposable != null) {
             compositeDisposable.clear();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == ENROLLMENT_RQ && resultCode == RESULT_OK){
+                adapter.invalidateSource();
+        }
+        super.onActivityResult(requestCode,resultCode,data);
     }
 }
