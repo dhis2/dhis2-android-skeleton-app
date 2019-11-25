@@ -1,6 +1,8 @@
 package com.example.android.androidskeletonapp.ui.login;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +29,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
     private Disposable disposable;
+
+    public static Intent getLoginActivityIntent(Context context) {
+        return new Intent(context,LoginActivity.class);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,9 +72,9 @@ public class LoginActivity extends AppCompatActivity {
             }
             if (loginResult.getSuccess() != null) {
                 if (Sdk.d2().programModule().programs().blockingCount() > 0) {
-                    ActivityStarter.startActivity(this, ProgramsActivity.class,true);
+                    ActivityStarter.startActivity(this, ProgramsActivity.getProgramActivityIntent(this),true);
                 } else {
-                    ActivityStarter.startActivity(this, MainActivity.class,true);
+                    ActivityStarter.startActivity(this, MainActivity.getMainActivityIntent(this),true);
                 }
             }
             setResult(Activity.RESULT_OK);

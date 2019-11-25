@@ -43,17 +43,23 @@ public class EventFormActivity extends AppCompatActivity {
     private PublishProcessor<Boolean> engineInitialization;
     private RuleEngineService engineService;
     private RuleEngine ruleEngine;
+    private FormType formType;
 
     private enum IntentExtra {
-        EVENT_UID, PROGRAM_UID, OU_UID
+        EVENT_UID, PROGRAM_UID, OU_UID, TYPE
+    }
+
+    public enum FormType {
+        CREATE, CHECK
     }
 
     public static Intent getFormActivityIntent(Context context, String eventUid, String programUid,
-                                               String orgUnitUid) {
+                                               String orgUnitUid, FormType type) {
         Intent intent = new Intent(context, EventFormActivity.class);
         intent.putExtra(IntentExtra.EVENT_UID.name(), eventUid);
         intent.putExtra(IntentExtra.PROGRAM_UID.name(), programUid);
         intent.putExtra(IntentExtra.OU_UID.name(), orgUnitUid);
+        intent.putExtra(IntentExtra.TYPE.name(), type.name());
         return intent;
     }
 
@@ -66,6 +72,8 @@ public class EventFormActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        formType = FormType.valueOf(getIntent().getStringExtra(IntentExtra.TYPE.name()));
 
         adapter = new FormAdapter((fieldUid, value) -> {
             try {
@@ -138,14 +146,14 @@ public class EventFormActivity extends AppCompatActivity {
     }
 
     private List<FormField> applyEffects(Map<String, FormField> fields,
-                                              List<RuleEffect> ruleEffects) {
+                                         List<RuleEffect> ruleEffects) {
 
         for (RuleEffect ruleEffect : ruleEffects) {
             RuleAction ruleAction = ruleEffect.ruleAction();
             if (ruleEffect.ruleAction() instanceof RuleActionHideField) {
                 fields.remove(((RuleActionHideField) ruleAction).field());
-                for(String key : fields.keySet()) //For image options
-                    if(key.contains(((RuleActionHideField) ruleAction).field()))
+                for (String key : fields.keySet()) //For image options
+                    if (key.contains(((RuleActionHideField) ruleAction).field()))
                         fields.remove(key);
             }
 
@@ -173,6 +181,15 @@ public class EventFormActivity extends AppCompatActivity {
     }
 
     private void finishEnrollment(View view) {
-        onBackPressed();
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (formType == FormType.CREATE)
+            EventFormService.getInstance().delete();
+        setResult(RESULT_CANCELED);
+        finish();
     }
 }

@@ -73,6 +73,9 @@
         <activity android:name=".ui.event_form.EventFormActivity"
             android:label="@string/title_activity_event_form"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.events.EventsActivity"
+            android:label="@string/title_activity_events"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

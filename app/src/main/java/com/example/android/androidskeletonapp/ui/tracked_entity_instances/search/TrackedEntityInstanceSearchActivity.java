@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.tracked_entity_instances.search;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -8,6 +10,7 @@ import android.widget.TextView;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
+import com.example.android.androidskeletonapp.ui.main.MainActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,6 +32,10 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
     private TextView downloadDataText;
     private TextView notificator;
     private TrackedEntityInstanceAdapter adapter;
+
+    public static Intent getIntent(Context context) {
+        return new Intent(context,TrackedEntityInstanceSearchActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
