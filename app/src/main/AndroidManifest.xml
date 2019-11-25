@@ -76,6 +76,7 @@
         <activity android:name=".ui.events.EventsActivity"
             android:label="@string/title_activity_events"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.data_sets.instances.data_set_form.DataSetFormActivity" />
     </application>
 
 </manifest>
