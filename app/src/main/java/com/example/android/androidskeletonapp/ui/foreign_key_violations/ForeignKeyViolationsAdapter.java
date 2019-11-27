@@ -4,15 +4,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemHolder;
 
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-
-import androidx.annotation.NonNull;
-import androidx.paging.PagedListAdapter;
 
 import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
 

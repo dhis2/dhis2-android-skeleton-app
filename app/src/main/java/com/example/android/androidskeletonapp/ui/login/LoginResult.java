@@ -1,8 +1,8 @@
 package com.example.android.androidskeletonapp.ui.login;
 
-import org.hisp.dhis.android.core.user.User;
-
 import androidx.annotation.Nullable;
+
+import org.hisp.dhis.android.core.user.User;
 
 class LoginResult {
     @Nullable

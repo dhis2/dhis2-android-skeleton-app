@@ -4,6 +4,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.ui.base.SubListItemHolder;
 
@@ -11,9 +14,6 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class TrackerImportConflictsAdapter extends RecyclerView.Adapter<SubListItemHolder> {
 

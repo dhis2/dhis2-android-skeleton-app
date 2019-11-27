@@ -11,7 +11,6 @@ import androidx.paging.PagedList;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
-import com.example.android.androidskeletonapp.ui.main.MainActivity;
 
 import org.hisp.dhis.android.core.dataset.DataSetInstance;
 

@@ -4,13 +4,13 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
-
-import androidx.annotation.NonNull;
 
 class TextFieldHolder extends FieldHolder {
 
