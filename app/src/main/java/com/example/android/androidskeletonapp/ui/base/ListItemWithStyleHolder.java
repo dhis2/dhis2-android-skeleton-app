@@ -2,14 +2,11 @@ package com.example.android.androidskeletonapp.ui.base;
 
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.example.android.androidskeletonapp.R;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.android.androidskeletonapp.R;
 
 public class ListItemWithStyleHolder extends BaseListItemHolder {
 

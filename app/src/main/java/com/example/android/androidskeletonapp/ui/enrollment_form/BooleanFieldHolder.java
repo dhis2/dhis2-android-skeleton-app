@@ -3,12 +3,12 @@ package com.example.android.androidskeletonapp.ui.enrollment_form;
 import android.view.View;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 
 import org.hisp.dhis.android.core.common.ValueType;
-
-import androidx.annotation.NonNull;
 
 class BooleanFieldHolder extends FieldHolder {
 

@@ -3,6 +3,10 @@ package com.example.android.androidskeletonapp.ui.enrollment_form;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 
@@ -10,10 +14,6 @@ import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 

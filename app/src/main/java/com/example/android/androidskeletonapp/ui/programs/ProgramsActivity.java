@@ -9,7 +9,6 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
-import com.example.android.androidskeletonapp.ui.event_form.EventFormActivity;
 import com.example.android.androidskeletonapp.ui.events.EventsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 
