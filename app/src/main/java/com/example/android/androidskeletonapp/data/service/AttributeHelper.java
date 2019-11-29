@@ -5,23 +5,19 @@ import com.example.android.androidskeletonapp.data.Sdk;
 public class AttributeHelper {
 
     public static String attributePatientNameUid() {
-        return getAttributeUid("First Name");
+        return getAttributeUid("GR00 CI - First Name");
     }
 
     public static String attributePatientIdUid() {
-        return getAttributeUid("National identifier");
+        return getAttributeUid("GR00 CI - Person ID");
     }
 
     public static String attributeYearOfBirthUid() {
-        return getAttributeUid("Date of birth");
-    }
-
-    public static String attributeLegalGuardianUid() {
-        return getAttributeUid("Malaria patient: Legal guardian");
+        return getAttributeUid("GR00 CI - Date of birth");
     }
 
     public static String attributeResidentInCatchmentAreaUid() {
-        return getAttributeUid("Residence location");
+        return getAttributeUid("GR00 CI - Address");
     }
 
 

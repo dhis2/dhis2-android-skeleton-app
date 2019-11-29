@@ -72,6 +72,7 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
         Program program = Sdk.d2().programModule()
                 .programs()
                 .byProgramType().eq(ProgramType.WITH_REGISTRATION)
+                .byName().like("Malaria")
                 .one().blockingGet();
 
         List<String> organisationUids = new ArrayList<>();
@@ -83,7 +84,7 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
                 .byOrgUnits().in(organisationUids)
                 .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
                 .byProgram().eq(program.uid())
-                .byFilter(attributePatientNameUid()).eq("Maria")
+                .byFilter(attributePatientNameUid()).eq("Waldo")
                 .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
             adapter.submitList(trackedEntityInstancePagedList);
             downloadDataText.setVisibility(View.GONE);
