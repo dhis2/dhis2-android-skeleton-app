@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private User getUser() {
-        return Sdk.d2().userModule().user().getWithoutChildren();
+        return Sdk.d2().userModule().user().blockingGet();
     }
 
     private User getUserFromCursor() {
