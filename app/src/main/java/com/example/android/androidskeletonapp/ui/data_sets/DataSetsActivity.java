@@ -10,6 +10,7 @@ import androidx.paging.PagedList;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -31,13 +32,22 @@ public class DataSetsActivity extends ListActivity {
         DataSetsAdapter adapter = new DataSetsAdapter();
         recyclerView.setAdapter(adapter);
 
-        LiveData<PagedList<DataSet>> liveData = Sdk.d2().dataSetModule().dataSets()
-                .getPaged(20);
-
-        liveData.observe(this, dataSetPagedList -> {
+        getDataSetLiveData().observe(this, dataSetPagedList -> {
             adapter.submitList(dataSetPagedList);
             findViewById(R.id.dataSetsNotificator).setVisibility(
                     dataSetPagedList.isEmpty() ? View.VISIBLE : View.GONE);
         });
+    }
+
+    @Exercise(
+            exerciseNumber = "ex02",
+            version = 1,
+            title = "Display the list of all the dataSets",
+            tips = "Use the data set repository on the data set module.",
+            solutionBranch = "sol02"
+    )
+    private LiveData<PagedList<DataSet>> getDataSetLiveData() {
+        return Sdk.d2().dataSetModule().dataSets()
+                .getPaged(20);
     }
 }
