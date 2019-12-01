@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
 import com.facebook.stetho.Stetho;
@@ -28,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         if (DEBUG) {
-            Stetho.initializeWithDefaults(this);
+            initializeStetho();
         }
 
         disposable = D2Manager.instantiateD2(Sdk.getD2Configuration(this))
@@ -54,5 +55,16 @@ public class SplashActivity extends AppCompatActivity {
         if (disposable != null) {
             disposable.dispose();
         }
+    }
+
+    @Exercise(
+            exerciseNumber = "ex03",
+            version = 1,
+            title = "Initialize Stetho",
+            tips = "Use the Stetho class to initialize it.",
+            solutionBranch = "sol03-01"
+    )
+    private void initializeStetho() {
+
     }
 }
