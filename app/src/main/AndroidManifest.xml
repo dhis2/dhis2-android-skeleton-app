@@ -70,6 +70,10 @@
             android:name=".ui.foreign_key_violations.ForeignKeyViolationsActivity"
             android:label="@string/title_activity_fk_violations"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.code_executor.CodeExecutorActivity"
+            android:label="@string/code_executor"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.event_form.EventFormActivity"
             android:label="@string/title_activity_event_form"
             android:theme="@style/AppTheme.NoActionBar" />

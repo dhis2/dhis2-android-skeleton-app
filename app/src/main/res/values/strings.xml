@@ -71,6 +71,12 @@
     <!-- Strings related to data set instances -->
     <string name="title_activity_data_set_instances">Your data set instances</string>
     <string name="no_data_set_instances_found">No data set instances found</string>
+    <!-- Strings related to the code executor-->
+    <string name="executing">Executing…</string>
+    <string name="code_executed">Code executed</string>
+    <string name="waiting_for_execution">Waiting for execution…</string>
+    <string name="execute_code">Execute</string>
+    <string name="code_executor">Code executor</string>
     <!-- Strings related to enrollment forms -->
     <string name="title_activity_enrollment_form">Enrollment form</string>
     <string name="title_activity_event_form">Event form</string>

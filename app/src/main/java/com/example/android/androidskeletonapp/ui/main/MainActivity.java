@@ -19,6 +19,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
+import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.instances.DataSetInstancesActivity;
@@ -292,6 +293,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityStarter.startActivity(this, D2ErrorActivity.getIntent(this), false);
         } else if (id == R.id.navFKViolations) {
             ActivityStarter.startActivity(this, ForeignKeyViolationsActivity.getIntent(this), false);
+        } else if (id == R.id.navCodeExecutor) {
+            ActivityStarter.startActivity(this, CodeExecutorActivity.getIntent(this), false);
         } else if (id == R.id.navWipeData) {
             syncStatusText.setText(R.string.wiping_data);
             wipeData();
