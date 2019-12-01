@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PagedList;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 
@@ -47,7 +47,6 @@ public class DataSetsActivity extends ListActivity {
             solutionBranch = "sol02"
     )
     private LiveData<PagedList<DataSet>> getDataSetLiveData() {
-        return Sdk.d2().dataSetModule().dataSets()
-                .getPaged(20);
+        return new MutableLiveData<>();
     }
 }
