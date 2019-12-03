@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete(() -> {
                             setSyncingFinished();
-                            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(this,null), false);
+                            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(this, null), false);
                         })
                         .doOnError(Throwable::printStackTrace)
                         .subscribe());
@@ -268,7 +268,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void uploadData() {
         compositeDisposable.add(
-                Sdk.d2().trackedEntityModule().trackedEntityInstances().upload()
+                Sdk.d2().fileResourceModule().fileResources().upload()
+                        .concatWith(Sdk.d2().trackedEntityModule().trackedEntityInstances().upload())
                         .concatWith(Sdk.d2().dataValueModule().dataValues().upload())
                         .concatWith(Sdk.d2().eventModule().events().upload())
                         .subscribeOn(Schedulers.io())
@@ -295,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.navPrograms) {
             ActivityStarter.startActivity(this, ProgramsActivity.getProgramActivityIntent(this), false);
         } else if (id == R.id.navTrackedEntities) {
-            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(this,null), false);
+            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(this, null), false);
         } else if (id == R.id.navTrackedEntitiesSearch) {
             ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.getIntent(this), false);
         } else if (id == R.id.navDataSets) {

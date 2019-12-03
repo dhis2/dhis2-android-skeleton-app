@@ -17,11 +17,14 @@ import com.example.android.androidskeletonapp.data.service.forms.EventFormServic
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
+import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static android.text.TextUtils.isEmpty;
 
 public class DataSetFormActivity extends AppCompatActivity {
 
@@ -54,14 +57,19 @@ public class DataSetFormActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         adapter = new FormAdapter((fieldUid, value) -> {
+            DataValueObjectRepository valueRepository = Sdk.d2().dataValueModule().dataValues().value(
+                    getIntent().getStringExtra(IntentExtra.PERIOD.name()),
+                    getIntent().getStringExtra(IntentExtra.OU_UID.name()),
+                    fieldUid.split("_")[0],
+                    fieldUid.split("_")[1],
+                    getIntent().getStringExtra(IntentExtra.ATTR_OPT_COMB.name())
+            );
             try {
-                Sdk.d2().dataValueModule().dataValues().value(
-                        getIntent().getStringExtra(IntentExtra.PERIOD.name()),
-                        getIntent().getStringExtra(IntentExtra.OU_UID.name()),
-                        fieldUid.split("_")[0],
-                        fieldUid.split("_")[1],
-                        getIntent().getStringExtra(IntentExtra.ATTR_OPT_COMB.name())
-                ).blockingSet(value);
+                if(!isEmpty(value)){
+                    valueRepository.blockingSet(value);
+                }else{
+                    valueRepository.blockingDeleteIfExist();
+                }
             } catch (D2Error d2Error) {
                 d2Error.printStackTrace();
             }

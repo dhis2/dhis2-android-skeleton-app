@@ -1,15 +1,23 @@
 package com.example.android.androidskeletonapp.ui.event_form;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 
+import com.example.android.androidskeletonapp.BuildConfig;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
@@ -19,12 +27,15 @@ import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentForm
 import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.rules.RuleEngine;
 import org.hisp.dhis.rules.models.RuleAction;
 import org.hisp.dhis.rules.models.RuleActionHideField;
 import org.hisp.dhis.rules.models.RuleEffect;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +46,12 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.text.TextUtils.isEmpty;
+
 public class EventFormActivity extends AppCompatActivity {
+
+    private final int CAMERA_RQ = 0;
+    private final int CAMERA_PERMISSION = 0;
 
     private ActivityEnrollmentFormBinding binding;
     private FormAdapter adapter;
@@ -44,6 +60,7 @@ public class EventFormActivity extends AppCompatActivity {
     private RuleEngineService engineService;
     private RuleEngine ruleEngine;
     private FormType formType;
+    private String fieldWaitingImage;
 
     private enum IntentExtra {
         EVENT_UID, PROGRAM_UID, OU_UID, TYPE
@@ -75,17 +92,7 @@ public class EventFormActivity extends AppCompatActivity {
 
         formType = FormType.valueOf(getIntent().getStringExtra(IntentExtra.TYPE.name()));
 
-        adapter = new FormAdapter((fieldUid, value) -> {
-            try {
-                Sdk.d2().trackedEntityModule().trackedEntityDataValues().value(
-                        EventFormService.getInstance().getEventUid(), fieldUid)
-                        .blockingSet(value);
-            } catch (D2Error d2Error) {
-                d2Error.printStackTrace();
-            } finally {
-                engineInitialization.onNext(true);
-            }
-        });
+        adapter = new FormAdapter(getValueListener(), getImageListener());
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
         binding.formRecycler.setAdapter(adapter);
 
@@ -98,6 +105,58 @@ public class EventFormActivity extends AppCompatActivity {
                 getIntent().getStringExtra(IntentExtra.OU_UID.name())))
             this.engineService = new RuleEngineService();
 
+    }
+
+    private FormAdapter.OnValueSaved getValueListener() {
+        return (fieldUid, value) -> {
+            TrackedEntityDataValueObjectRepository valueRepository =
+                    Sdk.d2().trackedEntityModule().trackedEntityDataValues()
+                            .value(
+                                    EventFormService.getInstance().getEventUid(),
+                                    fieldUid
+                            );
+            String currentValue = valueRepository.blockingExists() ?
+                    valueRepository.blockingGet().value() : "";
+            if (currentValue == null)
+                currentValue = "";
+
+            try {
+                if (!isEmpty(value)) {
+                    valueRepository.blockingSet(value);
+                } else {
+                    valueRepository.blockingDeleteIfExist();
+                }
+            } catch (D2Error d2Error) {
+                d2Error.printStackTrace();
+            } finally {
+                if (!value.equals(currentValue)) {
+                    engineInitialization.onNext(true);
+                }
+            }
+        };
+    }
+
+    private FormAdapter.OnImageSelectionClick getImageListener() {
+        return fieldUid -> {
+            fieldWaitingImage = fieldUid;
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
+            } else {
+                requestCamera();
+            }
+        };
+    }
+
+    private void requestCamera() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePicture.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Uri photoUri = FileProvider.getUriForFile(this,
+                BuildConfig.APPLICATION_ID + ".provider",
+                new File(FileResourceDirectoryHelper.getFileResourceDirectory(this), "tempFile.png"));
+        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+        startActivityForResult(takePicture, CAMERA_RQ);
     }
 
     @Override
