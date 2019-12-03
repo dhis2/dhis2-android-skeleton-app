@@ -12,7 +12,7 @@
     <string name="login_failed">"Login failed"</string>
     <!-- Strings related to autoFill -->
     <string name="auto_fill_url">"http://3.85.191.61:8080/"</string>
-    <string name="auto_fill_username">"gr00.admin"</string>
+    <string name="auto_fill_username">"gr00.android"</string>
     <string name="auto_fill_password">"Android2019xx.."</string>
     <!-- Strings related to list item -->
     <string name="sync_icon">Sync icon</string>
