@@ -5,47 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navPrograms"
-            android:icon="@drawable/ic_programs_black_24dp"
-            android:title="@string/title_activity_programs" />
-        <item
-            android:id="@+id/navTrackedEntities"
-            android:icon="@drawable/ic_group_black_24dp"
-            android:title="@string/title_activity_tracked_entity_instances" />
-        <item
-            android:id="@+id/navTrackedEntitiesSearch"
-            android:icon="@drawable/ic_search"
-            android:title="@string/title_activity_tracked_entity_search" />
-        <item
-            android:id="@+id/navDataSets"
-            android:icon="@drawable/ic_view_list_black_24dp"
-            android:title="@string/title_activity_data_sets" />
-        <item
-            android:id="@+id/navDataSetInstances"
-            android:icon="@drawable/ic_assignment_black_24dp"
-            android:title="@string/title_activity_data_set_instances" />
-        <item
-            android:id="@+id/navD2Errors"
-            android:icon="@drawable/ic_error_outline_black_24dp"
-            android:title="@string/title_activity_d2_errors" />
-        <item
-            android:id="@+id/navFKViolations"
-            android:icon="@drawable/ic_foreign_key_black_24dp"
-            android:title="@string/title_activity_fk_violations" />
-        <item
-            android:id="@+id/navCodeExecutor"
-            android:icon="@drawable/ic_execute_code_black_24dp"
-            android:title="@string/code_executor" />
+            android:id="@+id/navWipeData"
+            android:icon="@drawable/ic_delete_forever_black_24dp"
+            android:title="@string/wipe_data" />
     </group>
-
-    <item android:title="@string/data_management">
-        <menu>
-            <item
-                android:id="@+id/navWipeData"
-                android:icon="@drawable/ic_delete_forever_black_24dp"
-                android:title="@string/wipe_data" />
-        </menu>
-    </item>
 
     <item android:title="@string/session">
         <menu>

@@ -83,4 +83,10 @@
     <string name="date_button_text">Click to select date</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="programs">Programs</string>
+    <string name="zero">0</string>
+    <string name="data_sets">Data sets</string>
+    <string name="tracked_entity_instances">Tracked entity instances</string>
+    <string name="events_without_registration">Events without registration</string>
+    <string name="data_values">Data values</string>
 </resources>

@@ -16,10 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
-import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -77,11 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                 showLoginFailed(loginResult.getError());
             }
             if (loginResult.getSuccess() != null) {
-                if (Sdk.d2().programModule().programs().blockingCount() > 0) {
-                    ActivityStarter.startActivity(this, ProgramsActivity.getProgramActivityIntent(this),true);
-                } else {
-                    ActivityStarter.startActivity(this, MainActivity.getMainActivityIntent(this),true);
-                }
+                ActivityStarter.startActivity(this, MainActivity.getMainActivityIntent(this),true);
             }
             setResult(Activity.RESULT_OK);
         });

@@ -2,7 +2,6 @@ package com.example.android.androidskeletonapp.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,16 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
-import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity;
-import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
-import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
-import com.example.android.androidskeletonapp.ui.data_sets.instances.DataSetInstancesActivity;
-import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity;
-import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
-import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
-import com.example.android.androidskeletonapp.ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -49,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private FloatingActionButton syncMetadataButton;
     private FloatingActionButton syncDataButton;
-    private FloatingActionButton uploadDataButton;
 
     private TextView syncStatusText;
     private ProgressBar progressBar;
@@ -85,16 +74,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return Sdk.d2().userModule().user().blockingGet();
     }
 
-    private User getUserFromCursor() {
-        try (Cursor cursor = Sdk.d2().databaseAdapter().query("SELECT * FROM user;")) {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                return User.create(cursor);
-            } else {
-                return null;
-            }
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -117,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void inflateMainView() {
         syncMetadataButton = findViewById(R.id.syncMetadataButton);
         syncDataButton = findViewById(R.id.syncDataButton);
-        uploadDataButton = findViewById(R.id.uploadDataButton);
 
         syncStatusText = findViewById(R.id.notificator);
         progressBar = findViewById(R.id.syncProgressBar);
@@ -136,14 +114,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setAction("Action", null).show();
             syncStatusText.setText(R.string.syncing_data);
             downloadData();
-        });
-
-        uploadDataButton.setOnClickListener(view -> {
-            setSyncing();
-            Snackbar.make(view, "Uploading data", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-            syncStatusText.setText(R.string.uploading_data);
-            uploadData();
         });
     }
 
@@ -164,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void disableAllButtons() {
         setEnabledButton(syncMetadataButton, false);
         setEnabledButton(syncDataButton, false);
-        setEnabledButton(uploadDataButton, false);
     }
 
     private void enablePossibleButtons(boolean metadataSynced) {
@@ -172,9 +141,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setEnabledButton(syncMetadataButton, true);
             if (metadataSynced) {
                 setEnabledButton(syncDataButton, true);
-                if (SyncStatusHelper.isThereDataToUpload()) {
-                    setEnabledButton(uploadDataButton, true);
-                }
             }
         }
     }
@@ -200,11 +166,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
         TextView singleEventsDownloadedText = findViewById(R.id.singleEventsDownloadedText);
         TextView downloadedDataValuesText = findViewById(R.id.dataValuesDownloadedText);
-        downloadedProgramsText.setText(MessageFormat.format("{0} Programs", programCount));
-        downloadedDataSetsText.setText(MessageFormat.format("{0} Data sets", dataSetCount));
-        downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances", trackedEntityInstanceCount));
-        singleEventsDownloadedText.setText(MessageFormat.format("{0} Events without registration", singleEventCount));
-        downloadedDataValuesText.setText(MessageFormat.format("{0} Data values", dataValueCount));
+        downloadedProgramsText.setText(MessageFormat.format("{0}", programCount));
+        downloadedDataSetsText.setText(MessageFormat.format("{0}", dataSetCount));
+        downloadedTeisText.setText(MessageFormat.format("{0}", trackedEntityInstanceCount));
+        singleEventsDownloadedText.setText(MessageFormat.format("{0}", singleEventCount));
+        downloadedDataValuesText.setText(MessageFormat.format("{0}", dataValueCount));
     }
 
     private void createNavigationView(User user) {
@@ -230,10 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(Throwable::printStackTrace)
-                .doOnComplete(() -> {
-                    setSyncingFinished();
-                    ActivityStarter.startActivity(this, ProgramsActivity.getProgramActivityIntent(this), false);
-                })
+                .doOnComplete(this::setSyncingFinished)
                 .subscribe());
     }
 
@@ -249,10 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnComplete(() -> {
-                            setSyncingFinished();
-                            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(this,null), false);
-                        })
+                        .doOnComplete(this::setSyncingFinished)
                         .doOnError(Throwable::printStackTrace)
                         .subscribe());
     }
@@ -292,23 +252,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.navPrograms) {
-            ActivityStarter.startActivity(this, ProgramsActivity.getProgramActivityIntent(this), false);
-        } else if (id == R.id.navTrackedEntities) {
-            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(this,null), false);
-        } else if (id == R.id.navTrackedEntitiesSearch) {
-            ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.getIntent(this), false);
-        } else if (id == R.id.navDataSets) {
-            ActivityStarter.startActivity(this, DataSetsActivity.getIntent(this), false);
-        } else if (id == R.id.navDataSetInstances) {
-            ActivityStarter.startActivity(this, DataSetInstancesActivity.getIntent(this), false);
-        } else if (id == R.id.navD2Errors) {
-            ActivityStarter.startActivity(this, D2ErrorActivity.getIntent(this), false);
-        } else if (id == R.id.navFKViolations) {
-            ActivityStarter.startActivity(this, ForeignKeyViolationsActivity.getIntent(this), false);
-        } else if (id == R.id.navCodeExecutor) {
-            ActivityStarter.startActivity(this, CodeExecutorActivity.getIntent(this), false);
-        } else if (id == R.id.navWipeData) {
+        if (id == R.id.navWipeData) {
             syncStatusText.setText(R.string.wiping_data);
             wipeData();
         } else if (id == R.id.navExit) {
