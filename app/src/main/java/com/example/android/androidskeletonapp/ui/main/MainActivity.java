@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
@@ -225,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void syncMetadata() {
-        compositeDisposable.add(Sdk.d2().metadataModule().download()
+        compositeDisposable.add(downloadMetadata()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(Throwable::printStackTrace)
@@ -236,12 +237,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .subscribe());
     }
 
+    private Observable<D2Progress> downloadMetadata() {
+        return Sdk.d2().metadataModule().download();
+    }
+
     private void downloadData() {
         compositeDisposable.add(
                 Observable.merge(
-                        Sdk.d2().trackedEntityModule().trackedEntityInstanceDownloader()
-                                .limit(10).limitByOrgunit(false).limitByProgram(false).download(),
-                        Sdk.d2().aggregatedModule().data().download()
+                        downloadTrackedEntityInstances(),
+                        downloadAggregatedData()
                 )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -251,6 +255,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         })
                         .doOnError(Throwable::printStackTrace)
                         .subscribe());
+    }
+
+    private Observable<D2Progress> downloadTrackedEntityInstances() {
+        return Sdk.d2().trackedEntityModule().trackedEntityInstanceDownloader()
+                .limit(10).limitByOrgunit(false).limitByProgram(false).download();
+    }
+
+    private Observable<D2Progress> downloadAggregatedData() {
+        return Sdk.d2().aggregatedModule().data().download();
     }
 
     private void uploadData() {

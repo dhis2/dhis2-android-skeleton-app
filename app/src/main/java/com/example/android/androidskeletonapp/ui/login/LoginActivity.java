@@ -30,6 +30,12 @@ public class LoginActivity extends AppCompatActivity {
     private LoginViewModel loginViewModel;
     private Disposable disposable;
 
+    private TextInputEditText serverUrlEditText;
+    private TextInputEditText usernameEditText;
+    private TextInputEditText passwordEditText;
+    private MaterialButton loginButton;
+    private ProgressBar loadingProgressBar;
+
     public static Intent getLoginActivityIntent(Context context) {
         return new Intent(context,LoginActivity.class);
     }
@@ -40,11 +46,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory()).get(LoginViewModel.class);
 
-        final TextInputEditText serverUrlEditText = findViewById(R.id.urlText);
-        final TextInputEditText usernameEditText = findViewById(R.id.usernameText);
-        final TextInputEditText passwordEditText = findViewById(R.id.passwordText);
-        final MaterialButton loginButton = findViewById(R.id.loginButton);
-        final ProgressBar loadingProgressBar = findViewById(R.id.loginProgressBar);
+        serverUrlEditText = findViewById(R.id.urlText);
+        usernameEditText = findViewById(R.id.usernameText);
+        passwordEditText = findViewById(R.id.passwordText);
+        loginButton = findViewById(R.id.loginButton);
+        loadingProgressBar = findViewById(R.id.loginProgressBar);
 
         loginViewModel.getLoginFormState().observe(this, loginFormState -> {
             if (loginFormState == null) {
@@ -102,30 +108,28 @@ public class LoginActivity extends AppCompatActivity {
         serverUrlEditText.addTextChangedListener(afterTextChangedListener);
         usernameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
+
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginButton.setVisibility(View.INVISIBLE);
-                disposable = loginViewModel.login(
-                        usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString(),
-                        serverUrlEditText.getText().toString())
-                        .doOnTerminate(() -> loginButton.setVisibility(View.VISIBLE))
-                        .subscribe(u -> {}, t -> {});
+                login();
             }
             return false;
         });
 
-        loginButton.setOnClickListener(v -> {
-            loadingProgressBar.setVisibility(View.VISIBLE);
-            loginButton.setVisibility(View.INVISIBLE);
-            disposable = loginViewModel.login(
-                    usernameEditText.getText().toString(),
-                    passwordEditText.getText().toString(),
-                    serverUrlEditText.getText().toString())
-            .doOnTerminate(() -> loginButton.setVisibility(View.VISIBLE))
-            .subscribe(u -> {}, t -> {});
-        });
+        loginButton.setOnClickListener(v -> login());
+    }
+
+    private void login() {
+        loadingProgressBar.setVisibility(View.VISIBLE);
+        loginButton.setVisibility(View.INVISIBLE);
+        String username = usernameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        String serverUrl = serverUrlEditText.getText().toString();
+
+        disposable = loginViewModel
+                .login(username, password, serverUrl)
+                .doOnTerminate(() -> loginButton.setVisibility(View.VISIBLE))
+                .subscribe(u -> {}, t -> {});
     }
 
     @Override

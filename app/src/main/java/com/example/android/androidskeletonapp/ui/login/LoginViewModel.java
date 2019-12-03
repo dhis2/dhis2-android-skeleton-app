@@ -41,10 +41,11 @@ public class LoginViewModel extends ViewModel {
                     } else {
                         loginResult.postValue(new LoginResult(R.string.login_failed));
                     }
-                }).doOnError(throwable -> {
-            loginResult.postValue(new LoginResult(R.string.login_failed));
-            throwable.printStackTrace();
-        });
+                })
+                .doOnError(throwable -> {
+                    loginResult.postValue(new LoginResult(R.string.login_failed));
+                    throwable.printStackTrace();
+                });
     }
 
     void loginDataChanged(String serverUrl, String username, String password) {
