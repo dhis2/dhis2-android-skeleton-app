@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Dhis2 Skeleton App</string>
+    <!-- Strings related to login -->
+    <string name="title_activity_login">Log in</string>
+    <string name="prompt_server_url">Server url</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="invalid_server_url">Not a valid server url</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must have more than 5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <!-- Strings related to main -->
+    <string name="title_activity_main">Home</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="lorem_ipsum">"Lorem ipsum dolor sit amet"</string>
+    <string name="syncing_metadata">Syncing metadata…</string>
+    <string name="syncing_data">Syncing data…</string>
+    <string name="sync_metadata">Sync metadata</string>
+    <string name="sync_data">Sync data</string>
+    <string name="wiping_data">Wiping data…</string>
+    <string name="log_out">Log out</string>
+    <string name="wipe_data">Wipe data</string>
+    <!-- Strings related to navigation -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">User name</string>
+    <string name="nav_header_subtitle">user@email.com</string>
+    <string name="session">Session</string>
+    <!-- Strings related to main activity -->
+    <string name="programs">Programs</string>
+    <string name="data_sets">Data sets</string>
+    <string name="tracked_entity_instances">Tracked entity instances</string>
+    <string name="events_without_registration">Events without registration</string>
+    <string name="data_values">Data values</string>
+    <string name="zero">0</string>
+</resources>

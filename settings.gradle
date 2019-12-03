@@ -1,0 +1,2 @@
+include ':app', ':core'
+project(':core').projectDir = new File('dhis2-android-sdk/core')
