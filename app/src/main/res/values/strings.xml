@@ -10,17 +10,6 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must have more than 5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <!-- Strings related to autoFill -->
-    <string name="auto_fill_url">"http://3.85.191.61:8080/"</string>
-    <string name="auto_fill_username">"gr00.android"</string>
-    <string name="auto_fill_password">"Android2019xx.."</string>
-    <!-- Strings related to list item -->
-    <string name="sync_icon">Sync icon</string>
-    <string name="item_icon">Icon</string>
-    <string name="item_title">Item title</string>
-    <string name="item_right_text">12/03 23:05:12</string>
-    <string name="item_subtitle_1">Item subtitle 1</string>
-    <string name="item_subtitle_2">Item subtitle 2</string>
     <!-- Strings related to main -->
     <string name="title_activity_main">Home</string>
     <string name="welcome">"Welcome!"</string>
@@ -29,64 +18,20 @@
     <string name="syncing_data">Syncing data…</string>
     <string name="sync_metadata">Sync metadata</string>
     <string name="sync_data">Sync data</string>
-    <string name="upload_data">Upload data</string>
-    <string name="uploading_data">Uploading data…</string>
     <string name="wiping_data">Wiping data…</string>
     <string name="log_out">Log out</string>
     <string name="wipe_data">Wipe data</string>
-    <!-- Strings related to programs -->
-    <string name="title_activity_programs">Your programs</string>
-    <string name="program_name">Program Name</string>
-    <string name="program_icon">Program Icon</string>
-    <string name="program_stages">2 Program stages</string>
-    <string name="no_programs_found">No programs found</string>
-    <!-- Strings related to tracked entity instances search -->
-    <string name="title_activity_tracked_entity_search">Tracked entities search</string>
-    <string name="search_data">Search data</string>
-    <string name="searching">Searching data…</string>
-    <!-- Strings related to tracked entity instances -->
-    <string name="title_activity_tracked_entity_instances">Your tracked entity instances</string>
-    <string name="tracked_entity_instance_name">Tracked Entity Instance Name</string>
-    <string name="unique_id">1234</string>
-    <string name="no_tracked_entity_instances_found">No tracked entity instances found</string>
-    <!--Strings related to events-->
-    <string name="title_activity_events">Events</string>
-    <string name="no_events_found">No events found</string>
     <!-- Strings related to navigation -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">User name</string>
     <string name="nav_header_subtitle">user@email.com</string>
-    <string name="data_management">Data management</string>
     <string name="session">Session</string>
-    <!-- Strings related to errors -->
-    <string name="title_activity_d2_errors">Your errors</string>
-    <string name="no_d2_errors_found">No errors found</string>
-    <!-- Strings related to errors -->
-    <string name="title_activity_fk_violations">Foreign key violations</string>
-    <string name="no_fk_violations_found">No foreign key violations found</string>
-    <!-- Strings related to data sets -->
-    <string name="title_activity_data_sets">Your data sets</string>
-    <string name="no_data_sets_found">No data sets found</string>
-    <!-- Strings related to data set instances -->
-    <string name="title_activity_data_set_instances">Your data set instances</string>
-    <string name="no_data_set_instances_found">No data set instances found</string>
-    <!-- Strings related to the code executor-->
-    <string name="executing">Executing…</string>
-    <string name="code_executed">Code executed</string>
-    <string name="waiting_for_execution">Waiting for execution…</string>
-    <string name="execute_code">Execute</string>
-    <string name="code_executor">Code executor</string>
-    <!-- Strings related to enrollment forms -->
-    <string name="title_activity_enrollment_form">Enrollment form</string>
-    <string name="title_activity_event_form">Event form</string>
-    <string name="date_button_text">Click to select date</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
+    <!-- Strings related to main activity -->
     <string name="programs">Programs</string>
-    <string name="zero">0</string>
     <string name="data_sets">Data sets</string>
     <string name="tracked_entity_instances">Tracked entity instances</string>
     <string name="events_without_registration">Events without registration</string>
     <string name="data_values">Data values</string>
+    <string name="zero">0</string>
 </resources>
