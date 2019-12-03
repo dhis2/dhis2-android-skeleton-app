@@ -22,10 +22,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import java.text.MessageFormat;
 import java.util.List;
 
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientIdUid;
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientNameUid;
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributeResidentInCatchmentAreaUid;
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributeYearOfBirthUid;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle1;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2First;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2Second;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiTitle;
 import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
 import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setState;
 
@@ -49,9 +49,9 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
     public void onBindViewHolder(@NonNull ListItemWithSyncHolder holder, int position) {
         TrackedEntityInstance trackedEntityInstance = getItem(position);
         List<TrackedEntityAttributeValue> values = trackedEntityInstance.trackedEntityAttributeValues();
-        holder.title.setText(valueAt(values, attributePatientNameUid()));
-        holder.subtitle1.setText(valueAt(values, attributePatientIdUid()));
-        holder.subtitle2.setText(setSubtitle2(values));
+        holder.title.setText(valueAt(values, teiTitle(trackedEntityInstance)));
+        holder.subtitle1.setText(valueAt(values, teiSubtitle1(trackedEntityInstance)));
+        holder.subtitle2.setText(setSubtitle2(values, trackedEntityInstance));
         holder.rightText.setText(DateFormatHelper.formatDate(trackedEntityInstance.created()));
         holder.icon.setImageResource(R.drawable.ic_person_black_24dp);
         holder.delete.setVisibility(View.VISIBLE);
@@ -79,18 +79,18 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         return null;
     }
 
-    private String setSubtitle2(List<TrackedEntityAttributeValue> values) {
-        String yearOfBirth = valueAt(values, attributeYearOfBirthUid());
-        String residentInCatchmentArea = valueAt(values, attributeResidentInCatchmentAreaUid());
-        if (yearOfBirth != null) {
-            if (residentInCatchmentArea != null) {
-                return MessageFormat.format("{0} - {1}", yearOfBirth, residentInCatchmentArea);
+    private String setSubtitle2(List<TrackedEntityAttributeValue> values, TrackedEntityInstance trackedEntityInstance) {
+        String firstSubtitle = valueAt(values, teiSubtitle2First(trackedEntityInstance));
+        String secondSubtitle = valueAt(values, teiSubtitle2Second(trackedEntityInstance));
+        if (firstSubtitle != null) {
+            if (secondSubtitle != null) {
+                return MessageFormat.format("{0} - {1}", firstSubtitle, secondSubtitle);
             } else {
-                return yearOfBirth;
+                return firstSubtitle;
             }
         } else {
-            if (residentInCatchmentArea != null) {
-                return residentInCatchmentArea;
+            if (secondSubtitle != null) {
+                return secondSubtitle;
             } else {
                 return null;
             }

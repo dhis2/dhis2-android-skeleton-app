@@ -23,7 +23,7 @@ import org.hisp.dhis.android.core.program.ProgramType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientNameUid;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributeForSearch;
 
 public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
@@ -84,7 +84,7 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
                 .byOrgUnits().in(organisationUids)
                 .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
                 .byProgram().eq(program.uid())
-                .byFilter(attributePatientNameUid()).eq("Waldo")
+                .byFilter(attributeForSearch()).eq("Waldo")
                 .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
             adapter.submitList(trackedEntityInstancePagedList);
             downloadDataText.setVisibility(View.GONE);
