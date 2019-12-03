@@ -34,6 +34,12 @@
     <string name="wiping_data">Wiping data…</string>
     <string name="log_out">Log out</string>
     <string name="wipe_data">Wipe data</string>
+    <string name="programs">Programs</string>
+    <string name="data_sets">Data sets</string>
+    <string name="tracked_entity_instances">Tracked entity instances</string>
+    <string name="events_without_registration">Events without registration</string>
+    <string name="data_values">Data values</string>
+    <string name="zero">0</string>
     <!-- Strings related to programs -->
     <string name="title_activity_programs">Your programs</string>
     <string name="program_name">Program Name</string>
