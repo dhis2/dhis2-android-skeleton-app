@@ -200,11 +200,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView downloadedTeisText = findViewById(R.id.trackedEntityInstancesDownloadedText);
         TextView singleEventsDownloadedText = findViewById(R.id.singleEventsDownloadedText);
         TextView downloadedDataValuesText = findViewById(R.id.dataValuesDownloadedText);
-        downloadedProgramsText.setText(MessageFormat.format("{0} Programs", programCount));
-        downloadedDataSetsText.setText(MessageFormat.format("{0} Data sets", dataSetCount));
-        downloadedTeisText.setText(MessageFormat.format("{0} Tracked entity instances", trackedEntityInstanceCount));
-        singleEventsDownloadedText.setText(MessageFormat.format("{0} Events without registration", singleEventCount));
-        downloadedDataValuesText.setText(MessageFormat.format("{0} Data values", dataValueCount));
+        downloadedProgramsText.setText(MessageFormat.format("{0}", programCount));
+        downloadedDataSetsText.setText(MessageFormat.format("{0}", dataSetCount));
+        downloadedTeisText.setText(MessageFormat.format("{0}", trackedEntityInstanceCount));
+        singleEventsDownloadedText.setText(MessageFormat.format("{0}", singleEventCount));
+        downloadedDataValuesText.setText(MessageFormat.format("{0}", dataValueCount));
     }
 
     private void createNavigationView(User user) {
