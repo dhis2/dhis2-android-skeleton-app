@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
@@ -19,6 +22,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +68,19 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
     private void syncData() {
         recyclerView.setAdapter(adapter);
 
+        getTrackedEntityInstanceQuery().observe(this, trackedEntityInstancePagedList -> {
+            adapter.submitList(trackedEntityInstancePagedList);
+            downloadDataText.setVisibility(View.GONE);
+            notificator.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+            findViewById(R.id.searchNotificator).setVisibility(
+                    trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
+        });
+    }
+
+    private LiveData<PagedList<TrackedEntityInstance>> getTrackedEntityInstanceQuery() {
         List<OrganisationUnit> organisationUnits = Sdk.d2().organisationUnitModule().organisationUnits()
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .byRootOrganisationUnit(true)
                 .blockingGet();
 
@@ -80,18 +95,11 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
             organisationUids = UidsHelper.getUidsList(organisationUnits);
         }
 
-        Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery()
+        return Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery()
                 .byOrgUnits().in(organisationUids)
                 .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
                 .byProgram().eq(program.uid())
-                .byFilter(attributeForSearch()).eq("Waldo")
-                .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
-            adapter.submitList(trackedEntityInstancePagedList);
-            downloadDataText.setVisibility(View.GONE);
-            notificator.setVisibility(View.GONE);
-            progressBar.setVisibility(View.GONE);
-            findViewById(R.id.searchNotificator).setVisibility(
-                    trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
-        });
+                .byQuery().eq("Waldo")
+                .onlineFirst().getPaged(15);
     }
 }
