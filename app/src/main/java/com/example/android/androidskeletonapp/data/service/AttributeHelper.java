@@ -55,6 +55,17 @@ public class AttributeHelper {
         }
     }
 
+    public static String teiImage(TrackedEntityInstance trackedEntityInstance) {
+        switch (Objects.requireNonNull(trackedEntityInstance.trackedEntityType())) {
+            case MALARIA_CASE_TET_UID:
+                return getAttributeUid("GR00 CI - Copy of RDT result");
+            case FOCUS_AREA_TET_UID:
+                return getAttributeUid("GR00 FI - Picture of the foci area");
+            default:
+                    return null;
+        }
+    }
+
     public static String attributeForSearch() {
         return getAttributeUid("GR00 CI - First Name");
     }
