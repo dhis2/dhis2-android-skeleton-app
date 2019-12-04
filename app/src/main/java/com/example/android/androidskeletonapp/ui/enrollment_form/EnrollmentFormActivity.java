@@ -26,8 +26,8 @@ import com.example.android.androidskeletonapp.data.service.forms.FormField;
 import com.example.android.androidskeletonapp.data.service.forms.RuleEngineService;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 import org.hisp.dhis.rules.RuleEngine;
@@ -137,7 +137,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
                             );
             String currentValue = valueRepository.blockingExists() ?
                     valueRepository.blockingGet().value() : "";
-            if(currentValue==null)
+            if (currentValue == null)
                 currentValue = "";
 
             try {
@@ -265,7 +265,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
                         try {
                             String fileResourceUid =
                                     Sdk.d2().fileResourceModule().fileResources()
-                                            .blockingAdd(file);
+                                            .blockingAdd(FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.MEDIUM));
                             Sdk.d2().trackedEntityModule().trackedEntityAttributeValues()
                                     .value(fieldWaitingImage, teiUid).blockingSet(fileResourceUid);
                             engineInitialization.onNext(true);

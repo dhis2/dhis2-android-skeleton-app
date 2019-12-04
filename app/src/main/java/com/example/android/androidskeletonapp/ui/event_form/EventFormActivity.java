@@ -27,6 +27,7 @@ import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentForm
 import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
@@ -61,6 +62,7 @@ public class EventFormActivity extends AppCompatActivity {
     private RuleEngine ruleEngine;
     private FormType formType;
     private String fieldWaitingImage;
+    private String eventUid;
 
     private enum IntentExtra {
         EVENT_UID, PROGRAM_UID, OU_UID, TYPE
@@ -90,6 +92,8 @@ public class EventFormActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        eventUid = getIntent().getStringExtra(IntentExtra.EVENT_UID.name());
+
         formType = FormType.valueOf(getIntent().getStringExtra(IntentExtra.TYPE.name()));
 
         adapter = new FormAdapter(getValueListener(), getImageListener());
@@ -100,7 +104,7 @@ public class EventFormActivity extends AppCompatActivity {
 
         if (EventFormService.getInstance().init(
                 Sdk.d2(),
-                getIntent().getStringExtra(IntentExtra.EVENT_UID.name()),
+                eventUid,
                 getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
                 getIntent().getStringExtra(IntentExtra.OU_UID.name())))
             this.engineService = new RuleEngineService();
@@ -250,5 +254,32 @@ public class EventFormActivity extends AppCompatActivity {
             EventFormService.getInstance().delete();
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        switch (requestCode) {
+            case CAMERA_RQ:
+                if (resultCode == RESULT_OK) {
+                    File file = new File(
+                            FileResourceDirectoryHelper.getFileResourceDirectory(this),
+                            "tempFile.png"
+                    );
+                    if (file.exists()) {
+                        try {
+                            String fileResourceUid =
+                                    Sdk.d2().fileResourceModule().fileResources()
+                                            .blockingAdd(FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.MEDIUM));
+                            Sdk.d2().trackedEntityModule().trackedEntityDataValues()
+                                    .value(eventUid, fieldWaitingImage).blockingSet(fileResourceUid);
+                            engineInitialization.onNext(true);
+                        } catch (D2Error d2Error) {
+                            d2Error.printStackTrace();
+                        } finally {
+                            fieldWaitingImage = null;
+                        }
+                    }
+                }
+        }
     }
 }
