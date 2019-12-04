@@ -20,6 +20,7 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     private final int OPTIONSET = 98;
     private final int OPTIONSETIMAGE = 99;
     private final OnValueSaved valueSavedListener;
+    private final OnImageSelectionClick imageSelectionListener;
     private boolean isListingRendering = true;
 
     private List<FormField> fields;
@@ -27,6 +28,14 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     public FormAdapter(OnValueSaved valueSavedListener) {
         this.fields = new ArrayList<>();
         this.valueSavedListener = valueSavedListener;
+        this.imageSelectionListener = null;
+        setHasStableIds(true);
+    }
+
+    public FormAdapter(OnValueSaved valueSavedListener, OnImageSelectionClick imageSelectionListener) {
+        this.fields = new ArrayList<>();
+        this.valueSavedListener = valueSavedListener;
+        this.imageSelectionListener = imageSelectionListener;
         setHasStableIds(true);
     }
 
@@ -48,6 +57,10 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
                 case TRUE_ONLY:
                     return new BooleanFieldHolder(LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.item_boolean_field, parent, false), valueSavedListener);
+                case IMAGE:
+                    return new ImageFieldHolder(LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.item_image_field, parent, false), valueSavedListener,
+                            imageSelectionListener);
                 default:
                     return new TextFieldHolder(LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.item_field, parent, false), valueSavedListener);
@@ -118,5 +131,9 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
     public interface OnValueSaved {
         void onValueSaved(String fieldUid, String value);
+    }
+
+    public interface OnImageSelectionClick {
+        void onImageSelectionClick(String fieldUid);
     }
 }

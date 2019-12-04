@@ -76,20 +76,20 @@ public class EnrollmentFormService {
                                         .value(programAttribute.trackedEntityAttribute().uid(),
                                                 enrollmentRepository.blockingGet().trackedEntityInstance());
 
-                        if (attribute.generated() && (valueRepository.get() == null || (valueRepository.blockingGet() != null &&
+                        if (attribute.generated() && (valueRepository.blockingGet() == null || (valueRepository.blockingGet() != null &&
                                 TextUtils.isEmpty(valueRepository.blockingGet().value())))) {
                             //get reserved value
                             String value = d2.trackedEntityModule().reservedValueManager()
                                     .blockingGetValue(programAttribute.trackedEntityAttribute().uid(),
                                             enrollmentRepository.blockingGet().organisationUnit());
-                            valueRepository.set(value);
+                            valueRepository.blockingSet(value);
                         }
 
                         FormField field = new FormField(
                                 attribute.uid(),
                                 attribute.optionSet() != null ? attribute.optionSet().uid() : null,
                                 attribute.valueType(),
-                                attribute.formName(),
+                                String.format("%s%s", attribute.formName(), programAttribute.mandatory() ? "*" : ""),
                                 valueRepository.blockingExists() ? valueRepository.blockingGet().value() : null,
                                 null,
                                 !attribute.generated(),

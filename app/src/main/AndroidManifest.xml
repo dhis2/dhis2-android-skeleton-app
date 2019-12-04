@@ -3,6 +3,7 @@
     package="com.example.android.androidskeletonapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -81,6 +82,15 @@
             android:label="@string/title_activity_events"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.data_sets.instances.data_set_form.DataSetFormActivity" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
 
 </manifest>
