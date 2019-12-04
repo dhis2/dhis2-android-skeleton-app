@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         compositeDisposable.add(
                 Observable.merge(
                         downloadTrackedEntityInstances(),
+                        downloadSingleEvents(),
                         downloadAggregatedData()
                 )
                         .subscribeOn(Schedulers.io())
@@ -259,6 +260,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Observable<D2Progress> downloadTrackedEntityInstances() {
         return Sdk.d2().trackedEntityModule().trackedEntityInstanceDownloader()
+                .limit(10).limitByOrgunit(false).limitByProgram(false).download();
+    }
+
+    private Observable<D2Progress> downloadSingleEvents() {
+        return Sdk.d2().eventModule().eventDownloader()
                 .limit(10).limitByOrgunit(false).limitByProgram(false).download();
     }
 
