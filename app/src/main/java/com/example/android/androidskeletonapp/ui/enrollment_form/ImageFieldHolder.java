@@ -60,7 +60,7 @@ class ImageFieldHolder extends FieldHolder {
         clearButton.setOnClickListener(view -> {
             clearButton.setVisibility(View.GONE);
             imageView.setImageResource(R.drawable.ic_photo);
-            valueSavedListener.onValueSaved(fieldItem.getUid(), null);
+            valueSavedListener.onValueSaved(fieldItem.getUid(), "");
         });
     }
 }
