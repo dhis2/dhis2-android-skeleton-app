@@ -10,7 +10,9 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,8 +47,8 @@ public class EnrollmentFormService {
                             .build()
             );
             enrollmentRepository = d2.enrollmentModule().enrollments().uid(enrollmentUid);
-            enrollmentRepository.setEnrollmentDate(new Date());
-            enrollmentRepository.setIncidentDate(new Date());
+            enrollmentRepository.setEnrollmentDate(getNowWithoutTime());
+            enrollmentRepository.setIncidentDate(getNowWithoutTime());
             return true;
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();
@@ -141,6 +143,16 @@ public class EnrollmentFormService {
 
     public static void clear() {
         instance = null;
+    }
+
+    private Date getNowWithoutTime() {
+        final GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime( new Date() );
+        gc.set( Calendar.HOUR_OF_DAY, 0 );
+        gc.set( Calendar.MINUTE, 0 );
+        gc.set( Calendar.SECOND, 0 );
+        gc.set( Calendar.MILLISECOND, 0 );
+        return gc.getTime();
     }
 
 }
