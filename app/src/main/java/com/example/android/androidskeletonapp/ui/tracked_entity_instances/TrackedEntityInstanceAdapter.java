@@ -1,5 +1,6 @@
 package com.example.android.androidskeletonapp.ui.tracked_entity_instances;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import static com.example.android.androidskeletonapp.data.service.AttributeHelpe
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2First;
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2Second;
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiTitle;
+import static com.example.android.androidskeletonapp.data.service.ImageHelper.getBitmap;
 import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
 import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setState;
 
@@ -53,7 +55,7 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         holder.subtitle1.setText(valueAt(values, teiSubtitle1(trackedEntityInstance)));
         holder.subtitle2.setText(setSubtitle2(values, trackedEntityInstance));
         holder.rightText.setText(DateFormatHelper.formatDate(trackedEntityInstance.created()));
-        holder.icon.setImageResource(R.drawable.ic_person_black_24dp);
+        setImage(trackedEntityInstance, holder);
         holder.delete.setVisibility(View.VISIBLE);
         holder.delete.setOnClickListener(view ->{
             try {
@@ -102,6 +104,19 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         holder.recyclerView.setAdapter(adapter);
         adapter.setTrackerImportConflicts(Sdk.d2().importModule().trackerImportConflicts()
                 .byTrackedEntityInstanceUid().eq(trackedEntityInstanceUid).blockingGet());
+    }
+
+    private void setImage(TrackedEntityInstance trackedEntityInstance, ListItemWithSyncHolder holder) {
+        Bitmap teiImage = getBitmap(trackedEntityInstance);
+        if (teiImage != null) {
+            holder.icon.setVisibility(View.INVISIBLE);
+            holder.bitmap.setImageBitmap(teiImage);
+            holder.bitmap.setVisibility(View.VISIBLE);
+        } else {
+            holder.bitmap.setVisibility(View.GONE);
+            holder.icon.setImageResource(R.drawable.ic_person_black_24dp);
+            holder.icon.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setSource(DataSource<?, TrackedEntityInstance> dataSource) {

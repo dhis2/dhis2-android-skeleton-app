@@ -17,6 +17,7 @@
     <!-- Strings related to list item -->
     <string name="sync_icon">Sync icon</string>
     <string name="item_icon">Icon</string>
+    <string name="item_bitmap">Bitmap</string>
     <string name="item_title">Item title</string>
     <string name="item_right_text">12/03 23:05:12</string>
     <string name="item_subtitle_1">Item subtitle 1</string>
