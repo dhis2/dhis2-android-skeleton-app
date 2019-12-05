@@ -53,7 +53,7 @@ public class CodeExecutorActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
             resultNotificator.setVisibility(View.INVISIBLE);
 
-            disposable = syncData()
+            disposable = executeCode()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
@@ -88,7 +88,7 @@ public class CodeExecutorActivity extends AppCompatActivity {
         }
     }
 
-    private Single<String> syncData() {
+    private Single<String> executeCode() {
         return Single.just("Execution done!");
     }
 
