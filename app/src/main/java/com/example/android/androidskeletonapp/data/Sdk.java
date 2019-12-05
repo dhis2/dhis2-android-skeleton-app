@@ -2,13 +2,11 @@ package com.example.android.androidskeletonapp.data;
 
 import android.content.Context;
 
-import com.facebook.stetho.okhttp3.StethoInterceptor;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Configuration;
 import org.hisp.dhis.android.core.D2Manager;
-
-import java.util.Collections;
 
 public class Sdk {
 
@@ -16,15 +14,12 @@ public class Sdk {
         return D2Manager.getD2();
     }
 
+    @Exercise(
+            exerciseNumber = "ex01a",
+            title = "SDK Configuration",
+            tips = "Use D2Configuration.builder() Set your username as appName, set version 1.0"
+    )
     public static D2Configuration getD2Configuration(Context context) {
-        return D2Configuration.builder()
-                .appName("skeleton_App")
-                .appVersion("0.0.1")
-                .readTimeoutInSeconds(30)
-                .connectTimeoutInSeconds(30)
-                .writeTimeoutInSeconds(30)
-                .networkInterceptors(Collections.singletonList(new StethoInterceptor()))
-                .context(context)
-                .build();
+        return null;
     }
 }
