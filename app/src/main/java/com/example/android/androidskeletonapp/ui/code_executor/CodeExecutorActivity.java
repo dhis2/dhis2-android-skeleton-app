@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -88,8 +89,25 @@ public class CodeExecutorActivity extends AppCompatActivity {
         }
     }
 
+    @Exercise(
+            exerciseNumber = "ex11b",
+            version = 1,
+            title = "Catch and print a D2Error.",
+            tips = "Generate a D2Error." +
+                    "It's possible to generate a D2Error by calling the GeometryHelper.getPolygon() method." +
+                    "If a geometry of a different type it is passed, the method will return an error." +
+                    "If a geometry without coordinates it is passed, the method will return an error." +
+                    "If a geometry with malformed coordinates it is passed, the method will return an error." +
+                    "Surround the error with a try/catch" +
+                    "Return a single with the d2Error description.",
+            solutionBranch = "sol11b"
+    )
     private Single<String> executeCode() {
-        return Single.just("Execution done!");
+        return Single.defer(() -> {
+            // TODO Catch and print a D2Error.
+            
+            return Single.just("Execution done!");
+        });
     }
 
 }
