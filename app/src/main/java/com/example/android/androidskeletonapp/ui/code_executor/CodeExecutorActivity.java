@@ -92,22 +92,22 @@ public class CodeExecutorActivity extends AppCompatActivity {
     }
 
     @Exercise(
-            exerciseNumber = "ex05a",
+            exerciseNumber = "ex05b",
             version = 1,
-            title = "Set all the data values of one data set instance",
+            title = "Set module to set a data set complete registration.",
             tips =  "Use the data set module to get one data set. \n" +
                     "Use the period module to get a period with the same period type that the data set. \n" +
                     "Use the organisation unit module to get one organisation unit.  \n" +
                     "Use the category module to get the attribute option combos related to the data set. \n" +
-                    "Set a random value for each combination of data element, category option combo and attribute " +
-                    "option combo (Using nested loops).\n",
-            solutionBranch = "sol05a"
+                    "Set the data set complete registration using the data set module.\n" +
+                    "Show in screen if the data set complete registration exist.",
+            solutionBranch = "sol05b"
     )
     private Single<String> executeCode() {
         return Single.defer(() -> {
             // TODO resolve the exercise here.
 
-            return Single.just("Execution done!");
+            return Single.just("Exist: " );
         });
     }
 }
