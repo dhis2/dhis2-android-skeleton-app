@@ -9,8 +9,8 @@ import java.util.Objects;
 
 public class AttributeHelper {
 
-    private final static String FOCUS_AREA_TET_UID = "Hi5pt67kOuJ";
-    private final static String MALARIA_CASE_TET_UID = "rLWqLGKN2kr";
+    public final static String FOCUS_AREA_TET_UID = "Hi5pt67kOuJ";
+    public final static String MALARIA_CASE_TET_UID = "rLWqLGKN2kr";
 
     public static String teiTitle(TrackedEntityInstance trackedEntityInstance) {
         if (trackedEntityInstance.trackedEntityType() == null) {
