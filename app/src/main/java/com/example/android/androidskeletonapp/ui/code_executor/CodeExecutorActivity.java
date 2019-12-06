@@ -21,13 +21,10 @@ import androidx.core.content.FileProvider;
 import com.example.android.androidskeletonapp.BuildConfig;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.AttributeHelper;
 import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
@@ -212,7 +209,7 @@ public class CodeExecutorActivity extends AppCompatActivity {
             solutionBranch = "sol09b"
     )
     private File getPictureFile() {
-        return new File(FileResourceDirectoryHelper.getFileCacheResourceDirectory(this), "tempFile.png");
+        return null;
     }
 
     @Exercise(
@@ -228,19 +225,7 @@ public class CodeExecutorActivity extends AppCompatActivity {
     )
     private void insertFileToAttribute() throws D2Error {
         TrackedEntityInstance trackedEntityInstance = createTeiAndItsAttributes();
-        File file = getPictureFile();
-
-        if (file.exists()) {
-            File resizedFile = FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.MEDIUM);
-
-            String fileResourceUid = Sdk.d2().fileResourceModule().fileResources()
-                    .blockingAdd(resizedFile);
-
-            Sdk.d2().trackedEntityModule().trackedEntityAttributeValues()
-                    .value(
-                            AttributeHelper.teiImage(trackedEntityInstance),
-                            trackedEntityInstance.uid())
-                    .blockingSet(fileResourceUid);
-        }
+        
+        // TODO Solve the exercise here.
     }
 }
