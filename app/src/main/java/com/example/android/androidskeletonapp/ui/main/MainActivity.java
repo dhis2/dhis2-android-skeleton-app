@@ -19,6 +19,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
@@ -258,18 +259,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .subscribe());
     }
 
+    @Exercise(
+            exerciseNumber = "ex01c-sync",
+            title = "Synchronization",
+            tips = "Call the download method for trackedEntityInstances. Choose a global limit of 10."
+    )
     private Observable<D2Progress> downloadTrackedEntityInstances() {
-        return Sdk.d2().trackedEntityModule().trackedEntityInstanceDownloader()
-                .limit(10).limitByOrgunit(false).limitByProgram(false).download();
+        return Observable.empty();
     }
 
+    @Exercise(
+            exerciseNumber = "ex01c-sync",
+            title = "Synchronization",
+            tips = "Call the download method for single events. Choose a global limit of 10."
+    )
     private Observable<D2Progress> downloadSingleEvents() {
-        return Sdk.d2().eventModule().eventDownloader()
-                .limit(10).limitByOrgunit(false).limitByProgram(false).download();
+        return Observable.empty();
     }
 
+    @Exercise(
+            exerciseNumber = "ex01c-sync",
+            title = "Synchronization",
+            tips = "Call the download method for aggregated data."
+    )
     private Observable<D2Progress> downloadAggregatedData() {
-        return Sdk.d2().aggregatedModule().data().download();
+        return Observable.empty();
     }
 
     private void uploadData() {
