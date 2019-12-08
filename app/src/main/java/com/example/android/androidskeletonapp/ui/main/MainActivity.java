@@ -19,6 +19,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
@@ -274,15 +275,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void uploadData() {
         compositeDisposable.add(
-                Sdk.d2().fileResourceModule().fileResources().upload()
-                        .concatWith(Sdk.d2().trackedEntityModule().trackedEntityInstances().upload())
-                        .concatWith(Sdk.d2().dataValueModule().dataValues().upload())
-                        .concatWith(Sdk.d2().eventModule().events().upload())
+                uploadAggregatedData()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete(this::setSyncingFinished)
                         .doOnError(Throwable::printStackTrace)
                         .subscribe());
+    }
+
+    @Exercise(
+            exerciseNumber = "ex05-aggregatedDataUpload",
+            title = "Aggregated data upload",
+            tips = "Call upload method in dataValues."
+    )
+    private Observable<D2Progress> uploadAggregatedData() {
+        return Observable.empty();
     }
 
     private void wipeData() {
