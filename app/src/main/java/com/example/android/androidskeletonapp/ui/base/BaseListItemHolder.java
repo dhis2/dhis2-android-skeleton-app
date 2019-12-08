@@ -1,6 +1,7 @@
 package com.example.android.androidskeletonapp.ui.base;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ public class BaseListItemHolder extends RecyclerView.ViewHolder {
     public final ImageView bitmap;
     public final CardView bitmapCardView;
     public final ImageButton delete;
+    public final Button sync;
 
     public BaseListItemHolder(@NonNull View view) {
         super(view);
@@ -28,5 +30,6 @@ public class BaseListItemHolder extends RecyclerView.ViewHolder {
         bitmap = view.findViewById(R.id.itemBitmap);
         bitmapCardView = view.findViewById(R.id.itemBitmapCardView);
         delete = view.findViewById(R.id.deleteButton);
+        sync = view.findViewById(R.id.synButton);
     }
 }
