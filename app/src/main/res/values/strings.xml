@@ -22,6 +22,7 @@
     <string name="item_right_text">12/03 23:05:12</string>
     <string name="item_subtitle_1">Item subtitle 1</string>
     <string name="item_subtitle_2">Item subtitle 2</string>
+    <string name="sync">SYNC</string>
     <!-- Strings related to main -->
     <string name="title_activity_main">Home</string>
     <string name="welcome">"Welcome!"</string>
