@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 
 import androidx.annotation.NonNull;
 import androidx.paging.DataSource;
@@ -11,13 +13,16 @@ import androidx.paging.PagedListAdapter;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
 import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
+import com.example.android.androidskeletonapp.ui.enrollment_form.EnrollmentFormActivity;
 import com.example.android.androidskeletonapp.ui.tracker_import_conflicts.TrackerImportConflictsAdapter;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -26,6 +31,9 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle1;
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2First;
@@ -41,7 +49,6 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
 
     public TrackedEntityInstanceAdapter() {
         super(new DiffByIdItemCallback<>());
-
     }
 
     @NonNull
@@ -61,7 +68,7 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         holder.rightText.setText(DateFormatHelper.formatDate(trackedEntityInstance.created()));
         setImage(trackedEntityInstance, holder);
         holder.delete.setVisibility(View.VISIBLE);
-        holder.delete.setOnClickListener(view ->{
+        holder.delete.setOnClickListener(view -> {
             try {
                 Sdk.d2().trackedEntityModule().trackedEntityInstances().uid(trackedEntityInstance.uid()).blockingDelete();
                 invalidateSource();
@@ -70,6 +77,34 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
                 d2Error.printStackTrace();
             }
         });
+        if (trackedEntityInstance.state() == State.TO_POST ||
+                trackedEntityInstance.state() == State.TO_UPDATE) {
+            holder.sync.setVisibility(View.VISIBLE);
+            holder.sync.setOnClickListener(v -> {
+                holder.sync.setVisibility(View.GONE);
+                RotateAnimation rotateAnim = new RotateAnimation(0f, 359f,
+                        Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f);
+                rotateAnim.setDuration(2500);
+                rotateAnim.setRepeatMode(Animation.INFINITE);
+                holder.syncIcon.startAnimation(rotateAnim);
+
+                Disposable disposable = syncTei(trackedEntityInstance.uid())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        data->{},
+                        Throwable::printStackTrace,
+                        ()->{
+                            holder.syncIcon.clearAnimation();
+                            invalidateSource();
+                        }
+                );
+            });
+        } else {
+            holder.sync.setVisibility(View.GONE);
+            holder.sync.setOnClickListener(null);
+        }
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
         setState(trackedEntityInstance.state(), holder.syncIcon);
         setConflicts(trackedEntityInstance.uid(), holder);
@@ -81,10 +116,8 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
             tips = "",
             solutionBranch = "sol10b"
     )
-    private Observable<D2Progress> syncTei(String teiUid){
-        return Sdk.d2().trackedEntityModule().trackedEntityInstances()
-                .byUid().eq(teiUid)
-                .upload();
+    private Observable<D2Progress> syncTei(String teiUid) {
+        return Observable.empty();
     }
 
     private String valueAt(List<TrackedEntityAttributeValue> values, String attributeUid) {

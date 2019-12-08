@@ -47,8 +47,7 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        app:cardCornerRadius="80dp">
+                        android:layout_gravity="center">
 
                         <ImageView
                             android:id="@+id/itemBitmap"
@@ -171,13 +170,14 @@
                     </RelativeLayout>
 
                     <Button
-                        android:id="@+id/material_button"
+                        android:id="@+id/synButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minHeight="24dp"
                         android:backgroundTint="@color/colorAccent"
                         android:background="@android:drawable/dialog_holo_light_frame"
                         android:textColor="@color/colorWhite"
+                        android:visibility="gone"
                         android:text="@string/sync"
                         android:textSize="12sp" />
 
