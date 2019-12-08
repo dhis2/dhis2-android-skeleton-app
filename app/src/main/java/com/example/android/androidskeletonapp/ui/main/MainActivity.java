@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         compositeDisposable.add(downloadMetadata()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnEach(each -> notifyMetadataProgress(each.getValue()))
                 .doOnError(Throwable::printStackTrace)
                 .doOnComplete(() -> {
                     setSyncingFinished();
@@ -238,8 +239,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .subscribe());
     }
 
+    @Exercise(
+            exerciseNumber = "ex01c-sync",
+            title = "Metadata synchronization",
+            tips = "Call the download method for metadata."
+    )
     private Observable<D2Progress> downloadMetadata() {
-        return Sdk.d2().metadataModule().download();
+        return Observable.empty();
+    }
+
+    @Exercise(
+            exerciseNumber = "ex01c-sync",
+            title = "Metadata synchronization",
+            tips = "(Optional) Show a visual notification to the user (like a toast) with the progress percentaje."
+    )
+    private void notifyMetadataProgress(D2Progress d2Progress) {
     }
 
     private void downloadData() {
@@ -261,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Exercise(
             exerciseNumber = "ex01c-sync",
-            title = "Synchronization",
+            title = "Data synchronization",
             tips = "Call the download method for trackedEntityInstances. Choose a global limit of 10."
     )
     private Observable<D2Progress> downloadTrackedEntityInstances() {
@@ -269,8 +283,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Exercise(
-            exerciseNumber = "ex01c-sync",
-            title = "Synchronization",
+            exerciseNumber = "ex01d-sync",
+            title = "Data synchronization",
             tips = "Call the download method for single events. Choose a global limit of 10."
     )
     private Observable<D2Progress> downloadSingleEvents() {
@@ -278,8 +292,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Exercise(
-            exerciseNumber = "ex01c-sync",
-            title = "Synchronization",
+            exerciseNumber = "ex01d-sync",
+            title = "Data synchronization",
             tips = "Call the download method for aggregated data."
     )
     private Observable<D2Progress> downloadAggregatedData() {
