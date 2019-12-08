@@ -41,7 +41,6 @@
                     android:layout_centerInParent="true"
                     android:layout_centerHorizontal="true"
                     app:cardBackgroundColor="@color/colorWhite"
-                    app:cardCornerRadius="80dp"
                     app:cardElevation="0dp">
 
                     <androidx.cardview.widget.CardView
@@ -123,14 +122,25 @@
                         android:text="@string/item_right_text"
                         android:textSize="12sp" />
 
-                    <ImageButton
-                        android:id="@+id/deleteButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
                         android:layout_marginStart="8dp"
-                        android:background="@android:drawable/list_selector_background"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_clear" />
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="20dp">
+
+                        <ImageButton
+                            android:id="@+id/deleteButton"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/circle_shape"
+                            app:srcCompat="@drawable/ic_delete_forever_black_12dp"
+                            android:padding="3dp"
+                            android:backgroundTint="@color/colorWarn"
+                            app:tint="@color/colorWhite" />
+
+                    </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
                 <LinearLayout
@@ -141,7 +151,7 @@
                     android:layout_alignParentStart="true">
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:paddingStart="0dp"
