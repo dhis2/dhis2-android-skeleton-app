@@ -5,17 +5,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.paging.PagedList;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.events.EventsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -39,18 +50,38 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
         ProgramsAdapter adapter = new ProgramsAdapter(this);
         recyclerView.setAdapter(adapter);
 
-        disposable = Sdk.d2().organisationUnitModule().organisationUnits().get()
+        disposable = getUserOrganisationUnits()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(organisationUnitUids -> Sdk.d2().programModule().programs()
-                        .byOrganisationUnitList(UidsHelper.getUidsList(organisationUnitUids))
-                        .orderByName(RepositoryScope.OrderByDirection.ASC)
-                        .getPaged(20))
+                .map(this::getProgramsWithOrgUnits)
                 .subscribe(programs -> programs.observe(this, programPagedList -> {
                     adapter.submitList(programPagedList);
                     findViewById(R.id.programsNotificator).setVisibility(
                             programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
                 }));
+    }
+
+    @Exercise(
+            exerciseNumber = "ex07a",
+            title = "Show a list of the users available programs",
+            tips = "Return the full list of organisation units.",
+            solutionBranch = "sol07"
+    )
+    private Single<List<OrganisationUnit>> getUserOrganisationUnits() {
+        return Single.just(new ArrayList<>());
+    }
+
+    @Exercise(
+            exerciseNumber = "ex07b",
+            title = "Show a list of the users available programs",
+            tips = "Use the UidsHelper to filter the list of programs by organisation unit." +
+                    "Order the list by program name." +
+                    "Get the the list as a page of 20 items." +
+                    "As an extra, filter the list by program type (choose either without or with registration)",
+            solutionBranch = "sol07"
+    )
+    private LiveData<PagedList<Program>> getProgramsWithOrgUnits(List<OrganisationUnit> organisationUnits) {
+        return new MutableLiveData<>();
     }
 
     @Override
