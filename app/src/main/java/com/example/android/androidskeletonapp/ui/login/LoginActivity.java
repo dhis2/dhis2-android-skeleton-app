@@ -18,10 +18,13 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.hisp.dhis.android.core.user.User;
 
 import io.reactivex.disposables.Disposable;
 
@@ -129,7 +132,16 @@ public class LoginActivity extends AppCompatActivity {
         disposable = loginViewModel
                 .login(username, password, serverUrl)
                 .doOnTerminate(() -> loginButton.setVisibility(View.VISIBLE))
-                .subscribe(u -> {}, t -> {});
+                .subscribe(this::showUserInfo);
+    }
+
+    @Exercise(
+            exerciseNumber = "ex01b",
+            title = "Login",
+            tips = "Show a toast to welcome the user"
+    )
+    private void showUserInfo(User user) {
+
     }
 
     @Override
