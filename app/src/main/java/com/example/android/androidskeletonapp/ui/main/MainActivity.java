@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -230,7 +231,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         compositeDisposable.add(downloadMetadata()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnEach(each -> notifyMetadataProgress(each.getValue()))
+                .doOnEach(each ->  {
+                    if (each.getValue() != null)
+                    notifyMetadataProgress(each.getValue());
+                })
                 .doOnError(Throwable::printStackTrace)
                 .doOnComplete(() -> {
                     setSyncingFinished();
@@ -251,9 +255,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Exercise(
             exerciseNumber = "ex01c-sync",
             title = "Metadata synchronization",
-            tips = "(Optional) Show a visual notification to the user (like a toast) with the progress percentaje."
+            tips = "(Optional) Show a visual notification to the user with the progress percentaje. You can use the " +
+                    "'syncStatusSync' variable print the progress, show a toast or anything you want."
     )
     private void notifyMetadataProgress(D2Progress d2Progress) {
+
     }
 
     private void downloadData() {
