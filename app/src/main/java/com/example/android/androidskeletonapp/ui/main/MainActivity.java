@@ -19,6 +19,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
@@ -274,15 +275,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void uploadData() {
         compositeDisposable.add(
-                Sdk.d2().fileResourceModule().fileResources().upload()
-                        .concatWith(Sdk.d2().trackedEntityModule().trackedEntityInstances().upload())
-                        .concatWith(Sdk.d2().dataValueModule().dataValues().upload())
-                        .concatWith(Sdk.d2().eventModule().events().upload())
+                getDataToUpload()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete(this::setSyncingFinished)
                         .doOnError(Throwable::printStackTrace)
                         .subscribe());
+    }
+
+    @Exercise(
+            exerciseNumber = "ex10a",
+            title = "Data Upload. Bulk Upload",
+            tips = "Upload trackedEntityInstances, dataValues and events." +
+                    "You can concatenate calls using .concatWith()" +
+                    "Do not forget to upload any file you may have.",
+            solutionBranch = "sol10a"
+    )
+    private Observable<D2Progress> getDataToUpload(){
+        return Sdk.d2().fileResourceModule().fileResources().upload()
+                .concatWith(Sdk.d2().trackedEntityModule().trackedEntityInstances().upload())
+                .concatWith(Sdk.d2().dataValueModule().dataValues().upload())
+                .concatWith(Sdk.d2().eventModule().events().upload());
     }
 
     private void wipeData() {
