@@ -19,6 +19,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
@@ -81,19 +82,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         updateSyncDataAndButtons();
     }
 
+    @Exercise(
+            exerciseNumber = "ex12",
+            title="Direct database interaction",
+            tips = "Use the sdk database adapter to get the user object." +
+                    "Remember to close the cursor once it is used.",
+            solutionBranch = "sol12"
+    )
     private User getUser() {
-        return Sdk.d2().userModule().user().blockingGet();
-    }
-
-    private User getUserFromCursor() {
-        try (Cursor cursor = Sdk.d2().databaseAdapter().query("SELECT * FROM user;")) {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                return User.create(cursor);
-            } else {
-                return null;
-            }
+        User user = null;
+        Cursor userCursor = Sdk.d2().databaseAdapter()
+                .query("SELECT * FROM USER");
+        if(userCursor!=null && userCursor.moveToFirst()){
+            user = User.create(userCursor);
+            userCursor.close();
         }
+
+        return user;
     }
 
     @Override
