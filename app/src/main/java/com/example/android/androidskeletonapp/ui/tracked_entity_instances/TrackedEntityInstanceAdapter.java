@@ -13,12 +13,9 @@ import androidx.paging.PagedListAdapter;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
-import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
-import com.example.android.androidskeletonapp.ui.enrollment_form.EnrollmentFormActivity;
 import com.example.android.androidskeletonapp.ui.tracker_import_conflicts.TrackerImportConflictsAdapter;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -90,16 +87,17 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
                 holder.syncIcon.startAnimation(rotateAnim);
 
                 Disposable disposable = syncTei(trackedEntityInstance.uid())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        data->{},
-                        Throwable::printStackTrace,
-                        ()->{
-                            holder.syncIcon.clearAnimation();
-                            invalidateSource();
-                        }
-                );
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                data -> {
+                                },
+                                Throwable::printStackTrace,
+                                () -> {
+                                    holder.syncIcon.clearAnimation();
+                                    invalidateSource();
+                                }
+                        );
             });
         } else {
             holder.sync.setVisibility(View.GONE);
@@ -110,14 +108,10 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         setConflicts(trackedEntityInstance.uid(), holder);
     }
 
-    @Exercise(
-            exerciseNumber = "ex10b",
-            title = "Granular sync",
-            tips = "",
-            solutionBranch = "sol10b"
-    )
     private Observable<D2Progress> syncTei(String teiUid) {
-        return Observable.empty();
+        return Sdk.d2().trackedEntityModule().trackedEntityInstances()
+                .byUid().eq(teiUid)
+                .upload();
     }
 
     private String valueAt(List<TrackedEntityAttributeValue> values, String attributeUid) {
