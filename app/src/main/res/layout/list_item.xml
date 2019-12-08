@@ -122,25 +122,18 @@
                         android:text="@string/item_right_text"
                         android:textSize="12sp" />
 
-                    <androidx.cardview.widget.CardView
+                    <ImageButton
+                        android:id="@+id/deleteButton"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
-                        app:cardCornerRadius="20dp">
-
-                        <ImageButton
-                            android:id="@+id/deleteButton"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:background="@drawable/circle_shape"
-                            app:srcCompat="@drawable/ic_delete_forever_black_12dp"
-                            android:padding="3dp"
-                            android:backgroundTint="@color/colorWarn"
-                            app:tint="@color/colorWhite" />
-
-                    </androidx.cardview.widget.CardView>
+                        android:layout_marginTop="0dp"
+                        android:background="@drawable/circle_shape"
+                        app:srcCompat="@drawable/ic_delete_forever_black_12dp"
+                        android:backgroundTint="@color/colorWarn"
+                        app:tint="@color/colorWhite" />
                 </LinearLayout>
 
                 <LinearLayout
