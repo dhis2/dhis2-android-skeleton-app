@@ -12,16 +12,20 @@ import androidx.paging.PagedListAdapter;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
 import com.example.android.androidskeletonapp.ui.tracker_import_conflicts.TrackerImportConflictsAdapter;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.text.MessageFormat;
 import java.util.List;
+
+import io.reactivex.Observable;
 
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle1;
 import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2First;
@@ -69,6 +73,18 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
         setState(trackedEntityInstance.state(), holder.syncIcon);
         setConflicts(trackedEntityInstance.uid(), holder);
+    }
+
+    @Exercise(
+            exerciseNumber = "ex10b",
+            title = "Granular sync",
+            tips = "",
+            solutionBranch = "sol10b"
+    )
+    private Observable<D2Progress> syncTei(String teiUid){
+        return Sdk.d2().trackedEntityModule().trackedEntityInstances()
+                .byUid().eq(teiUid)
+                .upload();
     }
 
     private String valueAt(List<TrackedEntityAttributeValue> values, String attributeUid) {
