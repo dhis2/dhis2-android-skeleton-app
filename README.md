@@ -60,6 +60,6 @@ This app allows to:
 * Show granular sync states
 * Execute code snippets
 
-[skeletonLogo]: https://github.com/dhis2/dhis2-android-skeleton-app/blob/master/assets/logo-screenshot.jpg?raw=true "Skeleton logo screenshot"
+[skeletonLogo]: https://github.com/dhis2/dhis2-android-skeleton-app/blob/master/assets/logo-launcher.png?raw=true "Skeleton logo screenshot"
 [skeletonAppScreenshots]: https://github.com/dhis2/dhis2-android-skeleton-app/blob/master/assets/skeleton-app-screenshots.jpg?raw=true "Skeleton app screenshots"
 [useCasesScreenshots]: https://github.com/dhis2/dhis2-android-skeleton-app/blob/master/assets/use-cases-skeleton-app-screenshots.jpg?raw=true "Use cases skeleton app screenshots"
