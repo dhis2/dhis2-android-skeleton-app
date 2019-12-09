@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             exerciseNumber = "ex01c-sync",
             title = "Metadata synchronization",
             tips = "(Optional) Show a visual notification to the user with the progress percentaje. You can use the " +
-                    "'syncStatusSync' variable print the progress, show a toast or anything you want."
+                    "'syncStatusText' variable print the progress, show a toast or anything you want."
     )
     private void notifyMetadataProgress(D2Progress d2Progress) {
 
