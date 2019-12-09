@@ -7,11 +7,15 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.paging.PagedList;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -26,8 +30,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributeForSearch;
 
 public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
@@ -61,11 +63,11 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
                     .setAction("Action", null).show();
             notificator.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
-            syncData();
+            searchTrackedEntityInstances();
         });
     }
 
-    private void syncData() {
+    private void searchTrackedEntityInstances() {
         recyclerView.setAdapter(adapter);
 
         getTrackedEntityInstanceQuery().observe(this, trackedEntityInstancePagedList -> {
@@ -78,28 +80,17 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
         });
     }
 
+    @Exercise(
+            exerciseNumber = "ex08-teiSearch",
+            title = "TrackedEntityInstance query search",
+            tips = "Build a trackedEntityInstance query containing:" +
+                    "- All organisation units in search scope. You can get the list of root search orgunit " +
+                    "(separate call) and use the 'DESCENDANTS' orgunit mode" +
+                    "- Program of type 'WITH REGISTRATION' and whose name contains 'malaria' " +
+                    "- TEIs with any attribute that contains 'waldo'" +
+                    "- Online first method"
+    )
     private LiveData<PagedList<TrackedEntityInstance>> getTrackedEntityInstanceQuery() {
-        List<OrganisationUnit> organisationUnits = Sdk.d2().organisationUnitModule().organisationUnits()
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .byRootOrganisationUnit(true)
-                .blockingGet();
-
-        Program program = Sdk.d2().programModule()
-                .programs()
-                .byProgramType().eq(ProgramType.WITH_REGISTRATION)
-                .byName().like("Malaria")
-                .one().blockingGet();
-
-        List<String> organisationUids = new ArrayList<>();
-        if (!organisationUnits.isEmpty()) {
-            organisationUids = UidsHelper.getUidsList(organisationUnits);
-        }
-
-        return Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery()
-                .byOrgUnits().in(organisationUids)
-                .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
-                .byProgram().eq(program.uid())
-                .byQuery().eq("Waldo")
-                .onlineFirst().getPaged(15);
+        return null;
     }
 }
