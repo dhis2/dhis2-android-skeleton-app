@@ -22,7 +22,6 @@ android {
         testInstrumentationRunner "androidx.test.ext.junit.runners.AndroidJUnit4"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
-        // buildConfigField "String", "SDK_VERSION", "\"" + "0.17.4-SNAPSHOT" + "\""
     }
 
     configurations.all*.exclude module: 'jsr305'
@@ -51,9 +50,7 @@ android {
 }
 
 dependencies {
-    implementation project(':core')
-    // implementation "org.hisp.dhis:android-core:0.17.4-SNAPSHOT"
-
+    implementation "org.hisp.dhis:android-core:1.0.0"
     implementation "org.hisp.dhis.rules:rule-engine:1.0.5.1-SNAPSHOT"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -71,5 +68,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
 }
