@@ -2,6 +2,7 @@ package com.example.android.androidskeletonapp.data.service;
 
 import com.example.android.androidskeletonapp.data.Sdk;
 
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.Objects;
@@ -71,10 +72,10 @@ public class AttributeHelper {
     }
 
     private static String getAttributeUid(String attributeDisplayName) {
-        return Sdk.d2().trackedEntityModule().trackedEntityAttributes()
+        TrackedEntityAttribute attribute = Sdk.d2().trackedEntityModule().trackedEntityAttributes()
                 .byName().eq(attributeDisplayName)
                 .one()
-                .blockingGet()
-                .uid();
+                .blockingGet();
+        return attribute != null ? attribute.uid() : null;
     }
 }
