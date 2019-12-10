@@ -9,6 +9,9 @@ public class DateFormatHelper {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd", Locale.US);
 
     public static String formatDate(Date date) {
+        if (date == null) {
+            return null;
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd hh:mm:ss", Locale.US);
         return dateFormat.format(date);
     }
