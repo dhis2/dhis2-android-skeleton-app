@@ -13,7 +13,10 @@ public class AttributeHelper {
     private final static String MALARIA_CASE_TET_UID = "rLWqLGKN2kr";
 
     public static String teiTitle(TrackedEntityInstance trackedEntityInstance) {
-        switch (Objects.requireNonNull(trackedEntityInstance.trackedEntityType())) {
+        if (trackedEntityInstance.trackedEntityType() == null) {
+            return null;
+        }
+        switch (trackedEntityInstance.trackedEntityType()) {
             case MALARIA_CASE_TET_UID:
                 return getAttributeUid("GR00 CI - First Name");
             case FOCUS_AREA_TET_UID:
@@ -24,6 +27,9 @@ public class AttributeHelper {
     }
 
     public static String teiSubtitle1(TrackedEntityInstance trackedEntityInstance) {
+        if (trackedEntityInstance.trackedEntityType() == null) {
+            return null;
+        }
         switch (Objects.requireNonNull(trackedEntityInstance.trackedEntityType())) {
             case MALARIA_CASE_TET_UID:
                 return getAttributeUid("GR00 CI - Last Name");
@@ -35,6 +41,9 @@ public class AttributeHelper {
     }
 
     public static String teiSubtitle2First(TrackedEntityInstance trackedEntityInstance) {
+        if (trackedEntityInstance.trackedEntityType() == null) {
+            return null;
+        }
         switch (Objects.requireNonNull(trackedEntityInstance.trackedEntityType())) {
             case MALARIA_CASE_TET_UID:
                 return getAttributeUid("GR00 CI - Date of birth");
@@ -46,6 +55,9 @@ public class AttributeHelper {
     }
 
     public static String teiSubtitle2Second(TrackedEntityInstance trackedEntityInstance) {
+        if (trackedEntityInstance.trackedEntityType() == null) {
+            return null;
+        }
         switch (Objects.requireNonNull(trackedEntityInstance.trackedEntityType())) {
             case MALARIA_CASE_TET_UID:
                 return getAttributeUid("GR00 CI - Sex");
@@ -57,6 +69,9 @@ public class AttributeHelper {
     }
 
     public static String teiImage(TrackedEntityInstance trackedEntityInstance) {
+        if (trackedEntityInstance.trackedEntityType() == null) {
+            return null;
+        }
         switch (Objects.requireNonNull(trackedEntityInstance.trackedEntityType())) {
             case MALARIA_CASE_TET_UID:
                 return getAttributeUid("GR00 CI - Copy of RDT result");
