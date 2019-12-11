@@ -283,13 +283,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .subscribe());
     }
 
-    @Exercise(
-            exerciseNumber = "ex05-aggregatedDataUpload",
-            title = "Aggregated data upload",
-            tips = "Call upload method in dataValues."
-    )
     private Observable<D2Progress> uploadAggregatedData() {
-        return Observable.empty();
+        return Sdk.d2().dataValueModule().dataValues().upload();
     }
 
     private void wipeData() {
