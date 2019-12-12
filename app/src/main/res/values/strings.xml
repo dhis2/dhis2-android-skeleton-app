@@ -11,8 +11,8 @@
     <string name="invalid_password">Password must have more than 5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <!-- Strings related to autoFill -->
-    <string name="auto_fill_url">"http://3.85.191.61:8080/"</string>
-    <string name="auto_fill_username">"gr00.android"</string>
+    <string name="auto_fill_url">"http://10.40.8.254/android/"</string>
+    <string name="auto_fill_username">"dev"</string>
     <string name="auto_fill_password">"Android2019xx.."</string>
     <!-- Strings related to list item -->
     <string name="sync_icon">Sync icon</string>
@@ -22,6 +22,7 @@
     <string name="item_right_text">12/03 23:05:12</string>
     <string name="item_subtitle_1">Item subtitle 1</string>
     <string name="item_subtitle_2">Item subtitle 2</string>
+    <string name="sync">SYNC</string>
     <!-- Strings related to main -->
     <string name="title_activity_main">Home</string>
     <string name="welcome">"Welcome!"</string>
