@@ -7,72 +7,134 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.ui.base.ListActivity;
+import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
+import com.example.android.androidskeletonapp.data.service.forms.FormField;
+import com.example.android.androidskeletonapp.databinding.ActivityTrackedEntityInstanceSearchBinding;
+import com.example.android.androidskeletonapp.ui.base.ListWithoutBindingsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributeForSearch;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
-public class TrackedEntityInstanceSearchActivity extends ListActivity {
+public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActivity {
 
     private ProgressBar progressBar;
-    private TextView downloadDataText;
     private TextView notificator;
     private TrackedEntityInstanceAdapter adapter;
+    private SearchFormAdapter searchFormAdapter;
+    private ActivityTrackedEntityInstanceSearchBinding binding;
+    private CompositeDisposable disposable;
+
+    private String savedAttribute;
+    private String savedProgram;
+    private String savedFilter;
 
     public static Intent getIntent(Context context) {
-        return new Intent(context,TrackedEntityInstanceSearchActivity.class);
+        return new Intent(context, TrackedEntityInstanceSearchActivity.class);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUp(R.layout.activity_tracked_entity_instance_search, R.id.trackedEntityInstancesToolbar,
-                R.id.trackedEntityInstanceRecyclerView);
+        binding = DataBindingUtil.setContentView(this,
+                R.layout.activity_tracked_entity_instance_search);
+        setUp(R.id.trackedEntityInstanceSearchToolbar, R.id.trackedEntityInstanceRecyclerView);
+
+        disposable = new CompositeDisposable();
 
         notificator = findViewById(R.id.dataNotificator);
-        downloadDataText = findViewById(R.id.downloadDataText);
         progressBar = findViewById(R.id.trackedEntityInstanceProgressBar);
         FloatingActionButton downloadButton = findViewById(R.id.downloadDataButton);
+
+        searchFormAdapter = new SearchFormAdapter((fieldUid, value) -> {
+            if (fieldUid.equals("Attribute")) {
+                savedAttribute = value;
+            } else if (fieldUid.equals("Program")) {
+                savedProgram = value;
+            }
+        });
+
+        binding.searchFormRecycler.setAdapter(searchFormAdapter);
 
         adapter = new TrackedEntityInstanceAdapter();
 
         downloadButton.setOnClickListener(view -> {
-            view.setEnabled(Boolean.FALSE);
             view.setVisibility(View.GONE);
-            downloadDataText.setVisibility(View.GONE);
-            Snackbar.make(view, "Searching data...", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            binding.searchText.setVisibility(View.GONE);
+            binding.searchFormRecycler.setVisibility(View.GONE);
+            binding.filtersBackground.setVisibility(View.GONE);
             notificator.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
-            syncData();
+            savedFilter = binding.searchText.getText().toString();
+            findViewById(R.id.searchNotificator).setVisibility(View.GONE);
+            search();
         });
     }
 
-    private void syncData() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        disposable.add(
+                getAttributesFields()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                fieldData -> searchFormAdapter.updateData(fieldData),
+                                Throwable::printStackTrace
+                        )
+        );
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        disposable.clear();
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventFormService.clear();
+        super.onDestroy();
+    }
+
+    private Flowable<List<FormField>> getAttributesFields() {
+        return Flowable.fromCallable(() -> {
+            List<FormField> list = new ArrayList<>();
+            list.add(new FormField(null, null, ValueType.TEXT, "Attribute", null, null, true, null));
+            list.add(new FormField(null, null, ValueType.TEXT, "Program", null, null, true, null));
+            return list;
+        });
+    }
+
+    private void search() {
         recyclerView.setAdapter(adapter);
 
         getTrackedEntityInstanceQuery().observe(this, trackedEntityInstancePagedList -> {
             adapter.submitList(trackedEntityInstancePagedList);
-            downloadDataText.setVisibility(View.GONE);
             notificator.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
+            binding.searchText.setVisibility(View.VISIBLE);
+            binding.searchFormRecycler.setVisibility(View.VISIBLE);
+            binding.filtersBackground.setVisibility(View.VISIBLE);
+            findViewById(R.id.downloadDataButton).setVisibility(View.VISIBLE);
             findViewById(R.id.searchNotificator).setVisibility(
                     trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
         });
@@ -84,22 +146,17 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
                 .byRootOrganisationUnit(true)
                 .blockingGet();
 
-        Program program = Sdk.d2().programModule()
-                .programs()
-                .byProgramType().eq(ProgramType.WITH_REGISTRATION)
-                .byName().like("Malaria")
-                .one().blockingGet();
-
         List<String> organisationUids = new ArrayList<>();
         if (!organisationUnits.isEmpty()) {
             organisationUids = UidsHelper.getUidsList(organisationUnits);
         }
 
-        return Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery()
+        return Sdk.d2().trackedEntityModule()
+                .trackedEntityInstanceQuery()
                 .byOrgUnits().in(organisationUids)
                 .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
-                .byProgram().eq(program.uid())
-                .byQuery().eq("Waldo")
+                .byProgram().eq(savedProgram)
+                .byFilter(savedAttribute).like(savedFilter)
                 .onlineFirst().getPaged(15);
     }
 }
