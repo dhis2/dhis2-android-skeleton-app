@@ -19,8 +19,6 @@ import com.example.android.androidskeletonapp.databinding.ActivityTrackedEntityI
 import com.example.android.androidskeletonapp.ui.base.ListWithoutBindingsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -40,8 +38,6 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
 
     private ProgressBar progressBar;
     private TextView notificator;
-    private TextInputEditText searchText;
-    private TextInputLayout searchInputLayout;
     private TrackedEntityInstanceAdapter adapter;
     private SearchFormAdapter searchFormAdapter;
     private ActivityTrackedEntityInstanceSearchBinding binding;
@@ -66,8 +62,6 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
 
         notificator = findViewById(R.id.dataNotificator);
         progressBar = findViewById(R.id.trackedEntityInstanceProgressBar);
-        searchText = findViewById(R.id.searchText);
-        searchInputLayout = findViewById(R.id.searchInputLayout);
         FloatingActionButton downloadButton = findViewById(R.id.downloadDataButton);
 
         searchFormAdapter = new SearchFormAdapter((fieldUid, value) -> {
@@ -84,12 +78,12 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
 
         downloadButton.setOnClickListener(view -> {
             view.setVisibility(View.GONE);
-            searchText.setVisibility(View.GONE);
-            searchInputLayout.setVisibility(View.GONE);
+            binding.searchText.setVisibility(View.GONE);
             binding.searchFormRecycler.setVisibility(View.GONE);
+            binding.filtersBackground.setVisibility(View.GONE);
             notificator.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
-            savedFilter = searchText.getText().toString();
+            savedFilter = binding.searchText.getText().toString();
             findViewById(R.id.searchNotificator).setVisibility(View.GONE);
             search();
         });
@@ -137,9 +131,9 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
             adapter.submitList(trackedEntityInstancePagedList);
             notificator.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
-            searchInputLayout.setVisibility(View.VISIBLE);
-            searchText.setVisibility(View.VISIBLE);
+            binding.searchText.setVisibility(View.VISIBLE);
             binding.searchFormRecycler.setVisibility(View.VISIBLE);
+            binding.filtersBackground.setVisibility(View.VISIBLE);
             findViewById(R.id.downloadDataButton).setVisibility(View.VISIBLE);
             findViewById(R.id.searchNotificator).setVisibility(
                     trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);

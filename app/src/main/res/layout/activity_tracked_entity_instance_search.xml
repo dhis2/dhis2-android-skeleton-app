@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/trackedEntityInstanceSearchToolbar"
@@ -21,37 +24,42 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_tracked_entity_instance_search" />
+        <include
+            android:id="@+id/include"
+            layout="@layout/content_tracked_entity_instance_search"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/searchFormRecycler"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout2"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <ImageView
+            android:id="@+id/filtersBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/rounded_corners_calm_shape"
+            android:contentDescription="@string/filter_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include"
+            app:tint="@color/colorAccent"
+            tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchFormRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="84dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="84dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_field" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/searchInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
             android:layout_gravity="bottom|center"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="84dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:selectAllOnFocus="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/searchText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/search_data"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/searchText"
+            app:layout_constraintEnd_toStartOf="@+id/downloadDataButton"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/item_field" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/downloadDataButton"
@@ -59,7 +67,24 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_search" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchText"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/search_data"
+            android:inputType="text"
+            app:layout_constraintBottom_toBottomOf="@+id/downloadDataButton"
+            app:layout_constraintEnd_toStartOf="@+id/downloadDataButton"
+            app:layout_constraintHorizontal_bias="0.045"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

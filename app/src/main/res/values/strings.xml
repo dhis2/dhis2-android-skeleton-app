@@ -91,4 +91,5 @@
     <string name="date_button_text">Click to select date</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="filter_background">filterBackground</string>
 </resources>
