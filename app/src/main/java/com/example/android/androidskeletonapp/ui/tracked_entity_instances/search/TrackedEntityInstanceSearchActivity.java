@@ -16,7 +16,7 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 import com.example.android.androidskeletonapp.databinding.ActivityTrackedEntityInstanceSearchBinding;
-import com.example.android.androidskeletonapp.ui.base.ListActivity;
+import com.example.android.androidskeletonapp.ui.base.ListWithoutBindingsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -36,7 +36,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class TrackedEntityInstanceSearchActivity extends ListActivity {
+public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActivity {
 
     private ProgressBar progressBar;
     private TextView notificator;
@@ -58,12 +58,11 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUp(R.layout.activity_tracked_entity_instance_search, R.id.trackedEntityInstanceSearchToolbar,
-                R.id.trackedEntityInstanceRecyclerView);
-        disposable = new CompositeDisposable();
-
         binding = DataBindingUtil.setContentView(this,
                 R.layout.activity_tracked_entity_instance_search);
+        setUp(R.id.trackedEntityInstanceSearchToolbar, R.id.trackedEntityInstanceRecyclerView);
+
+        disposable = new CompositeDisposable();
 
         notificator = findViewById(R.id.dataNotificator);
         progressBar = findViewById(R.id.trackedEntityInstanceProgressBar);
