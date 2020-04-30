@@ -50,7 +50,7 @@ android {
 }
 
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.0.0"
+    implementation "org.hisp.dhis:android-core:1.1.0"
     implementation "org.hisp.dhis.rules:rule-engine:1.0.5.1-SNAPSHOT"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
