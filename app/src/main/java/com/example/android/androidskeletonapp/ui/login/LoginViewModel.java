@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.user.User;
 
 import io.reactivex.Single;
@@ -39,11 +40,17 @@ public class LoginViewModel extends ViewModel {
                     if (user != null) {
                         loginResult.postValue(new LoginResult(user));
                     } else {
-                        loginResult.postValue(new LoginResult(R.string.login_failed));
+                        loginResult.postValue(new LoginResult("Login error: no user"));
                     }
                 })
                 .doOnError(throwable -> {
-                    loginResult.postValue(new LoginResult(R.string.login_failed));
+                    String errorCode = "";
+                    try {
+                        D2Error d2Error = (D2Error) throwable;
+                        errorCode = ": " + d2Error.errorCode();
+                    } catch (Exception e) {
+                    }
+                    loginResult.postValue(new LoginResult("Login error" + errorCode));
                     throwable.printStackTrace();
                 });
     }
