@@ -7,10 +7,11 @@ import org.hisp.dhis.android.core.user.User;
 class LoginResult {
     @Nullable
     private User success;
-    @Nullable
-    private Integer error;
 
-    LoginResult(@Nullable Integer error) {
+    @Nullable
+    private String error;
+
+    LoginResult(@Nullable String error) {
         this.error = error;
     }
 
@@ -24,7 +25,7 @@ class LoginResult {
     }
 
     @Nullable
-    Integer getError() {
+    String getError() {
         return error;
     }
 }
