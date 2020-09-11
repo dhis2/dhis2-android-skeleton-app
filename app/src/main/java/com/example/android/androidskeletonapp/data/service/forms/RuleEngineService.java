@@ -42,8 +42,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import io.reactivex.Flowable;
 
 import static android.text.TextUtils.isEmpty;
@@ -77,9 +75,9 @@ public class RuleEngineService {
                 getRules(),
                 getEvents(enrollmentUid),
                 (ruleVariables, rules, events) -> RuleEngineContext.builder(new RuleExpressionEvaluator() {
-                    @Nonnull
+                    @NonNull
                     @Override
-                    public String evaluate(@Nonnull String expression) {
+                    public String evaluate(@NonNull String expression) {
                         return jexlEngine.createExpression(expression).evaluate(null).toString();
                     }
                 })
@@ -128,9 +126,9 @@ public class RuleEngineService {
                             List<RuleEvent> events,
                             RuleEnrollment enrollment) {
         RuleEngine.Builder builder = RuleEngineContext.builder(new RuleExpressionEvaluator() {
-            @Nonnull
+            @NonNull
             @Override
-            public String evaluate(@Nonnull String expression) {
+            public String evaluate(@NonNull String expression) {
                 return jexlEngine.createExpression(expression).evaluate(null).toString();
             }
         })
