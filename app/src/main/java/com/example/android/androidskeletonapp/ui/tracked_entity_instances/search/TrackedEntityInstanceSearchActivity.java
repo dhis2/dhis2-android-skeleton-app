@@ -70,6 +70,9 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
             } else if (fieldUid.equals("Program")) {
                 savedProgram = value;
             }
+            if (savedAttribute != null && savedProgram != null) {
+                downloadButton.setEnabled(true);
+            }
         });
 
         binding.searchFormRecycler.setAdapter(searchFormAdapter);
@@ -87,6 +90,8 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
             findViewById(R.id.searchNotificator).setVisibility(View.GONE);
             search();
         });
+
+        downloadButton.setEnabled(false);
     }
 
     @Override
