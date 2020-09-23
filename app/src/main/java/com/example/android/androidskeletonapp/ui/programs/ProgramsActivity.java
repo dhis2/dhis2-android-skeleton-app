@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
@@ -14,7 +17,11 @@ import com.example.android.androidskeletonapp.ui.tracked_entity_instances.Tracke
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -42,10 +49,7 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
         disposable = Sdk.d2().organisationUnitModule().organisationUnits().get()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(organisationUnitUids -> Sdk.d2().programModule().programs()
-                        .byOrganisationUnitList(UidsHelper.getUidsList(organisationUnitUids))
-                        .orderByName(RepositoryScope.OrderByDirection.ASC)
-                        .getPaged(20))
+                .map(this::getPrograms)
                 .subscribe(programs -> programs.observe(this, programPagedList -> {
                     adapter.submitList(programPagedList);
                     findViewById(R.id.programsNotificator).setVisibility(
@@ -59,6 +63,13 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
         if (disposable != null) {
             disposable.dispose();
         }
+    }
+
+    private LiveData<PagedList<Program>> getPrograms(List<OrganisationUnit> organisationUnits) {
+        return Sdk.d2().programModule().programs()
+                .byOrganisationUnitList(UidsHelper.getUidsList(organisationUnits))
+                .orderByName(RepositoryScope.OrderByDirection.ASC)
+                .getPaged(20);
     }
 
     @Override
