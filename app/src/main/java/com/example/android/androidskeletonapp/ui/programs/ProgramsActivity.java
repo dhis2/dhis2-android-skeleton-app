@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PagedList;
 
 import com.example.android.androidskeletonapp.R;
@@ -62,11 +63,7 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
                     "page them 20 by 20."
     )
     private LiveData<PagedList<Program>> getPrograms() {
-        return Sdk.d2().programModule().programs()
-                .byProgramType().eq(ProgramType.WITH_REGISTRATION)
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .orderByName(RepositoryScope.OrderByDirection.ASC)
-                .getPaged(20);
+        return new MutableLiveData<>();
     }
 
     @Override
