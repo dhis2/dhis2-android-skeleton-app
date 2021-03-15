@@ -11,11 +11,14 @@ import androidx.paging.PagedList;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.events.EventsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
 
@@ -26,8 +29,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class ProgramsActivity extends ListActivity implements OnProgramSelectionListener {
-
-    private Disposable disposable;
 
     public static Intent getProgramActivityIntent(Context context){
         return new Intent(context,ProgramsActivity.class);
@@ -44,28 +45,26 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
         ProgramsAdapter adapter = new ProgramsAdapter(this);
         recyclerView.setAdapter(adapter);
 
-        disposable = Sdk.d2().organisationUnitModule().organisationUnits().getUids()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(this::getPrograms)
-                .subscribe(programs -> programs.observe(this, programPagedList -> {
-                    adapter.submitList(programPagedList);
-                    findViewById(R.id.programsNotificator).setVisibility(
-                            programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
-                }));
+        getPrograms().observe(this, programPagedList -> {
+            adapter.submitList(programPagedList);
+            findViewById(R.id.programsNotificator).setVisibility(
+                    programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
+        });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (disposable != null) {
-            disposable.dispose();
-        }
-    }
-
-    private LiveData<PagedList<Program>> getPrograms(List<String> organisationUnitUids) {
+    @Exercise(
+            exerciseNumber = "ex03-programs",
+            title = "Display the list of programs",
+            tips = "Use the programs repository on the program module, " +
+                    "filter by program type equals to with registration," +
+                    "filter by organisation unit data capture scope," +
+                    "order the programs by name (A -> Z) and " +
+                    "page them 20 by 20."
+    )
+    private LiveData<PagedList<Program>> getPrograms() {
         return Sdk.d2().programModule().programs()
-                .byOrganisationUnitList(organisationUnitUids)
+                .byProgramType().eq(ProgramType.WITH_REGISTRATION)
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .orderByName(RepositoryScope.OrderByDirection.ASC)
                 .getPaged(20);
     }
