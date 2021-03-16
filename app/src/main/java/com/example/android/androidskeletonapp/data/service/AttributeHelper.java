@@ -7,11 +7,6 @@ import java.util.List;
 
 public class AttributeHelper {
 
-    public final static String FOCUS_AREA_TET_UID = "Hi5pt67kOuJ";
-    public final static String MALARIA_CASE_TET_UID = "rLWqLGKN2kr";
-
-    // TODO adapt the helper to return the attribute uid you want to see in each field.
-
     public static String teiTitle(TrackedEntityInstance trackedEntityInstance) {
         return getAttributeUid(trackedEntityInstance.trackedEntityAttributeValues(), 0);
     }

@@ -16,20 +16,12 @@ import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
-
-import java.util.List;
+import org.hisp.dhis.android.core.D2;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.MALARIA_CASE_TET_UID;
 
 public class CodeExecutorActivity extends AppCompatActivity {
 
@@ -105,20 +97,27 @@ public class CodeExecutorActivity extends AppCompatActivity {
     @Exercise(
             exerciseNumber = "ex09a",
             version = 1,
-            title = "Create a tracked entity instance and set its program tracked entity attribute values.",
-            tips = "Use the organisation unit module to get one organisation unit." +
-                    "Create a TEI using the tracked entity module." +
-                    "Use the program module to get the malaria case program filtering by " +
-                    "byTrackedEntityTypeUid 'MALARIA_CASE_TET_UID'." +
-                    "Use the program module to get the program tracked entity attributes of the program." +
-                    "For each program tracked entity attribute set a tracked entity attribute value." +
-                    "Check on the tracked entity instance list that the TEI has been created.",
-            solutionBranch = "sol09a"
+            title = "Create a tracked entity instance, enroll to a program and set its program tracked entity attribute values.",
+            tips = "Organisation unit module -> get one organisation unit." +
+                    "Program module -> get the program by its uid" +
+                    "Tracked entity module -> add a new tracked entity instance" +
+                    "Enrollment module -> enroll the tracked entity instance to the program" +
+                    "Program module -> get the program tracked entity attributes of the program." +
+                    "Iterate the program tracked entity attributes. For each one, if mandatory:" +
+                    "   Tracked entity module -> set a tracked entity attribute value." +
+
+                    "Execute and check on the tracked entity instance list that the TEI has been created." +
+                    "Use the app to sync the TEI" +
+                    "Go to the web -> Tracker capture -> and search for your created TEI"
+
     )
 
     private Single<String> executeCode() {
         return Single.defer(() -> {
-            // TODO Create the tracked entity instance here.
+            String childProgramUid = "IpHINAT79UW";
+            D2 d2 = Sdk.d2();
+
+            // TODO
 
             return Single.just("Tracked entity instance created!");
         });
