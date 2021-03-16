@@ -1,21 +1,17 @@
 package com.example.android.androidskeletonapp.ui.login;
 
 import android.util.Patterns;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.utils.Exercise;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.user.User;
 
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -65,6 +61,7 @@ public class LoginViewModel extends ViewModel {
             tips = "Call login method in user module"
     )
     private Single<User> performLogin(String username, String password, String serverUrl) {
+        // TODO 1
         return Single.never();
     }
 

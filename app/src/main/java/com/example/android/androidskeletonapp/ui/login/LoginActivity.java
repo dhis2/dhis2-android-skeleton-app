@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -141,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
             tips = "Show a toast to welcome the user"
     )
     private void showUserInfo(User user) {
-
+        // TODO 2
     }
 
     @Override
