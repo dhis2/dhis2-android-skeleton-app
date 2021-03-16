@@ -20,6 +20,7 @@ public class Sdk {
             tips = "Use D2Configuration.builder(). Set the context. Set your username as appName, set version 1.0"
     )
     public static D2Configuration getD2Configuration(Context context) {
+        // TODO
         return null;
     }
 }
