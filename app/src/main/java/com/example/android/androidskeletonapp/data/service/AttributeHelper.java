@@ -7,8 +7,6 @@ import java.util.List;
 
 public class AttributeHelper {
 
-    // TODO adapt the helper to return the attribute uid you want to see in each field.
-
     public static String teiTitle(TrackedEntityInstance trackedEntityInstance) {
         return getAttributeUid(trackedEntityInstance.trackedEntityAttributeValues(), 0);
     }
