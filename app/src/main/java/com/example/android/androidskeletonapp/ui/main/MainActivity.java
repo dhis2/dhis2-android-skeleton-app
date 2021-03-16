@@ -261,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tips = "Call the download method for metadata."
     )
     private Observable<D2Progress> downloadMetadata() {
+        // TODO Download metadata
         return Observable.empty();
     }
 
@@ -270,6 +271,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tips = "Call the download method for trackedEntityInstances. Choose a global limit of 10."
     )
     private Observable<D2Progress> downloadTrackedEntityInstances() {
+        // TODO Download tracked entity instances
         return Observable.empty();
     }
 
@@ -279,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tips = "Call the download method for single events. Choose a global limit of 10."
     )
     private Observable<D2Progress> downloadSingleEvents() {
+        // TODO Download single events
         return Observable.empty();
     }
 
@@ -288,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tips = "Call the download method for aggregated data."
     )
     private Observable<D2Progress> downloadAggregatedData() {
+        // TODO Download aggregated data
         return Observable.empty();
     }
 
