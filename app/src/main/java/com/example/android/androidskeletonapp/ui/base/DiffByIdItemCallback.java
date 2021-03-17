@@ -9,7 +9,7 @@ public class DiffByIdItemCallback<E extends CoreObject> extends DiffUtil.ItemCal
 
     @Override
     public boolean areItemsTheSame(@NonNull E oldItem, @NonNull E newItem) {
-        return oldItem.id().equals(newItem.id());
+        return oldItem.id() != null && newItem.id() != null && oldItem.id().equals(newItem.id());
     }
 
     @Override
