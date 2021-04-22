@@ -242,7 +242,8 @@ public class RuleEngineService {
                 event.organisationUnit(),
                 code,
                 ruleDataValues,
-                stageName);
+                stageName,
+                event.completedDate());
     }
 
     private List<RuleDataValue> transformToRuleDataValue(Event event, List<TrackedEntityDataValue> eventDataValues) {
@@ -274,7 +275,7 @@ public class RuleEngineService {
             rules.add(
                     Rule.create(rule.programStage() != null ?
                             rule.programStage().uid() :
-                            null, rule.priority(), rule.condition(), ruleActions, rule.name())
+                            null, rule.priority(), rule.condition(), ruleActions, rule.name(), rule.uid())
             );
         }
         return rules;
