@@ -1,11 +1,14 @@
 package com.example.android.androidskeletonapp.ui.data_sets.instances.data_set_form;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
@@ -19,6 +22,8 @@ import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.validation.engine.ValidationResult;
+import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -31,6 +36,11 @@ public class DataSetFormActivity extends AppCompatActivity {
     private ActivityEnrollmentFormBinding binding;
     private FormAdapter adapter;
     private CompositeDisposable disposable;
+
+    private String datasetUid;
+    private String organisationUnitUid;
+    private String period;
+    private String attributeOptionComboUid;
 
     private enum IntentExtra {
         DATASET_UID, OU_UID, PERIOD, ATTR_OPT_COMB
@@ -51,6 +61,11 @@ public class DataSetFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_enrollment_form);
 
+        this.datasetUid = getIntent().getStringExtra(IntentExtra.DATASET_UID.name());
+        this.organisationUnitUid = getIntent().getStringExtra(IntentExtra.OU_UID.name());
+        this.period = getIntent().getStringExtra(IntentExtra.PERIOD.name());
+        this.attributeOptionComboUid = getIntent().getStringExtra(IntentExtra.ATTR_OPT_COMB.name());
+
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,11 +73,11 @@ public class DataSetFormActivity extends AppCompatActivity {
 
         adapter = new FormAdapter((fieldUid, value) -> {
             DataValueObjectRepository valueRepository = Sdk.d2().dataValueModule().dataValues().value(
-                    getIntent().getStringExtra(IntentExtra.PERIOD.name()),
-                    getIntent().getStringExtra(IntentExtra.OU_UID.name()),
+                    this.period,
+                    this.organisationUnitUid,
                     fieldUid.split("_")[0],
                     fieldUid.split("_")[1],
-                    getIntent().getStringExtra(IntentExtra.ATTR_OPT_COMB.name())
+                    this.attributeOptionComboUid
             );
             try {
                 if(!isEmpty(value)){
@@ -75,14 +90,15 @@ public class DataSetFormActivity extends AppCompatActivity {
             }
         });
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
+        binding.buttonValidate.setOnClickListener(this::runValidationRules);
         binding.formRecycler.setAdapter(adapter);
 
         DataSetFormService.getInstance().init(
                 Sdk.d2(),
-                getIntent().getStringExtra(IntentExtra.DATASET_UID.name()),
-                getIntent().getStringExtra(IntentExtra.OU_UID.name()),
-                getIntent().getStringExtra(IntentExtra.PERIOD.name()),
-                getIntent().getStringExtra(IntentExtra.ATTR_OPT_COMB.name()));
+                this.datasetUid,
+                this.organisationUnitUid,
+                this.period,
+                this.attributeOptionComboUid);
 
     }
 
@@ -123,6 +139,28 @@ public class DataSetFormActivity extends AppCompatActivity {
     private void finishEnrollment(View view) {
         setResult(RESULT_OK);
         finish();
+    }
+
+    private void runValidationRules(View view) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this)
+                .setTitle("Validation result");
+
+        ValidationResult result = Sdk.d2().validationModule().validationEngine()
+                .blockingValidate(datasetUid, period, organisationUnitUid, attributeOptionComboUid);
+
+        if (result.status() == ValidationResult.ValidationResultStatus.OK) {
+            dialog.setMessage("The data entry screen successfully passed the validation.");
+        } else {
+            StringBuilder message = new StringBuilder("The data entry screen has the following validation errors:");
+
+            for (ValidationResultViolation violation : result.violations()) {
+                message.append("\n\n * ").append(violation.validationRule().instruction());
+            }
+
+            dialog.setMessage(message);
+        }
+
+        dialog.show();
     }
 
     @Override
