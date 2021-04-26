@@ -33,7 +33,7 @@
             android:layout_margin="@dimen/fab_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_send_black_24dp" />
+            app:srcCompat="@drawable/ic_baseline_save_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonValidate"
@@ -44,7 +44,8 @@
             android:layout_marginEnd="86dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_assignment_black_24dp" />
+            app:backgroundTint="@color/colorAccentDark"
+            app:srcCompat="@drawable/ic_baseline_fact_check_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
