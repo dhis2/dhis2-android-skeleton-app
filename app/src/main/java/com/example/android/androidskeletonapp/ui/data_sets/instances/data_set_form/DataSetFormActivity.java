@@ -17,6 +17,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.DataSetFormService;
 import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
@@ -141,24 +142,17 @@ public class DataSetFormActivity extends AppCompatActivity {
         finish();
     }
 
+    @Exercise(
+            exerciseNumber = "ex06",
+            title = "Validation rules",
+            tips = "Use the validation rule engine to evaluate validation rules in the context of this dataSetInstance"
+    )
     private void runValidationRules(View view) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this)
                 .setTitle("Validation result");
 
-        ValidationResult result = Sdk.d2().validationModule().validationEngine()
-                .blockingValidate(datasetUid, period, organisationUnitUid, attributeOptionComboUid);
-
-        if (result.status() == ValidationResult.ValidationResultStatus.OK) {
-            dialog.setMessage("The data entry screen successfully passed the validation.");
-        } else {
-            StringBuilder message = new StringBuilder("The data entry screen has the following validation errors:");
-
-            for (ValidationResultViolation violation : result.violations()) {
-                message.append("\n\n * ").append(violation.validationRule().instruction());
-            }
-
-            dialog.setMessage(message);
-        }
+        // TODO
+        dialog.setMessage("TO DO");
 
         dialog.show();
     }
