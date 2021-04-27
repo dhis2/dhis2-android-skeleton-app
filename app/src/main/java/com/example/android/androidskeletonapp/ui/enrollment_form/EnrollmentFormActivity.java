@@ -24,6 +24,7 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 import com.example.android.androidskeletonapp.data.service.forms.RuleEngineService;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
@@ -126,33 +127,14 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         startActivityForResult(takePicture, CAMERA_RQ);
     }
 
+    @Exercise(
+            exerciseNumber = "ex08c-trackerDataCreation",
+            title = "Save attribute values",
+            tips = "Save the value if not empty; otherwise, clear the attribute value (delete the existing value if any)"
+    )
     private FormAdapter.OnValueSaved getValueListener() {
         return (fieldUid, value) -> {
-            TrackedEntityAttributeValueObjectRepository valueRepository =
-                    Sdk.d2().trackedEntityModule().trackedEntityAttributeValues()
-                            .value(
-                                    fieldUid,
-                                    getIntent().getStringExtra(IntentExtra.TEI_UID.name()
-                                    )
-                            );
-            String currentValue = valueRepository.blockingExists() ?
-                    valueRepository.blockingGet().value() : "";
-            if (currentValue == null)
-                currentValue = "";
-
-            try {
-                if (!isEmpty(value)) {
-                    valueRepository.blockingSet(value);
-                } else {
-                    valueRepository.blockingDeleteIfExist();
-                }
-            } catch (D2Error d2Error) {
-                d2Error.printStackTrace();
-            } finally {
-                if (!value.equals(currentValue)) {
-                    engineInitialization.onNext(true);
-                }
-            }
+            // TODO Save the value if not empty; otherwise delete it.
         };
     }
 
