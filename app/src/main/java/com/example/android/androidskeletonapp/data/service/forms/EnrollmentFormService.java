@@ -84,7 +84,7 @@ public class EnrollmentFormService {
                                 String.format("%s%s", attribute.formName(), programAttribute.mandatory() ? "*" : ""),
                                 initialValue,
                                 null,
-                                !attribute.generated(),
+                                !attribute.generated() || initialValue == null,
                                 attribute.style()
                         );
 

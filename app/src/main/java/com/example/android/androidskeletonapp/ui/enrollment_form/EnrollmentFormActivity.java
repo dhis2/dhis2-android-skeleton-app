@@ -133,7 +133,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
             tips = "Save the value if not empty; otherwise, clear the attribute value (delete the existing value if any)"
     )
     private FormAdapter.OnValueSaved getValueListener() {
-        return (fieldUid, value) -> {
+        return (attributeUid, value) -> {
             // TODO Save the value if not empty; otherwise delete it.
         };
     }
