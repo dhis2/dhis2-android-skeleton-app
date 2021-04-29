@@ -31,7 +31,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.rules.RuleEngine;
 import org.hisp.dhis.rules.models.RuleAction;
@@ -252,29 +251,10 @@ public class EventFormActivity extends AppCompatActivity {
     }
 
     private void evaluateProgramIndicators(View view) {
-        List<ProgramIndicator> programIndicators = Sdk.d2().programModule()
-                .programIndicators()
-                .byProgramUid().eq(programUid)
-                .byDisplayInForm().isTrue()
-                .blockingGet();
-
         AlertDialog.Builder dialog = new AlertDialog.Builder(this)
                 .setTitle("Program indicators");
 
-        if (programIndicators.size() > 0) {
-            StringBuilder message = new StringBuilder();
-
-            for (ProgramIndicator pi : programIndicators) {
-                String value = Sdk.d2().programModule().programIndicatorEngine()
-                        .getEventProgramIndicatorValue(eventUid, pi.uid());
-
-                message.append(pi.displayName()).append(": ").append(value).append("\n");
-            }
-
-            dialog.setMessage(message);
-        } else {
-            dialog.setMessage("There are no program indicators for this program");
-        }
+        dialog.setMessage("TO DO");
 
         dialog.show();
     }
