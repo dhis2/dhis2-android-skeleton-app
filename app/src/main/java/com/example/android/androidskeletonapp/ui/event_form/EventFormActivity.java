@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -30,6 +31,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.rules.RuleEngine;
 import org.hisp.dhis.rules.models.RuleAction;
@@ -63,6 +65,7 @@ public class EventFormActivity extends AppCompatActivity {
     private FormType formType;
     private String fieldWaitingImage;
     private String eventUid;
+    private String programUid;
 
     private enum IntentExtra {
         EVENT_UID, PROGRAM_UID, OU_UID, TYPE
@@ -93,11 +96,13 @@ public class EventFormActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         eventUid = getIntent().getStringExtra(IntentExtra.EVENT_UID.name());
+        programUid = getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name());
 
         formType = FormType.valueOf(getIntent().getStringExtra(IntentExtra.TYPE.name()));
 
         adapter = new FormAdapter(getValueListener(), getImageListener());
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
+        binding.buttonValidate.setOnClickListener(this::evaluateProgramIndicators);
         binding.formRecycler.setAdapter(adapter);
 
         engineInitialization = PublishProcessor.create();
@@ -105,7 +110,7 @@ public class EventFormActivity extends AppCompatActivity {
         if (EventFormService.getInstance().init(
                 Sdk.d2(),
                 eventUid,
-                getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
+                programUid,
                 getIntent().getStringExtra(IntentExtra.OU_UID.name())))
             this.engineService = new RuleEngineService();
 
@@ -170,9 +175,7 @@ public class EventFormActivity extends AppCompatActivity {
 
         disposable.add(
                 Flowable.zip(
-                        engineService.configure(Sdk.d2(),
-                                getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
-                                EventFormService.getInstance().getEventUid()),
+                        engineService.configure(Sdk.d2(), programUid, eventUid),
                         EventFormService.getInstance().isListingRendering(),
                         Pair::of
                 )
@@ -246,6 +249,34 @@ public class EventFormActivity extends AppCompatActivity {
     private void finishEnrollment(View view) {
         setResult(RESULT_OK);
         finish();
+    }
+
+    private void evaluateProgramIndicators(View view) {
+        List<ProgramIndicator> programIndicators = Sdk.d2().programModule()
+                .programIndicators()
+                .byProgramUid().eq(programUid)
+                .byDisplayInForm().isTrue()
+                .blockingGet();
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this)
+                .setTitle("Program indicators");
+
+        if (programIndicators.size() > 0) {
+            StringBuilder message = new StringBuilder();
+
+            for (ProgramIndicator pi : programIndicators) {
+                String value = Sdk.d2().programModule().programIndicatorEngine()
+                        .getEventProgramIndicatorValue(eventUid, pi.uid());
+
+                message.append(pi.displayName()).append(": ").append(value).append("\n");
+            }
+
+            dialog.setMessage(message);
+        } else {
+            dialog.setMessage("There are no program indicators for this program");
+        }
+
+        dialog.show();
     }
 
     @Override
