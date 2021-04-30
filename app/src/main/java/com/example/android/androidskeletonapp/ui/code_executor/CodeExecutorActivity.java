@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -88,8 +89,22 @@ public class CodeExecutorActivity extends AppCompatActivity {
         }
     }
 
+    @Exercise(
+            exerciseNumber = "ex05a-aggregatedDataCreation",
+            title = "Set all the data values of one data set instance",
+            tips =  "Use the data set module to get one data set." +
+                    "Use the period module to get a period with the same period type that the data set." +
+                    "Use the organisation unit module to get one organisation unit." +
+                    "Use the category module to get the attribute option combos related to the data set." +
+                    "Set a random value for each combination of data element, category option combo and attribute " +
+                    "option combo (Using nested loops)."
+    )
     private Single<String> executeCode() {
-        return Single.just("Execution done!");
+        return Single.defer(() -> {
+            // TODO resolve the exercise here.
+
+            return Single.just("Execution done!");
+        });
     }
 
 }
