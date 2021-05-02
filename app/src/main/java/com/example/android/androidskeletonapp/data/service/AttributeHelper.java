@@ -1,13 +1,18 @@
 package com.example.android.androidskeletonapp.data.service;
 
+import com.example.android.androidskeletonapp.data.Sdk;
+
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AttributeHelper {
 
     // TODO adapt the helper to return the attribute uid you want to see in each field.
+    public final static String PERSON_TET_UID = "nEenWmSyUEp";
 
     public static String teiTitle(TrackedEntityInstance trackedEntityInstance) {
         return getAttributeUid(trackedEntityInstance.trackedEntityAttributeValues(), 0);
@@ -27,7 +32,16 @@ public class AttributeHelper {
     }
 
     public static String teiImage(TrackedEntityInstance trackedEntityInstance) {
-        // Return the uid of the TrackedEntityAttribute of the image
+        if (trackedEntityInstance.trackedEntityType() == null) {
+            return null;
+        }
+        if (PERSON_TET_UID.equals(Objects.requireNonNull(trackedEntityInstance.trackedEntityType()))) {
+            TrackedEntityAttribute attribute = Sdk.d2().trackedEntityModule().trackedEntityAttributes()
+                    .byName().eq("Picture")
+                    .one()
+                    .blockingGet();
+            return attribute != null ? attribute.uid() : null;
+        }
         return null;
     }
 
