@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Exercise(
-            exerciseNumber = "ex05-aggregatedDataUpload",
+            exerciseNumber = "ex07-aggregatedDataUpload",
             title = "Aggregated data upload",
             tips = "Call upload method in dataValues."
     )
