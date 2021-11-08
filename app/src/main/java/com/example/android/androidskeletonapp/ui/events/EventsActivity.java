@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.events;
 
+import static android.text.TextUtils.isEmpty;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,8 +24,6 @@ import java.util.Collections;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static android.text.TextUtils.isEmpty;
 
 public class EventsActivity extends ListActivity {
     private String selectedProgram;
@@ -56,46 +56,44 @@ public class EventsActivity extends ListActivity {
             findViewById(R.id.eventButton).setVisibility(View.GONE);
 
         findViewById(R.id.eventButton).setOnClickListener(view ->
-                {
-                    compositeDisposable.add(
-                            Sdk.d2().programModule().programs().uid(selectedProgram).get()
-                                    .map(program -> {
-                                        String orgUnit = Sdk.d2().organisationUnitModule().organisationUnits()
-                                                .byProgramUids(Collections.singletonList(selectedProgram))
-                                                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                                                .one().blockingGet().uid();
-                                        String stage = Sdk.d2().programModule().programStages()
-                                                .byProgramUid().eq(program.uid())
-                                                .one().blockingGet().uid();
-                                        String attrOptionCombo = program.categoryCombo() != null ?
-                                                Sdk.d2().categoryModule().categoryOptionCombos()
-                                                        .byCategoryComboUid().eq(program.categoryComboUid())
-                                                        .one().blockingGet().uid() : null;
-                                        return Sdk.d2().eventModule().events()
-                                                .blockingAdd(
-                                                        EventCreateProjection.builder()
-                                                                .organisationUnit(orgUnit)
-                                                                .program(program.uid())
-                                                                .programStage(stage)
-                                                                .attributeOptionCombo(attrOptionCombo)
-                                                                .build()
-                                                );
-                                    })
-                                    .map(eventUid ->
-                                            EventFormActivity.getFormActivityIntent(EventsActivity.this,
-                                                    eventUid,
-                                                    selectedProgram,
-                                                    Sdk.d2().organisationUnitModule().organisationUnits()
-                                                            .one().blockingGet().uid(), EventFormActivity.FormType.CREATE))
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(
-                                            activityIntent ->
-                                                    ActivityStarter.startActivityForResult(
-                                                            EventsActivity.this, activityIntent, EVENT_RQ),
-                                            Throwable::printStackTrace
-                                    ));
-                }
+                compositeDisposable.add(
+                        Sdk.d2().programModule().programs().uid(selectedProgram).get()
+                                .map(program -> {
+                                    String orgUnit = Sdk.d2().organisationUnitModule().organisationUnits()
+                                            .byProgramUids(Collections.singletonList(selectedProgram))
+                                            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                                            .one().blockingGet().uid();
+                                    String stage = Sdk.d2().programModule().programStages()
+                                            .byProgramUid().eq(program.uid())
+                                            .one().blockingGet().uid();
+                                    String attrOptionCombo = program.categoryCombo() != null ?
+                                            Sdk.d2().categoryModule().categoryOptionCombos()
+                                                    .byCategoryComboUid().eq(program.categoryComboUid())
+                                                    .one().blockingGet().uid() : null;
+                                    return Sdk.d2().eventModule().events()
+                                            .blockingAdd(
+                                                    EventCreateProjection.builder()
+                                                            .organisationUnit(orgUnit)
+                                                            .program(program.uid())
+                                                            .programStage(stage)
+                                                            .attributeOptionCombo(attrOptionCombo)
+                                                            .build()
+                                            );
+                                })
+                                .map(eventUid ->
+                                        EventFormActivity.getFormActivityIntent(EventsActivity.this,
+                                                eventUid,
+                                                selectedProgram,
+                                                Sdk.d2().organisationUnitModule().organisationUnits()
+                                                        .one().blockingGet().uid(), EventFormActivity.FormType.CREATE))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        activityIntent ->
+                                                ActivityStarter.startActivityForResult(
+                                                        EventsActivity.this, activityIntent, EVENT_RQ),
+                                        Throwable::printStackTrace
+                                ))
         );
 
     }

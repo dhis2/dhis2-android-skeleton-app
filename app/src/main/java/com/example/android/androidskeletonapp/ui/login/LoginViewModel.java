@@ -48,7 +48,7 @@ public class LoginViewModel extends ViewModel {
                     try {
                         D2Error d2Error = (D2Error) throwable;
                         errorCode = ": " + d2Error.errorCode();
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                     loginResult.postValue(new LoginResult("Login error" + errorCode));
                     throwable.printStackTrace();

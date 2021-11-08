@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.Sdk;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -89,7 +90,9 @@ public class CodeExecutorActivity extends AppCompatActivity {
     }
 
     private Single<String> executeCode() {
-        return Single.just("Execution done!");
+
+
+        return Single.just(Sdk.d2().visualizationModule().visualizations().blockingGet().size() + " Execution done!");
     }
 
 }
