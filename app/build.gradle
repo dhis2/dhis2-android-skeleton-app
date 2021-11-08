@@ -60,7 +60,11 @@ ext {
 }
 
 dependencies {
-    implementation ("org.hisp.dhis:android-core:1.4.0") {
+    /* Uncomment the following line and remove the org.hisp.dhis:android-core dependency to use the android DHIS2 SDK as a submodule.
+    implementation project(":core")
+    */
+
+    implementation ("org.hisp.dhis:android-core:1.5.0") {
         exclude group: 'com.facebook.flipper'
     }
 
