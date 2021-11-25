@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_server_url"
+            android:text="http://10.0.2.2:8080"
             android:inputType="textUri" />
 
     </com.google.android.material.textfield.TextInputLayout>
