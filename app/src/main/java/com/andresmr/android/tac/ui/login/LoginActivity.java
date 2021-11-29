@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.android.androidskeletonapp.R;
+import com.andresmr.android.tac.R;
 import com.andresmr.android.tac.data.service.ActivityStarter;
 import com.andresmr.android.tac.ui.main.MainActivity;
 import com.google.android.material.button.MaterialButton;

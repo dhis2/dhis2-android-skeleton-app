@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.android.androidskeletonapp.R;
+import com.andresmr.android.tac.R;
 import com.andresmr.android.tac.data.Sdk;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;

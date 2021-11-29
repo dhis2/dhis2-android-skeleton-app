@@ -16,7 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.android.androidskeletonapp.R;
+import com.andresmr.android.tac.R;
 import com.andresmr.android.tac.data.Sdk;
 import com.andresmr.android.tac.data.service.SyncStatusHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
