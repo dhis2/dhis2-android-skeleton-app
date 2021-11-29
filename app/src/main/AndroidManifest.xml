@@ -38,9 +38,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
-            android:exported="true"/>
     </application>
 
 </manifest>
