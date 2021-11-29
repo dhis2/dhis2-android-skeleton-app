@@ -1,6 +1,6 @@
-package com.example.android.androidskeletonapp.ui.main;
+package com.andresmr.android.tac.ui.main;
 
-import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
+import static com.andresmr.android.tac.data.service.LogOutService.logOut;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,8 +17,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
+import com.andresmr.android.tac.data.Sdk;
+import com.andresmr.android.tac.data.service.SyncStatusHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;

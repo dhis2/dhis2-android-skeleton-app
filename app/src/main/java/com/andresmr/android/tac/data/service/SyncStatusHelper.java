@@ -1,6 +1,6 @@
-package com.example.android.androidskeletonapp.data.service;
+package com.andresmr.android.tac.data.service;
 
-import com.example.android.androidskeletonapp.data.Sdk;
+import com.andresmr.android.tac.data.Sdk;
 
 import org.hisp.dhis.android.core.common.State;
 

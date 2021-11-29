@@ -1,14 +1,14 @@
-package com.example.android.androidskeletonapp.ui.splash;
+package com.andresmr.android.tac.ui.splash;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.andresmr.android.tac.data.Sdk;
+import com.andresmr.android.tac.data.service.ActivityStarter;
+import com.andresmr.android.tac.ui.login.LoginActivity;
+import com.andresmr.android.tac.ui.main.MainActivity;
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.login.LoginActivity;
-import com.example.android.androidskeletonapp.ui.main.MainActivity;
 
 import org.hisp.dhis.android.core.D2Manager;
 

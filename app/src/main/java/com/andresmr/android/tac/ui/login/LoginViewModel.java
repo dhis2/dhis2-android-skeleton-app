@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.ui.login;
+package com.andresmr.android.tac.ui.login;
 
 import android.util.Patterns;
 
@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
+import com.andresmr.android.tac.data.Sdk;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.user.User;

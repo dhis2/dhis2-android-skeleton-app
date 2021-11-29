@@ -1,9 +1,9 @@
-package com.example.android.androidskeletonapp.data.service;
+package com.andresmr.android.tac.data.service;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.ui.login.LoginActivity;
+import com.andresmr.android.tac.ui.login.LoginActivity;
+import com.andresmr.android.tac.data.Sdk;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;

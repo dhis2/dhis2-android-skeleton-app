@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.ui.login;
+package com.andresmr.android.tac.ui.login;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.main.MainActivity;
+import com.andresmr.android.tac.data.service.ActivityStarter;
+import com.andresmr.android.tac.ui.main.MainActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
