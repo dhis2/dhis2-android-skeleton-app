@@ -16,7 +16,7 @@ public class SyncStatusHelper {
 
     public static int trackedEntityInstanceCount() {
         return Sdk.d2().trackedEntityModule().trackedEntityInstances()
-                .byState().neq(State.RELATIONSHIP).blockingCount();
+                .byAggregatedSyncState().neq(State.RELATIONSHIP).blockingCount();
     }
 
     public static int singleEventCount() {

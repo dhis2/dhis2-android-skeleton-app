@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.main;
 
+import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,8 +32,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -208,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         compositeDisposable.add(
                 Observable.merge(
                         downloadTrackedEntityInstances(),
+                        downloadSingleEvents(),
                         downloadAggregatedData()
                 )
                         .subscribeOn(Schedulers.io())
@@ -219,6 +220,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Observable<D2Progress> downloadTrackedEntityInstances() {
         return Sdk.d2().trackedEntityModule().trackedEntityInstanceDownloader()
+                .limit(10).limitByOrgunit(false).limitByProgram(false).download();
+    }
+
+    private Observable<D2Progress> downloadSingleEvents() {
+        return Sdk.d2().eventModule().eventDownloader()
                 .limit(10).limitByOrgunit(false).limitByProgram(false).download();
     }
 
