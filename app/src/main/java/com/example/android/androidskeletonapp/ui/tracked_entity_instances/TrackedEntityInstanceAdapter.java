@@ -1,5 +1,13 @@
 package com.example.android.androidskeletonapp.ui.tracked_entity_instances;
 
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle1;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2First;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2Second;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiTitle;
+import static com.example.android.androidskeletonapp.data.service.ImageHelper.getBitmap;
+import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
+import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setState;
+
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,14 +39,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle1;
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2First;
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiSubtitle2Second;
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.teiTitle;
-import static com.example.android.androidskeletonapp.data.service.ImageHelper.getBitmap;
-import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
-import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setState;
 
 public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntityInstance, ListItemWithSyncHolder> {
 
@@ -74,8 +74,8 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
                 d2Error.printStackTrace();
             }
         });
-        if (trackedEntityInstance.state() == State.TO_POST ||
-                trackedEntityInstance.state() == State.TO_UPDATE) {
+        if (trackedEntityInstance.aggregatedSyncState() == State.TO_POST ||
+                trackedEntityInstance.aggregatedSyncState() == State.TO_UPDATE) {
             holder.sync.setVisibility(View.VISIBLE);
             holder.sync.setOnClickListener(v -> {
                 holder.sync.setVisibility(View.GONE);
@@ -104,7 +104,7 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
             holder.sync.setOnClickListener(null);
         }
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
-        setState(trackedEntityInstance.state(), holder.syncIcon);
+        setState(trackedEntityInstance.aggregatedSyncState(), holder.syncIcon);
         setConflicts(trackedEntityInstance.uid(), holder);
     }
 
@@ -134,11 +134,7 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
                 return firstSubtitle;
             }
         } else {
-            if (secondSubtitle != null) {
-                return secondSubtitle;
-            } else {
-                return null;
-            }
+            return secondSubtitle;
         }
     }
 

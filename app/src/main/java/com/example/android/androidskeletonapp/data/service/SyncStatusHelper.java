@@ -18,7 +18,7 @@ public class SyncStatusHelper {
 
     public static int trackedEntityInstanceCount() {
         return Sdk.d2().trackedEntityModule().trackedEntityInstances()
-                .byState().neq(State.RELATIONSHIP).blockingCount();
+                .byAggregatedSyncState().neq(State.RELATIONSHIP).blockingCount();
     }
 
     public static int singleEventCount() {
@@ -30,9 +30,9 @@ public class SyncStatusHelper {
     }
 
     public static boolean isThereDataToUpload() {
-        return Sdk.d2().trackedEntityModule().trackedEntityInstances().byState()
+        return Sdk.d2().trackedEntityModule().trackedEntityInstances().byAggregatedSyncState()
                 .notIn(Collections.singletonList(State.SYNCED)).blockingCount() > 0 ||
-                Sdk.d2().dataValueModule().dataValues().byState()
+                Sdk.d2().dataValueModule().dataValues().bySyncState()
                         .notIn(Collections.singletonList(State.SYNCED)).blockingCount() > 0;
     }
 }

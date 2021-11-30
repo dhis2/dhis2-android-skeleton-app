@@ -1,5 +1,8 @@
 package com.example.android.androidskeletonapp.ui.events;
 
+import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
+import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setState;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +30,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
-import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setState;
 
 public class EventAdapter extends PagedListAdapter<Event, ListItemWithSyncHolder> {
 
@@ -68,21 +68,19 @@ public class EventAdapter extends PagedListAdapter<Event, ListItemWithSyncHolder
             }
         });
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
-        setState(event.state(), holder.syncIcon);
+        setState(event.aggregatedSyncState(), holder.syncIcon);
         setConflicts(event.uid(), holder);
 
-        holder.itemView.setOnClickListener(view->{
-            ActivityStarter.startActivity(
-                    activity,
-                    EventFormActivity.getFormActivityIntent(
-                            activity,
-                            event.uid(),
-                            event.program(),
-                            event.organisationUnit(),
-                            EventFormActivity.FormType.CHECK
-                    ),false
-            );
-        });
+        holder.itemView.setOnClickListener(view -> ActivityStarter.startActivity(
+                activity,
+                EventFormActivity.getFormActivityIntent(
+                        activity,
+                        event.uid(),
+                        event.program(),
+                        event.organisationUnit(),
+                        EventFormActivity.FormType.CHECK
+                ),false
+        ));
     }
 
     private OrganisationUnit orgUnit(String orgUnitUid) {

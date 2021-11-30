@@ -1,11 +1,11 @@
 package com.example.android.androidskeletonapp.ui.data_sets.instances.data_set_form;
 
+import static android.text.TextUtils.isEmpty;
+
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -28,8 +28,6 @@ import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static android.text.TextUtils.isEmpty;
 
 public class DataSetFormActivity extends AppCompatActivity {
 

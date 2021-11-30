@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.foreign_key_violations;
 
+import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,6 @@ import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemHolder;
 
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-
-import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
 
 public class ForeignKeyViolationsAdapter extends PagedListAdapter<ForeignKeyViolation, ListItemHolder> {
 
@@ -34,8 +34,8 @@ public class ForeignKeyViolationsAdapter extends PagedListAdapter<ForeignKeyViol
     public void onBindViewHolder(@NonNull ListItemHolder holder, int position) {
         ForeignKeyViolation fkViolation = getItem(position);
         holder.title.setText(fkViolation.notFoundValue());
-        holder.subtitle1.setText(fkViolation.fromTable() + "." + fkViolation.fromColumn());
-        holder.subtitle2.setText(fkViolation.toTable() + "." + fkViolation.toColumn());
+        holder.subtitle1.setText(String.format("%s.%s", fkViolation.fromTable(), fkViolation.fromColumn()));
+        holder.subtitle2.setText(String.format("%s.%s", fkViolation.toTable(), fkViolation.toColumn()));
         holder.rightText.setText(DateFormatHelper.formatDate(fkViolation.created()));
         holder.icon.setImageResource(R.drawable.ic_foreign_key_black_24dp);
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
