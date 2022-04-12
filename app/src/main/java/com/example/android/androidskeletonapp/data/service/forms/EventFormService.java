@@ -9,7 +9,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
+import org.hisp.dhis.android.core.program.SectionRenderingType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
 import java.util.Date;
@@ -148,7 +148,7 @@ public class EventFormService {
         return Flowable.fromCallable(() -> {
             List<ProgramStageSection> matrixRenderingSections = d2.programModule().programStageSections()
                     .byProgramStageUid().eq(eventRepository.blockingGet().programStage())
-                    .byMobileRenderType().notIn(ProgramStageSectionRenderingType.LISTING.name())
+                    .byMobileRenderType().notIn(SectionRenderingType.LISTING.name())
                     .blockingGet();
             this.isListingRendering = matrixRenderingSections.isEmpty();
             return isListingRendering;

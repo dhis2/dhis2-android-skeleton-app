@@ -14,11 +14,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.example.android.androidskeletonapp"
-        minSdkVersion 19
-        targetSdkVersion 30
+        minSdkVersion 21
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -64,24 +64,24 @@ dependencies {
     implementation project(":core")
     */
 
-    implementation ("org.hisp.dhis:android-core:1.5.0") {
+    implementation ("org.hisp.dhis:android-core:1.6.0") {
         exclude group: 'com.facebook.flipper'
     }
 
-    implementation "org.hisp.dhis.rules:rule-engine:2.0.16"
+    implementation "org.hisp.dhis.rules:rule-engine:2.0.32"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.annotation:annotation:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.annotation:annotation:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'androidx.test:runner:1.3.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     debugImplementation "com.facebook.flipper:flipper:${libraries.flipper}"
     debugImplementation "com.facebook.soloader:soloader:${libraries.soloader}"
@@ -90,5 +90,4 @@ dependencies {
     }
 
     releaseImplementation "com.facebook.flipper:flipper-noop:${libraries.flipper}"
-
 }
