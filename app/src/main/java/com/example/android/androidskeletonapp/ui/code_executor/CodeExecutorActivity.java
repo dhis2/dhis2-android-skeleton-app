@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -88,8 +88,25 @@ public class CodeExecutorActivity extends AppCompatActivity {
         }
     }
 
+    @Exercise(
+            exerciseNumber = "ex12-analytics",
+            title = "Analytics",
+            tips = "Evaluate event line list analytics including some of the values provided."
+    )
     private Single<String> executeCode() {
-        return Single.just("Execution done!");
-    }
 
+        // Data elements
+        String population = "HDRons6AfbL";
+        String households = "VNM6zoPECqd";
+        String householdsWithCases = "VOIXEuqBTBI";
+
+        // Program indicators
+        String density = "zmEg29pWBeV";
+        String percentagePositive = "Z16GByeJtie";
+
+        // Program stage
+        String fociInvestigation = "CWaAcQYKVpq";
+
+        return Single.just("Just do it!");
+    }
 }
