@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.tracked_entity_instances;
 
+import static android.text.TextUtils.isEmpty;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,20 +12,21 @@ import androidx.annotation.Nullable;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.enrollment_form.EnrollmentFormActivity;
 
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static android.text.TextUtils.isEmpty;
 
 public class TrackedEntityInstancesActivity extends ListActivity {
 
@@ -56,29 +59,45 @@ public class TrackedEntityInstancesActivity extends ListActivity {
 
         findViewById(R.id.enrollmentButton).setOnClickListener(view -> compositeDisposable.add(
                 Sdk.d2().programModule().programs().uid(selectedProgram).get()
-                        .map(program -> Sdk.d2().trackedEntityModule().trackedEntityInstances()
-                                .blockingAdd(
-                                        TrackedEntityInstanceCreateProjection.builder()
-                                                .organisationUnit(Sdk.d2().organisationUnitModule().organisationUnits()
-                                                        .one().blockingGet().uid())
-                                                .trackedEntityType(program.trackedEntityType().uid())
-                                                .build()
-                                ))
-                        .map(teiUid -> EnrollmentFormActivity.getFormActivityIntent(
-                                TrackedEntityInstancesActivity.this,
-                                teiUid,
-                                selectedProgram,
-                                Sdk.d2().organisationUnitModule().organisationUnits().one().blockingGet().uid()
-                                ))
+                        .flatMap(this::createTrackedEntityInstance)
+                        .map(this::getEnrollmentFormActivityIntent)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 activityIntent ->
                                         ActivityStarter.startActivityForResult(
-                                                TrackedEntityInstancesActivity.this, activityIntent,ENROLLMENT_RQ),
+                                                TrackedEntityInstancesActivity.this, activityIntent, ENROLLMENT_RQ),
                                 Throwable::printStackTrace
                         )
         ));
+    }
+
+    @Exercise(
+            exerciseNumber = "ex09a-trackerDataCreation",
+            title = "Tracker data creation",
+            tips = "Set any organisation unit in CAPTURE scope. Set the TrackedEntityType associated to the Program"
+    )
+    private Single<String> createTrackedEntityInstance(Program program) {
+        String organisationUnitUid = Sdk.d2()
+                .organisationUnitModule()
+                .organisationUnits()
+                .one().blockingGet().uid();
+        String trackedEntityTypeUid = program.trackedEntityType().uid();
+
+        // TODO Create a new trackedEntityInstance and return a Single with the trackedEntityInstance uid
+        return Single.error(new RuntimeException("Not implemented"));
+    }
+
+    private Intent getEnrollmentFormActivityIntent(String teiUid) {
+        String orgunitUid = Sdk.d2().trackedEntityModule().trackedEntityInstances()
+                .uid(teiUid).blockingGet().organisationUnit();
+
+        return EnrollmentFormActivity.getFormActivityIntent(
+                TrackedEntityInstancesActivity.this,
+                teiUid,
+                selectedProgram,
+                orgunitUid
+        );
     }
 
     private void observeTrackedEntityInstances() {
@@ -115,9 +134,9 @@ public class TrackedEntityInstancesActivity extends ListActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == ENROLLMENT_RQ && resultCode == RESULT_OK){
-                adapter.invalidateSource();
+        if (requestCode == ENROLLMENT_RQ && resultCode == RESULT_OK) {
+            adapter.invalidateSource();
         }
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
