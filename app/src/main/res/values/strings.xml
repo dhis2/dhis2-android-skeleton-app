@@ -13,7 +13,7 @@
     <!-- Strings related to autoFill -->
     <string name="auto_fill_url">"https://academy.android.dhis2.org"</string>
     <string name="auto_fill_username">"dev"</string>
-    <string name="auto_fill_password">"Android2021xx.."</string>    <!-- Strings related to list item -->
+    <string name="auto_fill_password">"Android2022xx.."</string>    <!-- Strings related to list item -->
     <string name="sync_icon">Sync icon</string>
     <string name="item_icon">Icon</string>
     <string name="item_bitmap">Bitmap</string>
