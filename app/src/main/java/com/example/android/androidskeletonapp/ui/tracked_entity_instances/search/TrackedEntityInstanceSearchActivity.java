@@ -15,6 +15,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.databinding.ActivityTrackedEntityInstanceSearchBinding;
 import com.example.android.androidskeletonapp.ui.base.ListWithoutBindingsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
@@ -23,7 +24,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
@@ -132,7 +132,17 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
     private void search() {
         recyclerView.setAdapter(adapter);
 
-        getTrackedEntityInstanceQuery().observe(this, trackedEntityInstancePagedList -> {
+        List<OrganisationUnit> organisationUnits = Sdk.d2().organisationUnitModule().organisationUnits()
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .byRootOrganisationUnit(true)
+                .blockingGet();
+
+        List<String> organisationUids = new ArrayList<>();
+        if (!organisationUnits.isEmpty()) {
+            organisationUids = UidsHelper.getUidsList(organisationUnits);
+        }
+
+        getTrackedEntityInstanceQuery(organisationUids, savedProgram, savedAttribute, savedFilter).observe(this, trackedEntityInstancePagedList -> {
             adapter.submitList(trackedEntityInstancePagedList);
             notificator.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
@@ -145,23 +155,19 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
         });
     }
 
-    private LiveData<PagedList<TrackedEntityInstance>> getTrackedEntityInstanceQuery() {
-        List<OrganisationUnit> organisationUnits = Sdk.d2().organisationUnitModule().organisationUnits()
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .byRootOrganisationUnit(true)
-                .blockingGet();
-
-        List<String> organisationUids = new ArrayList<>();
-        if (!organisationUnits.isEmpty()) {
-            organisationUids = UidsHelper.getUidsList(organisationUnits);
-        }
-
-        return Sdk.d2().trackedEntityModule()
-                .trackedEntityInstanceQuery()
-                .byOrgUnits().in(organisationUids)
-                .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
-                .byProgram().eq(savedProgram)
-                .byFilter(savedAttribute).like(savedFilter)
-                .onlineFirst().getPaged(15);
+    @Exercise(
+            exerciseNumber = "ex05",
+            title = "Implement TEI search query",
+            tips = "Search trackedEntityInstances using the parameters provided:" +
+                    "- organisationUnits in 'orgUnits' list and using mode DESCENDANTS" +
+                    "- limited to the 'programUid' provided" +
+                    "- filtering the 'attributeUid' using the 'value' with the operator 'LIKE'"
+    )
+    private LiveData<PagedList<TrackedEntityInstance>> getTrackedEntityInstanceQuery(List<String> orgUnits,
+                                                                                     String programUid,
+                                                                                     String attributeUid,
+                                                                                     String value) {
+        // TODO
+        return null;
     }
 }
