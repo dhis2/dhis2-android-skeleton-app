@@ -32,7 +32,7 @@ public class Sdk {
     }
 
     @Exercise(
-            exerciseNumber = "ex01a",
+            exerciseNumber = "ex01",
             title = "SDK Configuration",
             tips = "Use D2Configuration.builder(). " +
                     "Set the context, " +
