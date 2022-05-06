@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.main;
 
+import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +21,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
@@ -40,8 +43,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -237,10 +238,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .subscribe());
     }
 
-    private Observable<D2Progress> downloadMetadata() {
-        return Sdk.d2().metadataModule().download();
-    }
-
     private void downloadData() {
         compositeDisposable.add(
                 Observable.merge(
@@ -258,18 +255,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .subscribe());
     }
 
+    @Exercise(
+            exerciseNumber = "ex03-sync-and-list",
+            title = "Metadata synchronization",
+            tips = "Call the download method for metadata."
+    )
+    private Observable<D2Progress> downloadMetadata() {
+        // TODO Download metadata
+        return Observable.empty();
+    }
+
+    @Exercise(
+            exerciseNumber = "ex03-sync-and-list",
+            title = "Data synchronization",
+            tips = "Call the download method for trackedEntityInstances. Choose a global limit of 10."
+    )
     private Observable<D2Progress> downloadTrackedEntityInstances() {
-        return Sdk.d2().trackedEntityModule().trackedEntityInstanceDownloader()
-                .limit(10).limitByOrgunit(false).limitByProgram(false).download();
+        // TODO Download tracked entity instances
+        return Observable.empty();
     }
 
+    @Exercise(
+            exerciseNumber = "ex03-sync-and-list",
+            title = "Data synchronization",
+            tips = "Call the download method for single events. Choose a global limit of 10."
+    )
     private Observable<D2Progress> downloadSingleEvents() {
-        return Sdk.d2().eventModule().eventDownloader()
-                .limit(10).limitByOrgunit(false).limitByProgram(false).download();
+        // TODO Download single events
+        return Observable.empty();
     }
 
+    @Exercise(
+            exerciseNumber = "ex03-sync-and-list",
+            title = "Data synchronization",
+            tips = "Call the download method for aggregated data."
+    )
     private Observable<D2Progress> downloadAggregatedData() {
-        return Sdk.d2().aggregatedModule().data().download();
+        // TODO Download aggregated data
+        return Observable.empty();
     }
 
     private void uploadData() {
