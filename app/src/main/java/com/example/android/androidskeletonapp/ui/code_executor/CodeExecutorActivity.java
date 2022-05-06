@@ -14,6 +14,12 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.hisp.dhis.android.core.analytics.linelist.LineListResponse;
+import org.hisp.dhis.android.core.analytics.linelist.LineListResponseValue;
+
+import java.util.List;
+
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -107,6 +113,24 @@ public class CodeExecutorActivity extends AppCompatActivity {
         // Program stage
         String fociInvestigation = "CWaAcQYKVpq";
 
-        return Single.just("Just do it!");
+        //TODO: Complete your exercise here. Remove null and add the SDK query
+        List<LineListResponse> response = null;
+
+        String result = mapLineListResponseToString(response);
+        return Single.just(result);
+    }
+
+    private String mapLineListResponseToString(List<LineListResponse> response) {
+        if (response == null || response.isEmpty()) return "No results";
+
+        StringBuilder builder = new StringBuilder();
+        for (LineListResponse item : response) {
+            builder.append("Date: ").append(item.getDate()).append("\n");
+            for (LineListResponseValue value : item.getValues()) {
+                builder.append(value.getDisplayName()).append(": ").append(value.getValue()).append("\n");
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 }
