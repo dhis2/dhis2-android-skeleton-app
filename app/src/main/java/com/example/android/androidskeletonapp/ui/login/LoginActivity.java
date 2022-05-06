@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Exercise(
-            exerciseNumber = "ex01b",
+            exerciseNumber = "ex02",
             title = "Login",
             tips = "Show a toast to welcome the user"
     )

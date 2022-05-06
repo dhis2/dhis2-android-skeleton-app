@@ -56,7 +56,7 @@ public class LoginViewModel extends ViewModel {
     }
 
     @Exercise(
-            exerciseNumber = "ex01b",
+            exerciseNumber = "ex02",
             title = "Login",
             tips = "Call login method in user module"
     )
