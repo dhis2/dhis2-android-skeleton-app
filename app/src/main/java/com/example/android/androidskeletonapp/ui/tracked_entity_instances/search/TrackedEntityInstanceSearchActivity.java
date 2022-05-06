@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
@@ -156,12 +157,12 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
     }
 
     @Exercise(
-            exerciseNumber = "ex05",
+            exerciseNumber = "ex08",
             title = "Implement TEI search query",
             tips = "Search trackedEntityInstances using the parameters provided:" +
                     "- organisationUnits in 'orgUnits' list and using mode DESCENDANTS" +
                     "- limited to the 'programUid' provided" +
-                    "- filtering the 'attributeUid' using the 'value' with the operator 'LIKE'"
+                    "- filtering by attribute 'attributeUid' using the 'value' with the operator 'LIKE'"
     )
     private LiveData<PagedList<TrackedEntityInstance>> getTrackedEntityInstanceQuery(List<String> orgUnits,
                                                                                      String programUid,
