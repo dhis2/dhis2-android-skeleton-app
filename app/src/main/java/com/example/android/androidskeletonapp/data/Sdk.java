@@ -3,6 +3,7 @@ package com.example.android.androidskeletonapp.data;
 import android.content.Context;
 
 import com.example.android.androidskeletonapp.data.service.FlipperManager;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Configuration;
@@ -19,8 +20,7 @@ public class Sdk {
         return D2Manager.getD2();
     }
 
-    public static D2Configuration getD2Configuration(Context context) {
-        // This will be null if not debug mode to make sure your data is safe
+    public static List<Interceptor> getNetworkInterceptors(Context context) {
         Interceptor flipperInterceptor = FlipperManager.setUp(context.getApplicationContext());
 
         List<Interceptor> networkInterceptors = new ArrayList<>();
@@ -28,14 +28,21 @@ public class Sdk {
             networkInterceptors.add(flipperInterceptor);
         }
 
-        return D2Configuration.builder()
-                .appName("skeleton_App")
-                .appVersion("0.0.1")
-                .readTimeoutInSeconds(30)
-                .connectTimeoutInSeconds(30)
-                .writeTimeoutInSeconds(30)
-                .networkInterceptors(networkInterceptors)
-                .context(context)
-                .build();
+        return networkInterceptors;
+    }
+
+    @Exercise(
+            exerciseNumber = "ex01a",
+            title = "SDK Configuration",
+            tips = "Use D2Configuration.builder(). " +
+                    "Set the context, " +
+                    "set your username as appName, " +
+                    "set version 1.0, " +
+                    "set timeouts to 2 minutes (connectTimeoutInSeconds, readTimeoutInSeconds and writeTimeoutInSeconds) " +
+                    "set the networkInterceptors using the getNetworkInterceptors(context) method."
+    )
+    public static D2Configuration getD2Configuration(Context context) {
+        // TODO
+        return null;
     }
 }
