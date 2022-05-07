@@ -22,6 +22,7 @@ import androidx.paging.PagedListAdapter;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
 import com.example.android.androidskeletonapp.ui.tracker_import_conflicts.TrackerImportConflictsAdapter;
@@ -108,10 +109,14 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         setConflicts(trackedEntityInstance.uid(), holder);
     }
 
+    @Exercise(
+            exerciseNumber = "ex10-granularSync",
+            title = "Data upload. Granular sync",
+            tips = "Sync the tei with the uid provided"
+    )
     private Observable<D2Progress> syncTei(String teiUid) {
-        return Sdk.d2().trackedEntityModule().trackedEntityInstances()
-                .byUid().eq(teiUid)
-                .upload();
+        // TODO
+        return Observable.empty();
     }
 
     private String valueAt(List<TrackedEntityAttributeValue> values, String attributeUid) {
