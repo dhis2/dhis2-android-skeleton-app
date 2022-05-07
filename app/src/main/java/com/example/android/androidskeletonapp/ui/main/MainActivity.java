@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.main;
 
+import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +21,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
@@ -40,8 +43,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -273,16 +274,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void uploadData() {
-        compositeDisposable.add(
-                Sdk.d2().fileResourceModule().fileResources().upload()
-                        .concatWith(Sdk.d2().trackedEntityModule().trackedEntityInstances().upload())
-                        .concatWith(Sdk.d2().dataValueModule().dataValues().upload())
-                        .concatWith(Sdk.d2().eventModule().events().upload())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnComplete(this::setSyncingFinished)
-                        .doOnError(Throwable::printStackTrace)
-                        .subscribe());
+        compositeDisposable.add(getTrackerDataToUpload()
+                .concatWith(Sdk.d2().dataValueModule().dataValues().upload())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(this::setSyncingFinished)
+                .doOnError(Throwable::printStackTrace)
+                .subscribe());
+    }
+
+    @Exercise(
+            exerciseNumber = "ex10-trackerDataUpload",
+            title = "Tracker data upload.",
+            tips = "Upload trackedEntityInstances and events." +
+                    "You can concatenate calls using .concatWith()."
+    )
+    private Observable<D2Progress> getTrackerDataToUpload() {
+        // TODO
+        return Observable.empty();
     }
 
     private void wipeData() {
