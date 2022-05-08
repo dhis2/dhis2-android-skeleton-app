@@ -24,6 +24,7 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 import com.example.android.androidskeletonapp.data.service.forms.RuleEngineService;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
@@ -251,6 +252,11 @@ public class EventFormActivity extends AppCompatActivity {
         finish();
     }
 
+    @Exercise(
+        exerciseNumber = "ex11-programIndicatorEngine",
+        title = "Program indicator engine",
+        tips = "Print each program indicator in a new line"
+    )
     private void evaluateProgramIndicators(View view) {
         // Todo
     }
