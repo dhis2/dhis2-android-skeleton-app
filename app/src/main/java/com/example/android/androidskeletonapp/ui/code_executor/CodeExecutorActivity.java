@@ -11,8 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.Sdk;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.hisp.dhis.android.core.analytics.AnalyticsException;
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse;
+import org.hisp.dhis.android.core.arch.helpers.Result;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -89,7 +94,38 @@ public class CodeExecutorActivity extends AppCompatActivity {
     }
 
     private Single<String> executeCode() {
-        return Single.just("Execution done!");
+        // Data for analysis
+
+        // Data Elements
+        String opv0Id = "x3Do5e7g4Qo"; // OPV0 doses given
+        String opv1Id = "pikOziyCXbM"; // OPV1 doses given
+        String opv2Id = "O05mAByOgAv"; // OPV2 doses given
+        String opv3Id = "vI2csg55S9C"; // OPV3 doses given
+
+        // Categories
+        String fixedOutreah = "fMZEcRHuamy";    // Category "Location Fixed/Outreach"
+        String fixed = "qkPbeWaFsnU";           // CategoryOption "Fixed"
+        String outreach = "wbrDrL2aYEc";        // CategoryOption "Outreach"
+
+        String age1year = "YNZyaJHiHYq";        // Category "EPI/nutrition age" (< 1 year, > 1 year)
+        String lower1year = "btOyqprQ9e8";      // CategoryOption "<1y"
+        String greater1year = "GEqzEKCHoGA";      // CategoryOption ">1y"
+
+        // Indicators
+        String opv0Percentage = "UWV8MZEfoC4"; // OPV0 %
+
+        // OrganisationUnit
+        String ngelehunCHC = "DiszpKrYNg8"; // Ngelehun CHC, or you can use relative "UserOrganisationUnit"
+
+
+
+        Result<DimensionalResponse, AnalyticsException> result =
+                Sdk.d2().analyticsModule().analytics()
+                        .blockingEvaluate();
+
+
+
+        return Single.just(AnalyticsHelper.prettyPrint(result));
     }
 
 }

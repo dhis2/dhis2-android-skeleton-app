@@ -2,10 +2,9 @@ package com.example.android.androidskeletonapp.ui.code_executor
 
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
-import java.lang.Math.ceil
+import kotlin.math.ceil
 
 object AnalyticsHelper {
 
@@ -26,8 +25,8 @@ object AnalyticsHelper {
         val columnDimensions = response.dimensions.subList(0, columnHeaderSize)
         val rowDimensions = response.dimensions.subList(columnHeaderSize, response.dimensions.size)
 
-        val columnHeaders = getHeaderCombination(columnDimensions, response.dimensionItems)
-        val rowHeaders = getHeaderCombination(rowDimensions, response.dimensionItems)
+        val columnHeaders = getHeaderCombination(columnDimensions, response)
+        val rowHeaders = getHeaderCombination(rowDimensions, response)
 
         val sb = StringBuilder()
 
@@ -36,22 +35,23 @@ object AnalyticsHelper {
 
         (0 until columnHeaderSize).map { headerIdx ->
             sb.append("".padStart(initialEmptySpace))
-            columnHeaders.forEach { header ->
-                val id = header[headerIdx]
-                val name = response.metadata[id.id]!!.displayName
-                sb.append(cell(name))
+            val headersByRow = columnHeaders.map { it[headerIdx] }
+            countConsecutiveDuplicates(headersByRow).forEach { entry ->
+                val id = entry.value
+                val name = response.metadata[id]!!.displayName
+                sb.append(cell(name, entry.count))
             }
             sb.append("\n")
         }
 
         // Rows
         rowHeaders.forEach { headerDim ->
-            headerDim.forEach { dimItem ->
-                val name = response.metadata[dimItem.id]!!.displayName
+            headerDim.forEach { id ->
+                val name = response.metadata[id]!!.displayName
                 sb.append(cell(name))
             }
             columnHeaders.forEach { columDim ->
-                val valueDimensions = (headerDim + columDim).map { it.id }
+                val valueDimensions = (headerDim + columDim).map { it }
                 val value = response.values.find { value -> value.dimensions.containsAll(valueDimensions) }?.value ?: ""
                 sb.append(cell(value))
             }
@@ -63,15 +63,21 @@ object AnalyticsHelper {
     }
 
     private fun getHeaderCombination(dimensions: List<Dimension>,
-                                     dimensionItems: Map<Dimension, List<DimensionItem>>): List<List<DimensionItem>> {
+                                     response: DimensionalResponse): List<List<String>> {
+        val dimensionItems = dimensions.associateWith { dimension ->
+            val dimIndex = response.dimensions.indexOf(dimension)
+            response.values.map { it.dimensions[dimIndex] }.toSet()
+        }
+
         return dimensions.map { dimensionItems[it]!! }
             .fold(listOf(listOf())) { acc, dimension ->
                 acc.flatMap { list -> dimension.map { element -> list + element } }
             }
     }
 
-    private fun cell(value: String): String {
-        val padSize = width - 1
+    private fun cell(value: String, size: Int = 1): String {
+        val cellWidth = width * size
+        val padSize = cellWidth - 1
         val paddedValue =
             if (value.length >= padSize) value.substring(0, padSize - 1)
             else value
@@ -79,4 +85,18 @@ object AnalyticsHelper {
         return "|${paddedValue.padEnd(padSize)}"
     }
 
+    private fun countConsecutiveDuplicates(values: List<String>): List<Group> {
+        val groups = mutableListOf<Group>()
+        values.forEach {
+            val last = groups.lastOrNull()
+            if (last?.value == it) {
+                last.count++
+            } else {
+                groups.add(Group(it, 1))
+            }
+        }
+        return groups
+    }
+
+    data class Group(val value: String, var count: Int)
 }
