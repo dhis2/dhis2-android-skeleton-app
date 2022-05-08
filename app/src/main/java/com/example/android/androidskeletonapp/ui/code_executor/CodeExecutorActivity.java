@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.utils.Exercise;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -88,8 +89,22 @@ public class CodeExecutorActivity extends AppCompatActivity {
         }
     }
 
+    @Exercise(
+        exerciseNumber = "ex05b",
+        title = "Set module to set a data set complete registration.",
+        tips =  "Use the data set module to get one data set." +
+                "Use the period module to get a period with the same period type that the data set." +
+                "Use the organisation unit module to get one organisation unit." +
+                "Use the category module to get the attribute option combos related to the data set." +
+                "Set the data set complete registration using the data set module." +
+                "Show in screen if the data set complete registration exist."
+    )
     private Single<String> executeCode() {
-        return Single.just("Execution done!");
+        return Single.defer(() -> {
+            // TODO Resolve the ex05b
+
+            return Single.just("Exist: ");
+        });
     }
 
 }
