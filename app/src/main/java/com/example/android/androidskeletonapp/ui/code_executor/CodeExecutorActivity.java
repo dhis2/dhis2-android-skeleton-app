@@ -90,7 +90,7 @@ public class CodeExecutorActivity extends AppCompatActivity {
     }
 
     @Exercise(
-        exerciseNumber = "ex05a-aggregatedDataCreation",
+        exerciseNumber = "ex06a-aggregatedDataCreation",
         title = "Set all the data values of one data set instance",
         tips = "Use the data set module to get the data set Population: aLpVgfXiz0f with its data set elements" +
                 "Use the period module to get a period with the same period type that the data set." +
