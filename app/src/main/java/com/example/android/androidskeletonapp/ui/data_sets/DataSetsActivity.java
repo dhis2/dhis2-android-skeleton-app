@@ -11,6 +11,8 @@ import androidx.paging.PagedList;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
+import com.example.android.androidskeletonapp.ui.data_sets.instances.DataSetInstancesActivity;
+import com.example.android.androidskeletonapp.ui.data_sets.instances.data_set_form.OnDataSetClick;
 
 import org.hisp.dhis.android.core.dataset.DataSet;
 
@@ -28,7 +30,9 @@ public class DataSetsActivity extends ListActivity {
     }
 
     private void observeDataSets() {
-        DataSetsAdapter adapter = new DataSetsAdapter();
+        DataSetsAdapter adapter = new DataSetsAdapter(dataSetUid -> {
+            DataSetInstancesActivity.getIntent(this, dataSetUid);
+        });
         recyclerView.setAdapter(adapter);
 
         LiveData<PagedList<DataSet>> liveData = Sdk.d2().dataSetModule().dataSets()
