@@ -12,7 +12,7 @@ object AnalyticsHelper {
 
     @JvmStatic
     @JvmSuppressWildcards
-    fun prettyPrint(result: Result<DimensionalResponse, out @JvmSuppressWildcards AnalyticsException>): String {
+    fun prettyPrint(result: Result<DimensionalResponse, @JvmSuppressWildcards AnalyticsException>): String {
         return when(result) {
             is Result.Success -> prettyPrintSuccess(result.value)
             is Result.Failure -> "There was an error: ${result.failure.message}"
