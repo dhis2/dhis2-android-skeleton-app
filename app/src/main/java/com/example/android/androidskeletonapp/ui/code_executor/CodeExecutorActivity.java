@@ -90,7 +90,7 @@ public class CodeExecutorActivity extends AppCompatActivity {
     }
 
     @Exercise(
-        exerciseNumber = "ex05b",
+        exerciseNumber = "ex06b",
         title = "Set module to set a data set complete registration.",
         tips =  "Use the data set module to get one data set." +
                 "Use the period module to get a period with the same period type that the data set." +
