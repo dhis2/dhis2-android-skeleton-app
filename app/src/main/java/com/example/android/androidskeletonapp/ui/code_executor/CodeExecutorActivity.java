@@ -101,7 +101,7 @@ public class CodeExecutorActivity extends AppCompatActivity {
     )
     private Single<String> executeCode() {
         return Single.defer(() -> {
-            // TODO Resolve the ex05b
+            // TODO Resolve the ex06b
 
             return Single.just("Exist: ");
         });
