@@ -30,9 +30,7 @@ public class DataSetsActivity extends ListActivity {
     }
 
     private void observeDataSets() {
-        DataSetsAdapter adapter = new DataSetsAdapter(dataSetUid -> {
-            DataSetInstancesActivity.getIntent(this, dataSetUid);
-        });
+        DataSetsAdapter adapter = new DataSetsAdapter(this::openDataSetInstance);
         recyclerView.setAdapter(adapter);
 
         LiveData<PagedList<DataSet>> liveData = Sdk.d2().dataSetModule().dataSets()
@@ -43,5 +41,9 @@ public class DataSetsActivity extends ListActivity {
             findViewById(R.id.dataSetsNotificator).setVisibility(
                     dataSetPagedList.isEmpty() ? View.VISIBLE : View.GONE);
         });
+    }
+
+    private void openDataSetInstance(String dataSetUid){
+        startActivity(DataSetInstancesActivity.getIntent(this, dataSetUid));
     }
 }
