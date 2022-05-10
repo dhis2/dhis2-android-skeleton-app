@@ -1,5 +1,6 @@
 package com.example.android.androidskeletonapp.ui.code_executor
 
+import com.example.android.androidskeletonapp.data.Sdk
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
@@ -29,6 +30,13 @@ object AnalyticsHelper {
         val rowHeaders = getHeaderCombination(rowDimensions, response)
 
         val sb = StringBuilder()
+
+        // UserInfo
+        sb.append("Analytics for user " + Sdk.d2().userModule().user().blockingGet().name()!! + "\n\n")
+
+        if (response.filters.isNotEmpty()) {
+            sb.append("Filtered by ${response.filters.joinToString { response.metadata[it]!!.displayName }}\n\n\n")
+        }
 
         // Column headers
         val initialEmptySpace = rowDimensions.size * width
