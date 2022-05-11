@@ -106,15 +106,15 @@ public class CodeExecutorActivity extends AppCompatActivity {
     }
 
     @Exercise(
-            exerciseNumber = "ex05a-aggregatedDataCreation",
-            title = "Set all the data values of one data set instance",
-            tips = "Use the data set module to get the data set Population: aLpVgfXiz0f with its data set elements" +
-                    "Use the period module to get a period with the same period type that the data set." +
-                    "Use the organisation unit module to get one organisation unit." +
-                    "Use the category module to get the attribute option combo (with the " +
-                    "categoryOptionComboRepository) related to the data set." +
-                    "Set a random value for each data element (Using nested loops)." +
-                    "Note that you can get the category option combo from the data element in the loop."
+        exerciseNumber = "ex06a-aggregatedDataCreation",
+        title = "Set all the data values of one data set instance",
+        tips = "Use the data set module to get the data set Population: aLpVgfXiz0f with its data set elements" +
+                "Use the period module to get a period with the same period type that the data set." +
+                "Use the organisation unit module to get one organisation unit." +
+                "Use the category module to get the attribute option combo (with the " +
+                "categoryOptionComboRepository) related to the data set." +
+                "Set a random value for each data element (Using nested loops)." +
+                "Note that you can get the category option combo from the data element in the loop."
     )
     private Single<String> executeCode() {
         return Single.defer(() -> {
