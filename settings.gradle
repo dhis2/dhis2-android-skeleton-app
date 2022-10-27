@@ -1,2 +1,5 @@
 include ':app', ':core'
 project(':core').projectDir = new File('dhis2-android-sdk/core')
+include ':dhis2_android_maps'
+include ':commons'
+include ':form'

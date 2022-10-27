@@ -26,6 +26,13 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:listitem="@layout/item_field" />
 
+        <FrameLayout
+            android:id="@+id/formContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonEnd"
             android:layout_width="wrap_content"

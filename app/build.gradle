@@ -48,28 +48,35 @@ android {
 
     configurations.all {
         resolutionStrategy {
-            force 'junit:junit:4.12','com.squareup.okhttp3:okhttp:3.12.0'
+            force 'junit:junit:4.12', 'com.squareup.okhttp3:okhttp:3.12.0'
         }
     }
 }
 
 ext {
     libraries = [
-            flipper         : "0.83.0",
-            soloader        : "0.10.1"
+            flipper : "0.83.0",
+            soloader: "0.10.1"
     ]
 }
 
 dependencies {
     /* Uncomment the following line and remove the org.hisp.dhis:android-core dependency to use the android DHIS2 SDK as a submodule.
-    implementation project(":core")
     */
+    implementation project(":core")
+    implementation project(":form")
+//    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 
-    implementation ("org.hisp.dhis:android-core:1.6.0") {
-        exclude group: 'com.facebook.flipper'
+    api("com.journeyapps:zxing-android-embedded:4.3.0") {
+        exclude group: "com.google.zxing", module: "core"
     }
 
-    implementation "org.hisp.dhis.rules:rule-engine:2.0.34"
+    /*implementation ("org.hisp.dhis:android-core:1.6.0") {
+        exclude group: 'com.facebook.flipper'
+    }*/
+
+    implementation "org.hisp.dhis.rules:rule-engine:2.0.43"
+    implementation "com.google.android.material:material:1.3.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.4.1'
@@ -86,7 +93,7 @@ dependencies {
 
     debugImplementation "com.facebook.flipper:flipper:${libraries.flipper}"
     debugImplementation "com.facebook.soloader:soloader:${libraries.soloader}"
-    debugImplementation ("com.facebook.flipper:flipper-network-plugin:${libraries.flipper}") {
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:${libraries.flipper}") {
         exclude group: 'com.squareup.okhttp3'
     }
 

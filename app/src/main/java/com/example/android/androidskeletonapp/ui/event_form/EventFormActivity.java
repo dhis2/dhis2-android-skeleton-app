@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.event_form;
 
+import static android.text.TextUtils.isEmpty;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +30,8 @@ import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentForm
 import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.dhis2.form.model.EventRecords;
+import org.dhis2.form.ui.FormView;
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -48,8 +52,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
-
-import static android.text.TextUtils.isEmpty;
 
 public class EventFormActivity extends AppCompatActivity {
 
@@ -103,9 +105,12 @@ public class EventFormActivity extends AppCompatActivity {
         adapter = new FormAdapter(getValueListener(), getImageListener());
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
         binding.buttonValidate.setOnClickListener(this::evaluateProgramIndicators);
-        binding.formRecycler.setAdapter(adapter);
+        binding.formRecycler.setVisibility(View.GONE);
+//        binding.formRecycler.setAdapter(adapter);
 
         engineInitialization = PublishProcessor.create();
+
+        loadForm();
 
         if (EventFormService.getInstance().init(
                 Sdk.d2(),
@@ -114,6 +119,16 @@ public class EventFormActivity extends AppCompatActivity {
                 getIntent().getStringExtra(IntentExtra.OU_UID.name())))
             this.engineService = new RuleEngineService();
 
+    }
+
+    private void loadForm() {
+        FormView formView = new FormView.Builder()
+                .factory(getSupportFragmentManager())
+                .setRecords(new EventRecords(eventUid))
+                .build();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.formContainer, formView)
+                .commit();
     }
 
     private FormAdapter.OnValueSaved getValueListener() {
@@ -173,12 +188,12 @@ public class EventFormActivity extends AppCompatActivity {
         super.onResume();
         disposable = new CompositeDisposable();
 
-        disposable.add(
+        /*disposable.add(
                 Flowable.zip(
-                        engineService.configure(Sdk.d2(), programUid, eventUid),
-                        EventFormService.getInstance().isListingRendering(),
-                        Pair::of
-                )
+                                engineService.configure(Sdk.d2(), programUid, eventUid),
+                                EventFormService.getInstance().isListingRendering(),
+                                Pair::of
+                        )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
@@ -189,7 +204,7 @@ public class EventFormActivity extends AppCompatActivity {
                                 },
                                 Throwable::printStackTrace
                         )
-        );
+        );*/
 
         disposable.add(
                 engineInitialization
@@ -198,7 +213,7 @@ public class EventFormActivity extends AppCompatActivity {
                                         EventFormService.getInstance().getEventFormFields()
                                                 .subscribeOn(Schedulers.io()),
                                         engineService.ruleEvent().flatMap(ruleEvent ->
-                                                Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEvent).call()))
+                                                        Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEvent).call()))
                                                 .subscribeOn(Schedulers.io()),
                                         this::applyEffects
                                 ))

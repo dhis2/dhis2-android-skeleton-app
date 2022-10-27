@@ -13,8 +13,12 @@
         android:roundIcon="@mipmap/ic_dhis_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup"
         tools:targetApi="m"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="" />
         <activity
             android:exported="true"
             android:name=".ui.splash.SplashActivity">
@@ -86,7 +90,7 @@
             android:label="@string/title_activity_events"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.data_sets.instances.data_set_form.DataSetFormActivity" />
-        <provider
+        <!--<provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
@@ -94,7 +98,7 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
-        </provider>
+        </provider>-->
         <activity android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
             android:exported="true"/>
     </application>
