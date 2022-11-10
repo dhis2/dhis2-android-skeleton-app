@@ -32,6 +32,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress;
+import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
@@ -258,17 +260,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .subscribe());
     }
 
-    private Observable<D2Progress> downloadTrackedEntityInstances() {
+    private Observable<TrackerD2Progress> downloadTrackedEntityInstances() {
         return Sdk.d2().trackedEntityModule().trackedEntityInstanceDownloader()
                 .limit(10).limitByOrgunit(false).limitByProgram(false).download();
     }
 
-    private Observable<D2Progress> downloadSingleEvents() {
+    private Observable<TrackerD2Progress> downloadSingleEvents() {
         return Sdk.d2().eventModule().eventDownloader()
                 .limit(10).limitByOrgunit(false).limitByProgram(false).download();
     }
 
-    private Observable<D2Progress> downloadAggregatedData() {
+    private Observable<AggregatedD2Progress> downloadAggregatedData() {
         return Sdk.d2().aggregatedModule().data().download();
     }
 

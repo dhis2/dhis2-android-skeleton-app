@@ -65,7 +65,7 @@ dependencies {
     implementation project(":core")
     */
 
-    implementation ("org.hisp.dhis:android-core:1.6.0") {
+    implementation ("org.hisp.dhis:android-core:1.7.0") {
         exclude group: 'com.facebook.flipper'
     }
 
