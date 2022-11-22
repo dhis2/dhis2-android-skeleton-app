@@ -11,6 +11,7 @@ repositories {
         url "https://jitpack.io"
     }
     mavenCentral()
+    mavenLocal()
 }
 
 android {
@@ -64,7 +65,10 @@ dependencies {
     /* Uncomment the following line and remove the org.hisp.dhis:android-core dependency to use the android DHIS2 SDK as a submodule.
     */
     implementation project(":core")
-    implementation project(":form")
+    implementation ("org.dhis2.android:data-entry-form:1.0")
+    implementation ("org.dhis2.android:commons:1.0")
+    implementation ("org.dhis2.android:ui-components:1.0")
+    implementation ("org.dhis2.android:maps:1.0")
 //    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 
     api("com.journeyapps:zxing-android-embedded:4.3.0") {
