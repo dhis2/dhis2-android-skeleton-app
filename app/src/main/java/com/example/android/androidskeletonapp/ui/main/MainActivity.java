@@ -248,7 +248,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void wipeData() {
         compositeDisposable.add(
-                Observable.fromCallable(() -> Sdk.d2().wipeModule().wipeData())
+                Observable
+                        .fromCallable(() -> {
+                            Sdk.d2().wipeModule().wipeData();
+                            return "Done wipeData";
+                        })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnError(Throwable::printStackTrace)
