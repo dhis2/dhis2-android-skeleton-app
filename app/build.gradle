@@ -38,8 +38,8 @@ android {
     }
 
     compileOptions {
-        targetCompatibility = "8"
-        sourceCompatibility = "8"
+        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_11
     }
 
     dataBinding {
@@ -48,7 +48,7 @@ android {
 
     configurations.all {
         resolutionStrategy {
-            force 'junit:junit:4.12','com.squareup.okhttp3:okhttp:3.12.0'
+            force 'junit:junit:4.12','com.squareup.okhttp3:okhttp:4.10.0'
         }
     }
 }
@@ -65,7 +65,7 @@ dependencies {
     implementation project(":core")
     */
 
-    implementation ("org.hisp.dhis:android-core:1.8.0") {
+    implementation ("org.hisp.dhis:android-core:1.9.0") {
         exclude group: 'com.facebook.flipper'
     }
 
