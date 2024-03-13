@@ -5,7 +5,7 @@ import static android.text.TextUtils.isEmpty;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.apache.commons.jexl2.JexlEngine;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -49,7 +49,6 @@ public class RuleEngineService {
 
     private D2 d2;
     private String stage;
-    private JexlEngine jexlEngine;
 
     private enum evaluationType {
         ENROLLMENT, EVENT
@@ -67,7 +66,6 @@ public class RuleEngineService {
         this.eventUid = eventUid;
         this.stage = null;
 
-        jexlEngine = new JexlEngine();
 
         return Flowable.zip(
                 getRuleVariables(),
@@ -92,7 +90,6 @@ public class RuleEngineService {
         this.eventUid = eventUid;
         this.stage = null;
 
-        jexlEngine = new JexlEngine();
 
         Flowable<RuleEngine> initialFlowable;
 
@@ -317,28 +314,28 @@ public class RuleEngineService {
 
             switch (prv.programRuleVariableSourceType()) {
                 case TEI_ATTRIBUTE:
-                    ruleVariables.add(RuleVariableAttribute.create(name, attr.uid(), mimeType));
+                    //ruleVariables.add(RuleVariableAttribute.create(name, attr.uid(), mimeType));
                     break;
                 case DATAELEMENT_CURRENT_EVENT:
-                    ruleVariables.add(RuleVariableCurrentEvent.create(name, de.uid(), mimeType));
+                    //ruleVariables.add(RuleVariableCurrentEvent.create(name, de.uid(), mimeType));
                     break;
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM:
-                    ruleVariables.add(RuleVariableNewestEvent.create(name, de.uid(), mimeType));
+                    //ruleVariables.add(RuleVariableNewestEvent.create(name, de.uid(), mimeType));
                     break;
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE:
                     if (stage != null)
-                        ruleVariables.add(RuleVariableNewestStageEvent.create(name, de.uid(), stage, mimeType));
+                        // ruleVariables.add(RuleVariableNewestStageEvent.create(name, de.uid(), stage, mimeType));
                     break;
                 case DATAELEMENT_PREVIOUS_EVENT:
-                    ruleVariables.add(RuleVariablePreviousEvent.create(name, de.uid(), mimeType));
+                    // ruleVariables.add(RuleVariablePreviousEvent.create(name, de.uid(), mimeType));
                     break;
                 case CALCULATED_VALUE:
                     String variable = "";
                     if (de != null || attr != null) {
                         variable = de != null ? de.uid() : attr.uid();
                     }
-                    ruleVariables.add(RuleVariableCalculatedValue.create(
-                            name, variable != null ? variable : "", mimeType));
+                    // ruleVariables.add(RuleVariableCalculatedValue.create(
+                    //    name, variable != null ? variable : "", mimeType));
                     break;
                 default:
                     throw new IllegalArgumentException("Unsupported variable " +

@@ -9,7 +9,10 @@ dhis2sdk = "1.9.0-20231018.121321-52"
 espressoCore = "3.5.1"
 flipper-module = "0.161.0"
 flipper-network = "0.161.0"
+gradle = "8.2.2"
+kotlin = '1.9.21'
 junit = "4.13.2"
+ktlintGradle = "11.5.1"
 legacySupportV4 = "1.0.0"
 lifecycleExtensions = "2.2.0"
 material = "1.11.0"
@@ -17,6 +20,7 @@ multidex = "2.0.1"
 ruleEngine = "2.1.9"
 runner = "1.5.2"
 soloader = "0.10.4"
+desugar_jdk_libs = "2.0.3"
 
 [libraries]
 
@@ -28,7 +32,11 @@ dhis2-mobile-designsystem = { group = "org.hisp.dhis.mobile", name = "designsyst
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 flipper-module = { module = "com.facebook.flipper:flipper", version.ref = "flipper-module" }
 flipper-network = { module = "com.facebook.flipper:flipper-network-plugin", version.ref = "flipper-network" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { module = "junit:junit", version.ref = "junit" }
+ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlintGradle" }
+kotlinPlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinSerialization = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
 legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
 lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
@@ -36,7 +44,7 @@ multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 rule-engine = { module = "org.hisp.dhis.rules:rule-engine", version.ref = "ruleEngine" }
 runner = { module = "androidx.test:runner", version.ref = "runner" }
 soloader = { module = "com.facebook.soloader:soloader", version.ref = "soloader" }
-
+desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 
 [plugins]
 
