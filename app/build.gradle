@@ -28,6 +28,17 @@ android {
         multiDexEnabled true
     }
 
+    buildFeatures {
+        compose = true
+        dataBinding = true
+        viewBinding = true
+        buildConfig = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
+    }
+
     configurations.all*.exclude module: 'jsr305'
 
     buildTypes {
@@ -77,7 +88,13 @@ dependencies {
     implementation libs.multidex
     implementation libs.legacy.support.v4
     implementation 'org.apache.commons:commons-jexl:2.1.1'
-
+    api(libs.androidx.compose.livedata)
+    debugApi(libs.androidx.compose.uitooling)
+    api(libs.androidx.compose)
+    api(libs.androidx.compose.constraintlayout)
+    api(libs.androidx.compose.preview)
+    api(libs.androidx.compose.ui)
+    api(libs.androidx.compose.livedata)
     testImplementation libs.junit
     androidTestImplementation libs.runner
     androidTestImplementation libs.espresso.core

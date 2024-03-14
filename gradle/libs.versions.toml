@@ -1,4 +1,5 @@
 [versions]
+kotlinCompilerExtensionVersion = "1.5.6"
 
 androidCore = "1.9.1"
 annotation = "1.7.1"
@@ -16,8 +17,12 @@ ktlintGradle = "11.5.1"
 legacySupportV4 = "1.0.0"
 lifecycleExtensions = "2.2.0"
 material = "1.11.0"
+compose = "1.5.4"
+composeConstraintLayout = "1.0.1"
+
 multidex = "2.0.1"
 ruleEngine = "2.1.9"
+material3 = "1.1.1"
 runner = "1.5.2"
 soloader = "0.10.4"
 desugar_jdk_libs = "2.0.3"
@@ -40,6 +45,14 @@ kotlinSerialization = { group = "org.jetbrains.kotlin", name = "kotlin-serializa
 legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
 lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-compose-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose" }
+androidx-compose = { group = "androidx.compose.material", name = "material", version.ref = "compose" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+androidx-compose-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "composeConstraintLayout" }
+androidx-compose-uitooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
+androidx-compose-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
+androidx-compose-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding", version.ref = "compose" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 rule-engine = { module = "org.hisp.dhis.rules:rule-engine", version.ref = "ruleEngine" }
 runner = { module = "androidx.test:runner", version.ref = "runner" }

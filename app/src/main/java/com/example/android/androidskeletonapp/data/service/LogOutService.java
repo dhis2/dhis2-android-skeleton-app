@@ -15,7 +15,7 @@ public class LogOutService {
         return Sdk.d2().userModule().logOut()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> ActivityStarter.startActivity(activity, LoginActivity.getLoginActivityIntent(activity.getApplicationContext()), true),
+                .subscribe(() -> ActivityStarter.startActivity(activity, LoginActivity.Companion.getLoginActivityIntent(activity.getApplicationContext()), true),
                         Throwable::printStackTrace);
     }
 }
