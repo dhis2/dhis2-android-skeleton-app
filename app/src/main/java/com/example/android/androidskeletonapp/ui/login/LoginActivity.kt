@@ -5,12 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
@@ -24,25 +20,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.unit.dp
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.androidskeletonapp.R
-import com.example.android.androidskeletonapp.data.Sdk
-import com.example.android.androidskeletonapp.data.service.ActivityStarter
 import com.example.android.androidskeletonapp.databinding.ActivityLoginBinding
-import com.example.android.androidskeletonapp.ui.main.MainActivity
-import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.disposables.Disposable
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.mobile.ui.designsystem.component.Button
-import org.hisp.dhis.mobile.ui.designsystem.component.InputLink
 import org.hisp.dhis.mobile.ui.designsystem.component.InputShellState
 import org.hisp.dhis.mobile.ui.designsystem.component.InputText
-import org.hisp.dhis.mobile.ui.designsystem.component.ListCard
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -63,9 +52,9 @@ class LoginActivity : AppCompatActivity() {
             LoginViewModel::class.java
         )
         binding.composeView.setContent {
-            var serverUrlText by remember{ mutableStateOf("") }
-            var userName by remember{ mutableStateOf("") }
-            var password by remember{ mutableStateOf("") }
+            var serverUrlText by remember{ mutableStateOf(getString(R.string.auto_fill_url)) }
+            var userName by remember{ mutableStateOf(getString(R.string.auto_fill_username)) }
+            var password by remember{ mutableStateOf(getString(R.string.auto_fill_password)) }
             var isEnabled by remember{ mutableStateOf(true) }
 
             Column(modifier = Modifier.fillMaxHeight(1f),
@@ -73,9 +62,8 @@ class LoginActivity : AppCompatActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally) {
 
                 Spacer(modifier = Modifier.size(40.dp))
-                InputLink(
+                InputText(
                     title =  getString(R.string.prompt_server_url),
-                    onLinkActionCLicked = {},
                     state = InputShellState.UNFOCUSED,
                     inputText = serverUrlText,
                     onValueChanged = {newValue ->  serverUrlText = newValue ?: ""}
