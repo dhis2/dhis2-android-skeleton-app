@@ -3,46 +3,48 @@ package com.example.android.androidskeletonapp.ui.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.androidskeletonapp.R
+import com.example.android.androidskeletonapp.data.Sdk
+import com.example.android.androidskeletonapp.data.service.ActivityStarter
 import com.example.android.androidskeletonapp.databinding.ActivityLoginBinding
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
-import io.reactivex.disposables.Disposable
-import org.hisp.dhis.android.core.user.User
+import com.example.android.androidskeletonapp.ui.main.MainActivity
+import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity
+import io.reactivex.disposables.CompositeDisposable
 import org.hisp.dhis.mobile.ui.designsystem.component.Button
 import org.hisp.dhis.mobile.ui.designsystem.component.InputShellState
 import org.hisp.dhis.mobile.ui.designsystem.component.InputText
+import org.hisp.dhis.mobile.ui.designsystem.component.ProgressIndicator
+import org.hisp.dhis.mobile.ui.designsystem.component.ProgressIndicatorType
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
 
     private var loginViewModel: LoginViewModel? = null
-    private var disposable: Disposable? = null
-    private var serverUrlEditText: TextInputEditText? = null
-    private var usernameEditText: TextInputEditText? = null
-    private var passwordEditText: TextInputEditText? = null
-    private var loginButton: MaterialButton? = null
-    private var loadingProgressBar: ProgressBar? = null
+    private var disposable = CompositeDisposable()
+    private var isLoading: MutableState<Boolean> = mutableStateOf(false)
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,38 +53,52 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory()).get(
             LoginViewModel::class.java
         )
+
         binding.composeView.setContent {
+
+            val loginUiState by loginViewModel!!.loginUiState.collectAsState()
             var serverUrlText by remember{ mutableStateOf(getString(R.string.auto_fill_url)) }
             var userName by remember{ mutableStateOf(getString(R.string.auto_fill_username)) }
             var password by remember{ mutableStateOf(getString(R.string.auto_fill_password)) }
-            var isEnabled by remember{ mutableStateOf(true) }
+            var showProgress by remember(isLoading){ mutableStateOf(isLoading) }
+            loginViewModel!!.initLoginDefaultValues(serverUrlText,userName,password)
+            val isLoginEnabled by remember(loginUiState){   mutableStateOf(loginUiState.isLoginEnabled()) }
 
-            Column(modifier = Modifier.fillMaxHeight(1f),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+
+            Column(modifier = Modifier.fillMaxHeight(1f).padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally) {
 
                 Spacer(modifier = Modifier.size(40.dp))
                 InputText(
                     title =  getString(R.string.prompt_server_url),
-                    state = InputShellState.UNFOCUSED,
-                    inputText = serverUrlText,
-                    onValueChanged = {newValue ->  serverUrlText = newValue ?: ""}
+                    state = if (!loginUiState.isServerUrlValid()) InputShellState.ERROR else InputShellState.UNFOCUSED,
+                    inputText =  serverUrlText,
+                    onValueChanged = {
+                        serverUrlText = it ?: ""
+                        loginViewModel!!.setServer(it)
+                    }
                 )
 
                 InputText(
                     title = getString(R.string.prompt_username),
-                    state = InputShellState.UNFOCUSED,
+                    state = if (!loginUiState.isUserNameValid()) InputShellState.ERROR else InputShellState.UNFOCUSED,
                     inputText = userName,
-                    onValueChanged = { newValue ->
-                        userName = newValue ?: ""
-                    })
+                    onValueChanged =
+                        {
+                            userName = it?:""
+                            loginViewModel!!.setUserName(it)
+
+                        }
+                    )
 
                 InputText(
                     title = getString(R.string.prompt_password),
-                    state = InputShellState.UNFOCUSED,
+                    state = if (!loginUiState.isPasswordValid()) InputShellState.ERROR else InputShellState.UNFOCUSED,
                     inputText = password,
-                    onValueChanged = { newValue ->
-                        password = newValue ?: ""
+                    onValueChanged = {
+                        password = it?: ""
+                        loginViewModel!!.setPassword(it)
                     },
                 )
 
@@ -90,43 +106,30 @@ class LoginActivity : AppCompatActivity() {
 
                 Button(
                     text = getString(R.string.action_sign_in_short),
-                    onClick = {},
-                            enabled =  isEnabled,
+                    enabled = isLoginEnabled,
+                    onClick = {
+                          isLoading.value = true
+                          loginViewModel!!.login(loginUiState)
+                    },
                 )
             }
-
-
+            if(showProgress.value) {
+                Box(modifier = Modifier
+                    .fillMaxSize(1f)
+                    .background(color = Color.Black.copy(0.1f))) {
+                    ProgressIndicator(type = ProgressIndicatorType.CIRCULAR, modifier = Modifier.size(80.dp).align(Alignment.Center))
+                }
+            }
+            
         }
-
-
-        serverUrlEditText = binding.urlText
-        usernameEditText = binding.usernameText
-        passwordEditText = binding.passwordText
-        loginButton = binding.loginButton
-        loadingProgressBar = binding.loginProgressBar
-
-        /*
-        loginViewModel!!.loginFormState.observe(this) { loginFormState: LoginFormState? ->
-            if (loginFormState == null) {
-                return@observe
-            }
-            loginButton.setEnabled(loginFormState.isDataValid)
-            if (loginFormState.serverUrlError != null) {
-                serverUrlEditText.setError(getString(loginFormState.serverUrlError!!))
-            }
-            if (loginFormState.usernameError != null) {
-                usernameEditText.setError(getString(loginFormState.usernameError!!))
-            }
-            if (loginFormState.passwordError != null) {
-                passwordEditText.setError(getString(loginFormState.passwordError!!))
-            }
-        }
+        
         loginViewModel!!.loginResult.observe(this) { loginResult: LoginResult? ->
             if (loginResult == null) {
                 return@observe
             }
-            loadingProgressBar.setVisibility(View.GONE)
+            isLoading.value = false
             if (loginResult.error != null) {
+                
                 showLoginFailed(loginResult.error)
             }
             if (loginResult.success != null) {
@@ -146,62 +149,13 @@ class LoginActivity : AppCompatActivity() {
             }
             setResult(RESULT_OK)
         }
-
-         */
-
-        val afterTextChangedListener: TextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // ignore
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                // ignore
-            }
-
-            override fun afterTextChanged(s: Editable) {
-              /*  loginViewModel!!.loginDataChanged(
-                    serverUrlEditText.getText().toString(),
-                    usernameEditText.getText().toString(),
-                    passwordEditText.getText().toString()
-                )
-
-               */
-            }
-        }
-       /*
-        serverUrlEditText.addTextChangedListener(afterTextChangedListener)
-        usernameEditText.addTextChangedListener(afterTextChangedListener)
-        passwordEditText.addTextChangedListener(afterTextChangedListener)
-        passwordEditText.setOnEditorActionListener(OnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                login()
-            }
-            false
-        })
-        loginButton.setOnClickListener(View.OnClickListener { v: View? -> login() })
-
-        */
+        
     }
-
-    private fun login() {
-        loadingProgressBar!!.visibility = View.VISIBLE
-        loginButton!!.visibility = View.INVISIBLE
-        val username = usernameEditText!!.getText().toString()
-        val password = passwordEditText!!.getText().toString()
-        val serverUrl = serverUrlEditText!!.getText().toString()
-        disposable = loginViewModel
-            ?.login(username, password, serverUrl)
-            ?.doOnTerminate { loginButton!!.visibility = View.VISIBLE }
-            ?.subscribe(
-                { u: User? -> }
-            ) { t: Throwable? -> }
-    }
-
+    
     override fun onDestroy() {
         super.onDestroy()
-        if (disposable != null) {
-            disposable!!.dispose()
-        }
+        disposable.dispose()
+
     }
 
     private fun showLoginFailed(errorString: String?) {
