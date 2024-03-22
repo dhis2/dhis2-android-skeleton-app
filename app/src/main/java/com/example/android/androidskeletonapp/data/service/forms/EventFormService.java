@@ -64,74 +64,6 @@ public class EventFormService {
         }
     }
 
-
-    public Flowable<Map<String, FormField>> getEventFormFields() {
-        if (d2 == null)
-            return Flowable.error(new NullPointerException(
-                    "D2 is null. EnrollmentForm has not been initialized, use init() function.")
-            );
-        else
-            return Flowable.fromCallable(() ->
-                    d2.programModule().programStageDataElements()
-                            .byProgramStage().eq(eventRepository.blockingGet().programStage()).blockingGet()
-            )
-                    .flatMapIterable(programStageDataElements -> programStageDataElements)
-                    .map(programStageDataElement -> {
-
-                        DataElement dataElement = d2.dataElementModule().dataElements()
-                                .uid(programStageDataElement.dataElement().uid())
-                                .blockingGet();
-
-                        TrackedEntityDataValueObjectRepository valueRepository =
-                                d2.trackedEntityModule().trackedEntityDataValues()
-                                        .value(eventRepository.blockingGet().uid(), dataElement.uid());
-
-                        if (dataElement.optionSetUid() != null && !isListingRendering) {
-                            for (Option option : d2.optionModule().options()
-                                    .byOptionSetUid().eq(dataElement.optionSetUid()).blockingGet()) {
-                                FormField formField = new FormField(
-                                        dataElement.uid(), dataElement.optionSetUid(),
-                                        dataElement.valueType(), option.displayName(),
-                                        valueRepository.blockingExists() ? valueRepository.blockingGet().value() : null,
-                                        option.code(), true,
-                                        option.style()
-                                );
-                                fieldMap.put(dataElement.uid() + "_" + option.uid(), formField);
-                            }
-                        } else
-                            fieldMap.put(dataElement.uid(), new FormField(
-                                    dataElement.uid(), dataElement.optionSetUid(),
-                                    dataElement.valueType(), dataElement.displayName(),
-                                    valueRepository.blockingExists() ? valueRepository.blockingGet().value() : null,
-                                    null, true,
-                                    dataElement.style())
-                            );
-                        return programStageDataElement;
-                    })
-                    .toList().toFlowable()
-                    .map(list -> fieldMap);
-    }
-
-    public void saveCoordinates(double lat, double lon) {
-        try {
-            eventRepository.setGeometry(GeometryHelper.createPointGeometry(lon, lat));
-        } catch (D2Error d2Error) {
-            d2Error.printStackTrace();
-        }
-    }
-
-    public void saveEventDate(Date eventDate) {
-        try {
-            eventRepository.setEventDate(eventDate);
-        } catch (D2Error d2Error) {
-            d2Error.printStackTrace();
-        }
-    }
-
-    public String getEventUid() {
-        return eventRepository.blockingGet().uid();
-    }
-
     public void delete() {
         try {
             eventRepository.blockingDelete();
@@ -142,16 +74,5 @@ public class EventFormService {
 
     public static void clear() {
         instance = null;
-    }
-
-    public Flowable<Boolean> isListingRendering() {
-        return Flowable.fromCallable(() -> {
-            List<ProgramStageSection> matrixRenderingSections = d2.programModule().programStageSections()
-                    .byProgramStageUid().eq(eventRepository.blockingGet().programStage())
-                    .byMobileRenderType().notIn(SectionRenderingType.LISTING.name())
-                    .blockingGet();
-            this.isListingRendering = matrixRenderingSections.isEmpty();
-            return isListingRendering;
-        });
     }
 }

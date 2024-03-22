@@ -1,5 +1,7 @@
 package com.example.android.androidskeletonapp.ui.enrollmentForm;
 
+import static android.text.TextUtils.isEmpty;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -22,31 +24,21 @@ import com.example.android.androidskeletonapp.BuildConfig;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService;
-import com.example.android.androidskeletonapp.data.service.forms.FormField;
-import com.example.android.androidskeletonapp.data.service.forms.RuleEngineService;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 
+import org.dhis2.form.model.EnrollmentMode;
+import org.dhis2.form.model.EnrollmentRecords;
+import org.dhis2.form.ui.FormView;
+import org.dhis2.mobileProgramRules.RuleEngineHelper;
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
-import org.hisp.dhis.rules.RuleEngine;
-import org.hisp.dhis.rules.models.RuleAction;
-import org.hisp.dhis.rules.models.RuleActionHideField;
-import org.hisp.dhis.rules.models.RuleEffect;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.processors.PublishProcessor;
-import io.reactivex.schedulers.Schedulers;
-
-import static android.text.TextUtils.isEmpty;
 
 public class EnrollmentFormActivity extends AppCompatActivity {
 
@@ -57,8 +49,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
     private FormAdapter adapter;
     private CompositeDisposable disposable;
     private PublishProcessor<Boolean> engineInitialization;
-    private RuleEngineService engineService;
-    private RuleEngine ruleEngine;
+    private RuleEngineHelper ruleEngineHelper;
 
     private String teiUid;
     private String fieldWaitingImage;
@@ -91,16 +82,31 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         adapter = new FormAdapter(getValueListener(), getImageListener());
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
         binding.formRecycler.setAdapter(adapter);
+        binding.formRecycler.setVisibility(View.GONE);
 
         engineInitialization = PublishProcessor.create();
 
-        if (EnrollmentFormService.getInstance().init(
+        String enrollmentUid = EnrollmentFormService.getInstance().init(
                 Sdk.d2(),
                 getIntent().getStringExtra(IntentExtra.TEI_UID.name()),
                 getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
-                getIntent().getStringExtra(IntentExtra.OU_UID.name())))
-            this.engineService = new RuleEngineService();
+                getIntent().getStringExtra(IntentExtra.OU_UID.name()));
 
+        if (enrollmentUid != null) {
+            loadForm(enrollmentUid);
+        }
+
+    }
+
+    private void loadForm(String enrollmentUid) {
+        FormView formView = new FormView.Builder()
+                .factory(getSupportFragmentManager())
+                .setRecords(new EnrollmentRecords(enrollmentUid, EnrollmentMode.NEW))
+                .useComposeForm(true)
+                .build();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.formContainer, formView)
+                .commit();
     }
 
     private FormAdapter.OnImageSelectionClick getImageListener() {
@@ -161,7 +167,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         super.onResume();
         disposable = new CompositeDisposable();
 
-        disposable.add(
+        /*disposable.add(
                 engineService.configure(Sdk.d2(),
                         getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
                         EnrollmentFormService.getInstance().getEnrollmentUid(),
@@ -176,16 +182,16 @@ public class EnrollmentFormActivity extends AppCompatActivity {
                                 },
                                 Throwable::printStackTrace
                         )
-        );
+        );*/
 
-        disposable.add(
+        /*disposable.add(
                 engineInitialization
                         .flatMap(next ->
                                 Flowable.zip(
                                         EnrollmentFormService.getInstance().getEnrollmentFormFields()
                                                 .subscribeOn(Schedulers.io()),
                                         engineService.ruleEnrollment().flatMap(ruleEnrollment ->
-                                                Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEnrollment).call()))
+                                               Flowable.just(ruleEngineHelper.evaluate()))
                                                 .subscribeOn(Schedulers.io()),
                                         this::applyEffects
                                 ))
@@ -195,7 +201,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
                                 fieldData -> adapter.updateData(fieldData),
                                 Throwable::printStackTrace
                         )
-        );
+        );*/
     }
 
 
@@ -211,7 +217,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private List<FormField> applyEffects(Map<String, FormField> fields,
+    /*private List<FormField> applyEffects(Map<String, FormField> fields,
                                          List<RuleEffect> ruleEffects) {
 
         for (RuleEffect ruleEffect : ruleEffects) {
@@ -222,7 +228,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         }
 
         return new ArrayList<>(fields.values());
-    }
+    }*/
 
     @Override
     public boolean onSupportNavigateUp() {

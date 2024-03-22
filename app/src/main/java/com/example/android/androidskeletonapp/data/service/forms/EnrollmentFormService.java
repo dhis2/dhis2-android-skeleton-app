@@ -36,7 +36,7 @@ public class EnrollmentFormService {
         return instance;
     }
 
-    public boolean init(D2 d2, String teiUid, String programUid, String ouUid) {
+    public String init(D2 d2, String teiUid, String programUid, String ouUid) {
         this.d2 = d2;
         try {
             String enrollmentUid = d2.enrollmentModule().enrollments().blockingAdd(
@@ -49,10 +49,10 @@ public class EnrollmentFormService {
             enrollmentRepository = d2.enrollmentModule().enrollments().uid(enrollmentUid);
             enrollmentRepository.setEnrollmentDate(getNowWithoutTime());
             enrollmentRepository.setIncidentDate(getNowWithoutTime());
-            return true;
+            return enrollmentUid;
         } catch (D2Error d2Error) {
             d2Error.printStackTrace();
-            return false;
+            return null;
         }
     }
 

@@ -8,6 +8,7 @@ annotation = "1.7.1"
 appcompat = "1.6.1"
 constraintlayout = "2.1.4"
 designSystem = "0.2-20240326.143436-46"
+dataEntry="1.0-SNAPSHOT"
 espressoCore = "3.5.1"
 flipper-module = "0.161.0"
 flipper-network = "0.161.0"
@@ -22,7 +23,7 @@ compose = "1.5.4"
 composeConstraintLayout = "1.0.1"
 
 multidex = "2.0.1"
-ruleEngine = "2.1.9"
+ruleEngine = "3.0.0-20240119.134348-12"
 material3 = "1.1.1"
 runner = "1.5.2"
 soloader = "0.10.4"
@@ -37,6 +38,8 @@ appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat"
 commons-jexl = { module = "org.apache.commons:commons-jexl", version.ref = "commonsJexl" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 dhis2-mobile-designsystem = { group = "org.hisp.dhis.mobile", name = "designsystem-android", version.ref = "designSystem" }
+dhis2-mobile-datentry = { group = "org.hisp.dhis.mobile", name = "entryform", version.ref = "dataEntry" }
+dhis2-mobile-rules = { group = "org.hisp.dhis.mobile", name = "rules", version.ref = "dataEntry" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 flipper-module = { module = "com.facebook.flipper:flipper", version.ref = "flipper-module" }
 flipper-network = { module = "com.facebook.flipper:flipper-network-plugin", version.ref = "flipper-network" }
@@ -57,7 +60,7 @@ androidx-compose-uitooling = { group = "androidx.compose.ui", name = "ui-tooling
 androidx-compose-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
 androidx-compose-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding", version.ref = "compose" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
-rule-engine = { module = "org.hisp.dhis.rules:rule-engine", version.ref = "ruleEngine" }
+rule-engine = { group = "org.hisp.dhis.rules", name = "rule-engine-jvm", version.ref = "ruleEngine" }
 runner = { module = "androidx.test:runner", version.ref = "runner" }
 soloader = { module = "com.facebook.soloader:soloader", version.ref = "soloader" }
 desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar_jdk_libs" }

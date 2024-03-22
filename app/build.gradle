@@ -67,17 +67,19 @@ android {
 
 
 dependencies {
-    /* Uncomment the following line and remove the org.hisp.dhis:android-core dependency to use the android DHIS2 SDK as a submodule.
-    implementation project(":core")
-    */
 
     implementation (libs.android.core) {
         exclude group: 'com.facebook.flipper'
     }
 
     implementation(libs.dhis2.mobile.designsystem)
-
-    implementation libs.rule.engine
+    implementation(libs.dhis2.mobile.datentry) {
+        exclude group: 'org.hisp.dhis.rules'
+        exclude group: 'org.hisp.dhis.lib.expression'
+        exclude group: 'org.hisp.dhis.android-core'
+    }
+    implementation(libs.dhis2.mobile.rules)
+//    implementation libs.rule.engine
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.appcompat
