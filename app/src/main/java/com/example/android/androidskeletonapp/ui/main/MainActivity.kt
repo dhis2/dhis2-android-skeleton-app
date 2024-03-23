@@ -18,6 +18,7 @@ import com.example.android.androidskeletonapp.data.service.ActivityStarter
 import com.example.android.androidskeletonapp.data.service.LogOutService
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper
 import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity
+import com.example.android.androidskeletonapp.ui.custom_usecase.CustomUsecaseActivity
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity
 import com.example.android.androidskeletonapp.ui.data_sets.instances.DataSetInstancesActivity
@@ -332,6 +333,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             wipeData()
         } else if (id == R.id.navExit) {
             compositeDisposable!!.add(LogOutService.logOut(this))
+        } else if (id == R.id.navCustomUseCase) {
+            ActivityStarter.startActivity(this, CustomUsecaseActivity.getIntent(this), false)
         }
         val drawer = findViewById<DrawerLayout>(R.id.drawerLayout)
         drawer.closeDrawer(GravityCompat.START)

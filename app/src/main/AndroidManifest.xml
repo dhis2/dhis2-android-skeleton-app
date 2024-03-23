@@ -42,6 +42,9 @@
             android:name=".ui.login.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
+            android:name=".ui.custom_usecase.CustomUsecaseActivity"
+            android:label="@string/your_usecase" />
+        <activity
             android:name=".ui.main.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_main"

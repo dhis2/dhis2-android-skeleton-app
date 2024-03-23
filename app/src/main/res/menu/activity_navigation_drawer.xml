@@ -36,6 +36,10 @@
             android:id="@+id/navCodeExecutor"
             android:icon="@drawable/ic_execute_code_black_24dp"
             android:title="@string/code_executor" />
+        <item
+            android:id="@+id/navCustomUseCase"
+            android:icon="@drawable/ic_construction_positive"
+            android:title="@string/custom_usecase" />
     </group>
 
     <item android:title="@string/data_management">

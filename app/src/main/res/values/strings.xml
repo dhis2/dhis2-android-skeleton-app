@@ -91,4 +91,10 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="filter_background">filterBackground</string>
+
+    <!-- Strings related to custom usecase -->
+    <string name="custom_usecase">Custom Usecase</string>
+    <string name="your_usecase">Your Usecase</string>
+
+
 </resources>
