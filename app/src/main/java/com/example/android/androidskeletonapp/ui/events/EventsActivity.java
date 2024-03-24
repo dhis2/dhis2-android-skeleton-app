@@ -13,7 +13,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
-import com.example.android.androidskeletonapp.ui.event_form.EventFormActivity;
+import com.example.android.androidskeletonapp.ui.eventForm.EventFormActivity;
 
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
 import org.hisp.dhis.android.core.event.EventCreateProjection;

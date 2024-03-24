@@ -20,12 +20,12 @@ import com.example.android.androidskeletonapp.data.service.SyncStatusHelper
 import com.example.android.androidskeletonapp.ui.codeExecutor.CodeExecutorActivity
 import com.example.android.androidskeletonapp.ui.customUsecase.CustomUsecaseActivity
 import com.example.android.androidskeletonapp.ui.d2Errors.D2ErrorActivity
-import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity
-import com.example.android.androidskeletonapp.ui.data_sets.instances.DataSetInstancesActivity
-import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity
+import com.example.android.androidskeletonapp.ui.dataSets.DataSetsActivity
+import com.example.android.androidskeletonapp.ui.dataSets.instances.DataSetInstancesActivity
+import com.example.android.androidskeletonapp.ui.foreignKeyViolations.ForeignKeyViolationsActivity
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity
-import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity
-import com.example.android.androidskeletonapp.ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity
+import com.example.android.androidskeletonapp.ui.trackedEntityInstances.TrackedEntityInstancesActivity
+import com.example.android.androidskeletonapp.ui.trackedEntityInstances.search.TrackedEntityInstanceSearchActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar

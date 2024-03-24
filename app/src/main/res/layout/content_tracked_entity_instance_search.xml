@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity"
+    tools:context=".ui.trackedEntityInstances.search.TrackedEntityInstanceSearchActivity"
     tools:showIn="@layout/activity_tracked_entity_instance_search">
 
     <androidx.constraintlayout.widget.ConstraintLayout

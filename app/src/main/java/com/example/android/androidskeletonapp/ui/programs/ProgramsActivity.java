@@ -13,7 +13,7 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.events.EventsActivity;
-import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
+import com.example.android.androidskeletonapp.ui.trackedEntityInstances.TrackedEntityInstancesActivity;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.program.Program;

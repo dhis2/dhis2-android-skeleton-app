@@ -54,23 +54,23 @@
             android:label="@string/title_activity_programs"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.tracked_entity_instances.TrackedEntityInstancesActivity"
+            android:name=".ui.trackedEntityInstances.TrackedEntityInstancesActivity"
             android:label="@string/title_activity_tracked_entity_instances"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity"
+            android:name=".ui.trackedEntityInstances.search.TrackedEntityInstanceSearchActivity"
             android:label="@string/title_activity_tracked_entity_search"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.enrollment_form.EnrollmentFormActivity"
+            android:name=".ui.enrollmentForm.EnrollmentFormActivity"
             android:label="@string/title_activity_enrollment_form"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.data_sets.DataSetsActivity"
+            android:name=".ui.dataSets.DataSetsActivity"
             android:label="@string/title_activity_data_sets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.data_sets.instances.DataSetInstancesActivity"
+            android:name=".ui.dataSets.instances.DataSetInstancesActivity"
             android:label="@string/title_activity_data_set_instances"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -78,20 +78,20 @@
             android:label="@string/title_activity_d2_errors"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.foreign_key_violations.ForeignKeyViolationsActivity"
+            android:name=".ui.foreignKeyViolations.ForeignKeyViolationsActivity"
             android:label="@string/title_activity_fk_violations"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.codeExecutor.CodeExecutorActivity"
             android:label="@string/code_executor"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.event_form.EventFormActivity"
+        <activity android:name=".ui.eventForm.EventFormActivity"
             android:label="@string/title_activity_event_form"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.events.EventsActivity"
             android:label="@string/title_activity_events"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".ui.data_sets.instances.data_set_form.DataSetFormActivity" />
+        <activity android:name=".ui.dataSets.instances.data_set_form.DataSetFormActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

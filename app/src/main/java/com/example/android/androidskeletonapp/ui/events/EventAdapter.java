@@ -18,8 +18,8 @@ import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
-import com.example.android.androidskeletonapp.ui.event_form.EventFormActivity;
-import com.example.android.androidskeletonapp.ui.tracker_import_conflicts.TrackerImportConflictsAdapter;
+import com.example.android.androidskeletonapp.ui.eventForm.EventFormActivity;
+import com.example.android.androidskeletonapp.ui.trackerImportConflicts.TrackerImportConflictsAdapter;
 
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.event.Event;
