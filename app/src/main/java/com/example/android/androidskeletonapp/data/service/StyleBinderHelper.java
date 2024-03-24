@@ -20,7 +20,7 @@ public class StyleBinderHelper {
         if (style != null) {
             if (style.icon() == null) {
                 int emptyColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.colorEmpty);
-                holder.icon.setImageResource(0);
+                holder.icon.setImageResource(R.drawable.ic_default_positive);
                 holder.icon.setBackgroundColor(emptyColor);
             } else {
                 String iconName = style.icon().startsWith("ic_") ? style.icon() : "ic_" + style.icon();
