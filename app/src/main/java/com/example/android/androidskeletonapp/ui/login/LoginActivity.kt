@@ -52,33 +52,32 @@ class LoginActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory()).get(
-            LoginViewModel::class.java
+            LoginViewModel::class.java,
         )
 
         binding.composeView.setContent {
-
             val loginUiState by loginViewModel!!.loginUiState.collectAsState()
-            var serverUrlText by remember{ mutableStateOf(TextFieldValue(getString(R.string.auto_fill_url))) }
-            var userName by remember{ mutableStateOf(TextFieldValue(getString(R.string.auto_fill_username))) }
-            var password by remember{ mutableStateOf(TextFieldValue(getString(R.string.auto_fill_password))) }
-            var showProgress by remember(isLoading){ mutableStateOf(isLoading) }
-            loginViewModel!!.initLoginDefaultValues(serverUrlText.text,userName.text,password.text)
-            val isLoginEnabled by remember(loginUiState){   mutableStateOf(loginUiState.isLoginEnabled()) }
+            var serverUrlText by remember { mutableStateOf(TextFieldValue(getString(R.string.auto_fill_url))) }
+            var userName by remember { mutableStateOf(TextFieldValue(getString(R.string.auto_fill_username))) }
+            var password by remember { mutableStateOf(TextFieldValue(getString(R.string.auto_fill_password))) }
+            var showProgress by remember(isLoading) { mutableStateOf(isLoading) }
+            loginViewModel!!.initLoginDefaultValues(serverUrlText.text, userName.text, password.text)
+            val isLoginEnabled by remember(loginUiState) { mutableStateOf(loginUiState.isLoginEnabled()) }
 
-
-            Column(modifier = Modifier.fillMaxHeight(1f).padding(horizontal = 24.dp),
+            Column(
+                modifier = Modifier.fillMaxHeight(1f).padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally) {
-
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 Spacer(modifier = Modifier.size(40.dp))
                 InputText(
-                    title =  getString(R.string.prompt_server_url),
+                    title = getString(R.string.prompt_server_url),
                     state = if (!loginUiState.isServerUrlValid()) InputShellState.ERROR else InputShellState.UNFOCUSED,
-                    inputTextFieldValue =  serverUrlText,
+                    inputTextFieldValue = serverUrlText,
                     onValueChanged = {
                         serverUrlText = it ?: TextFieldValue()
                         loginViewModel!!.setServer(it?.text)
-                    }
+                    },
                 )
 
                 InputText(
@@ -86,17 +85,16 @@ class LoginActivity : AppCompatActivity() {
                     state = if (!loginUiState.isUserNameValid()) InputShellState.ERROR else InputShellState.UNFOCUSED,
                     inputTextFieldValue = userName,
                     onValueChanged =
-                        {
-                            userName = it ?:TextFieldValue()
-                            loginViewModel!!.setUserName(it?.text)
-
-                        }
-                    )
+                    {
+                        userName = it ?: TextFieldValue()
+                        loginViewModel!!.setUserName(it?.text)
+                    },
+                )
 
                 InputText(
                     title = getString(R.string.prompt_password),
                     state = if (!loginUiState.isPasswordValid()) InputShellState.ERROR else InputShellState.UNFOCUSED,
-                    inputTextFieldValue =  password,
+                    inputTextFieldValue = password,
                     onValueChanged = {
                         password = it ?: TextFieldValue()
                         loginViewModel!!.setPassword(it?.text)
@@ -109,28 +107,28 @@ class LoginActivity : AppCompatActivity() {
                     text = getString(R.string.action_sign_in_short),
                     enabled = isLoginEnabled,
                     onClick = {
-                          isLoading.value = true
-                          loginViewModel!!.login(loginUiState)
+                        isLoading.value = true
+                        loginViewModel!!.login(loginUiState)
                     },
                 )
             }
-            if(showProgress.value) {
-                Box(modifier = Modifier
-                    .fillMaxSize(1f)
-                    .background(color = Color.Black.copy(0.1f))) {
+            if (showProgress.value) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(1f)
+                        .background(color = Color.Black.copy(0.1f)),
+                ) {
                     ProgressIndicator(type = ProgressIndicatorType.CIRCULAR, modifier = Modifier.size(80.dp).align(Alignment.Center))
                 }
             }
-            
         }
-        
+
         loginViewModel!!.loginResult.observe(this) { loginResult: LoginResult? ->
             if (loginResult == null) {
                 return@observe
             }
             isLoading.value = false
             if (loginResult.error != null) {
-                
                 showLoginFailed(loginResult.error)
             }
             if (loginResult.success != null) {
@@ -138,25 +136,23 @@ class LoginActivity : AppCompatActivity() {
                     ActivityStarter.startActivity(
                         this,
                         ProgramsActivity.getProgramActivityIntent(this),
-                        true
+                        true,
                     )
                 } else {
                     ActivityStarter.startActivity(
                         this,
                         MainActivity.getMainActivityIntent(this),
-                        true
+                        true,
                     )
                 }
             }
             setResult(RESULT_OK)
         }
-        
     }
-    
+
     override fun onDestroy() {
         super.onDestroy()
         disposable.dispose()
-
     }
 
     private fun showLoginFailed(errorString: String?) {

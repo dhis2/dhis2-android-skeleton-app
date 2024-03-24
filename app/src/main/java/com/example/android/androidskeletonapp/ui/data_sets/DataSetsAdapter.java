@@ -35,4 +35,5 @@ public class DataSetsAdapter extends PagedListAdapter<DataSet, ListItemWithStyle
         holder.subtitle1.setText(dataSet.periodType().name());
         StyleBinderHelper.bindStyle(holder, dataSet.style());
     }
+
 }

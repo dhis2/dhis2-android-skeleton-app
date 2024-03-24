@@ -13,26 +13,24 @@ class LoginViewModel internal constructor() : ViewModel() {
         LoginUiState(),
     )
     fun login(loginUiState: LoginUiState) {
-
-           Sdk.d2().userModule().logIn(loginUiState.userName!!, loginUiState.password!!, loginUiState.server!!).subscribe(
-                { user ->
-                    if (user != null) {
-                        loginResult.postValue(LoginResult(user))
-                    } else {
-                        loginResult.postValue(LoginResult("Login error: no user"))
-                    }
-                },{
-                        throwable: Throwable ->
-                    var errorCode = ""
-                    val d2Error = throwable as D2Error
-                    errorCode = ": " + d2Error.errorCode()
-
-                    loginResult.postValue(LoginResult("Login error$errorCode"))
-                    throwable.printStackTrace()
+        Sdk.d2().userModule().logIn(loginUiState.userName!!, loginUiState.password!!, loginUiState.server!!).subscribe(
+            { user ->
+                if (user != null) {
+                    loginResult.postValue(LoginResult(user))
+                } else {
+                    loginResult.postValue(LoginResult("Login error: no user"))
                 }
-            )
+            },
+            {
+                    throwable: Throwable ->
+                var errorCode = ""
+                val d2Error = throwable as D2Error
+                errorCode = ": " + d2Error.errorCode()
 
-
+                loginResult.postValue(LoginResult("Login error$errorCode"))
+                throwable.printStackTrace()
+            },
+        )
     }
 
     fun setServer(serverUrl: String?) {
@@ -56,7 +54,6 @@ class LoginViewModel internal constructor() : ViewModel() {
     }
 
     fun initLoginDefaultValues(serverUrl: String?, username: String?, password: String?) {
-        loginUiState.update { it.copy(server = serverUrl, userName = username, password = password)  }
+        loginUiState.update { it.copy(server = serverUrl, userName = username, password = password) }
     }
-
 }

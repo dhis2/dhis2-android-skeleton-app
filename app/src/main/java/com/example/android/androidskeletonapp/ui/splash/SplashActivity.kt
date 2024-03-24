@@ -10,7 +10,6 @@ import com.example.android.androidskeletonapp.databinding.ActivitySplashBinding
 import com.example.android.androidskeletonapp.ui.login.LoginActivity
 import com.example.android.androidskeletonapp.ui.main.MainActivity
 import io.reactivex.disposables.CompositeDisposable
-
 import org.hisp.dhis.android.core.D2Manager.blockingInstantiateD2
 
 class SplashActivity : AppCompatActivity() {
@@ -24,39 +23,38 @@ class SplashActivity : AppCompatActivity() {
 
         blockingInstantiateD2(Sdk.getD2Configuration(this))?.userModule()?.isLogged()
             ?.subscribe(
-                {isLogged: Boolean ->
+                { isLogged: Boolean ->
                     if (isLogged) {
                         ActivityStarter.startActivity(
                             this,
                             MainActivity.getMainActivityIntent(this),
-                            true
+                            true,
                         )
                     } else {
                         ActivityStarter.startActivity(
                             this,
                             LoginActivity.getLoginActivityIntent(this),
-                            true
+                            true,
                         )
-                    }},
-                {throwable: Throwable ->
+                    }
+                },
+                { throwable: Throwable ->
                     throwable.printStackTrace()
                     ActivityStarter.startActivity(
                         this,
                         LoginActivity.getLoginActivityIntent(this),
-                        true
-                    )}
+                        true,
+                    )
+                },
             )?.let {
                 disposable.add(
-                    it
+                    it,
                 )
             }
-
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
-            disposable.dispose()
-
+        disposable.dispose()
     }
 }

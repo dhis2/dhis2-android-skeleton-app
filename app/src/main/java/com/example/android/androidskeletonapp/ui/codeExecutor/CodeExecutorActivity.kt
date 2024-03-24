@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.ui.code_executor
+package com.example.android.androidskeletonapp.ui.codeExecutor
 
 import android.content.Context
 import android.content.Intent
@@ -51,7 +51,7 @@ class CodeExecutorActivity : AppCompatActivity() {
                         resultNotificator?.setVisibility(View.VISIBLE)
                         view.isEnabled = java.lang.Boolean.TRUE
                         view.visibility = View.VISIBLE
-                    }
+                    },
                 ) { obj: Throwable -> obj.printStackTrace() }
         }
     }

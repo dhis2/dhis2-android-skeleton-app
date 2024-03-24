@@ -17,9 +17,9 @@ import com.example.android.androidskeletonapp.data.Sdk
 import com.example.android.androidskeletonapp.data.service.ActivityStarter
 import com.example.android.androidskeletonapp.data.service.LogOutService
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper
-import com.example.android.androidskeletonapp.ui.code_executor.CodeExecutorActivity
-import com.example.android.androidskeletonapp.ui.custom_usecase.CustomUsecaseActivity
-import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity
+import com.example.android.androidskeletonapp.ui.codeExecutor.CodeExecutorActivity
+import com.example.android.androidskeletonapp.ui.customUsecase.CustomUsecaseActivity
+import com.example.android.androidskeletonapp.ui.d2Errors.D2ErrorActivity
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity
 import com.example.android.androidskeletonapp.ui.data_sets.instances.DataSetInstancesActivity
 import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity
@@ -61,39 +61,45 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         progressBar = findViewById(R.id.syncProgressBar)
 
         syncMetadataButton.let {
-            it?.setOnClickListener(View.OnClickListener { view: View? ->
-                setSyncing()
-                Snackbar.make(view!!, "Syncing metadata", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-                syncStatusText.let {
-                    it?.setText(R.string.syncing_metadata)
-                }
-                syncMetadata()
-            })
+            it?.setOnClickListener(
+                View.OnClickListener { view: View? ->
+                    setSyncing()
+                    Snackbar.make(view!!, "Syncing metadata", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
+                    syncStatusText.let {
+                        it?.setText(R.string.syncing_metadata)
+                    }
+                    syncMetadata()
+                },
+            )
         }
 
         syncDataButton.let {
-            it?.setOnClickListener(View.OnClickListener { view: View? ->
-                setSyncing()
-                Snackbar.make(view!!, "Syncing data", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-                syncStatusText.let {
-                    it?.setText(R.string.syncing_data)}
-                downloadData()
-            })
+            it?.setOnClickListener(
+                View.OnClickListener { view: View? ->
+                    setSyncing()
+                    Snackbar.make(view!!, "Syncing data", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
+                    syncStatusText.let {
+                        it?.setText(R.string.syncing_data)
+                    }
+                    downloadData()
+                },
+            )
         }
         uploadDataButton.let {
-            it?.setOnClickListener(View.OnClickListener { view: View? ->
-                setSyncing()
-                Snackbar.make(view!!, "Uploading data", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-                syncStatusText.let {
-                    it?.setText(R.string.uploading_data)
-                }
-                uploadData()
-            })
+            it?.setOnClickListener(
+                View.OnClickListener { view: View? ->
+                    setSyncing()
+                    Snackbar.make(view!!, "Uploading data", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
+                    syncStatusText.let {
+                        it?.setText(R.string.uploading_data)
+                    }
+                    uploadData()
+                },
+            )
         }
-
 
         inflateMainView()
         createNavigationView(user)
@@ -135,7 +141,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun inflateMainView() {
-
     }
 
     private fun setSyncing() {
@@ -201,7 +206,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val drawer = findViewById<DrawerLayout>(R.id.drawerLayout)
         val navigationView = findViewById<NavigationView>(R.id.navView)
         val toggle = ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this,
+            drawer,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close,
         )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
@@ -214,19 +223,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun syncMetadata() {
-        compositeDisposable!!.add(downloadMetadata()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError { obj: Throwable -> obj.printStackTrace() }
-            .doOnComplete {
-                setSyncingFinished()
-                ActivityStarter.startActivity(
-                    this,
-                    ProgramsActivity.getProgramActivityIntent(this),
-                    false
-                )
-            }
-            .subscribe())
+        compositeDisposable!!.add(
+            downloadMetadata()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError { obj: Throwable -> obj.printStackTrace() }
+                .doOnComplete {
+                    setSyncingFinished()
+                    ActivityStarter.startActivity(
+                        this,
+                        ProgramsActivity.getProgramActivityIntent(this),
+                        false,
+                    )
+                }
+                .subscribe(),
+        )
     }
 
     private fun downloadMetadata(): Observable<D2Progress> {
@@ -238,7 +249,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Observable.merge(
                 downloadTrackedEntityInstances(),
                 downloadSingleEvents(),
-                downloadAggregatedData()
+                downloadAggregatedData(),
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -248,13 +259,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         this,
                         TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(
                             this,
-                            null
+                            null,
                         ),
-                        false
+                        false,
                     )
                 }
                 .doOnError { obj: Throwable -> obj.printStackTrace() }
-                .subscribe())
+                .subscribe(),
+        )
     }
 
     private fun downloadTrackedEntityInstances(): Observable<TrackerD2Progress> {
@@ -281,7 +293,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete { setSyncingFinished() }
                 .doOnError { obj: Throwable -> obj.printStackTrace() }
-                .subscribe())
+                .subscribe(),
+        )
     }
 
     private fun wipeData() {
@@ -295,7 +308,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError { obj: Throwable -> obj.printStackTrace() }
                 .doOnComplete { setSyncingFinished() }
-                .subscribe())
+                .subscribe(),
+        )
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -304,19 +318,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             ActivityStarter.startActivity(
                 this,
                 ProgramsActivity.getProgramActivityIntent(this),
-                false
+                false,
             )
         } else if (id == R.id.navTrackedEntities) {
             ActivityStarter.startActivity(
                 this,
                 TrackedEntityInstancesActivity.getTrackedEntityInstancesActivityIntent(this, null),
-                false
+                false,
             )
         } else if (id == R.id.navTrackedEntitiesSearch) {
             ActivityStarter.startActivity(
                 this,
                 TrackedEntityInstanceSearchActivity.getIntent(this),
-                false
+                false,
             )
         } else if (id == R.id.navDataSets) {
             ActivityStarter.startActivity(this, DataSetsActivity.getIntent(this), false)

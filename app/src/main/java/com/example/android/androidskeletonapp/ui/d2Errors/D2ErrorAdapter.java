@@ -1,4 +1,4 @@
-package com.example.android.androidskeletonapp.ui.d2_errors;
+package com.example.android.androidskeletonapp.ui.d2Errors;
 
 import android.view.LayoutInflater;
 import android.view.View;

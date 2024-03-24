@@ -12,17 +12,21 @@ data class LoginUiState(
     fun isServerUrlValid(): Boolean {
         return if (server == null) {
             false
-        } else Patterns.WEB_URL.matcher(server).matches()
+        } else {
+            Patterns.WEB_URL.matcher(server).matches()
+        }
     }
 
     fun isUserNameValid(): Boolean {
         return if (userName == null) {
             false
-        } else !userName.trim { it <= ' ' }.isEmpty()
+        } else {
+            !userName.trim { it <= ' ' }.isEmpty()
+        }
     }
 
     fun setIsLoading(state: Boolean) {
-       isLoading = state
+        isLoading = state
     }
 
     fun isPasswordValid(): Boolean {

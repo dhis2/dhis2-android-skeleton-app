@@ -42,7 +42,7 @@
             android:name=".ui.login.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".ui.custom_usecase.CustomUsecaseActivity"
+            android:name=".ui.customUsecase.CustomUsecaseActivity"
             android:label="@string/your_usecase" />
         <activity
             android:name=".ui.main.MainActivity"
@@ -74,7 +74,7 @@
             android:label="@string/title_activity_data_set_instances"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.d2_errors.D2ErrorActivity"
+            android:name=".ui.d2Errors.D2ErrorActivity"
             android:label="@string/title_activity_d2_errors"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -82,7 +82,7 @@
             android:label="@string/title_activity_fk_violations"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.code_executor.CodeExecutorActivity"
+            android:name=".ui.codeExecutor.CodeExecutorActivity"
             android:label="@string/code_executor"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.event_form.EventFormActivity"
