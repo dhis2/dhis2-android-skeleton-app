@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -57,11 +58,11 @@ class LoginActivity : AppCompatActivity() {
         binding.composeView.setContent {
 
             val loginUiState by loginViewModel!!.loginUiState.collectAsState()
-            var serverUrlText by remember{ mutableStateOf(getString(R.string.auto_fill_url)) }
-            var userName by remember{ mutableStateOf(getString(R.string.auto_fill_username)) }
-            var password by remember{ mutableStateOf(getString(R.string.auto_fill_password)) }
+            var serverUrlText by remember{ mutableStateOf(TextFieldValue(getString(R.string.auto_fill_url))) }
+            var userName by remember{ mutableStateOf(TextFieldValue(getString(R.string.auto_fill_username))) }
+            var password by remember{ mutableStateOf(TextFieldValue(getString(R.string.auto_fill_password))) }
             var showProgress by remember(isLoading){ mutableStateOf(isLoading) }
-            loginViewModel!!.initLoginDefaultValues(serverUrlText,userName,password)
+            loginViewModel!!.initLoginDefaultValues(serverUrlText.text,userName.text,password.text)
             val isLoginEnabled by remember(loginUiState){   mutableStateOf(loginUiState.isLoginEnabled()) }
 
 
@@ -73,21 +74,21 @@ class LoginActivity : AppCompatActivity() {
                 InputText(
                     title =  getString(R.string.prompt_server_url),
                     state = if (!loginUiState.isServerUrlValid()) InputShellState.ERROR else InputShellState.UNFOCUSED,
-                    inputText =  serverUrlText,
+                    inputTextFieldValue =  serverUrlText,
                     onValueChanged = {
-                        serverUrlText = it ?: ""
-                        loginViewModel!!.setServer(it)
+                        serverUrlText = it ?: TextFieldValue()
+                        loginViewModel!!.setServer(it?.text)
                     }
                 )
 
                 InputText(
                     title = getString(R.string.prompt_username),
                     state = if (!loginUiState.isUserNameValid()) InputShellState.ERROR else InputShellState.UNFOCUSED,
-                    inputText = userName,
+                    inputTextFieldValue = userName,
                     onValueChanged =
                         {
-                            userName = it?:""
-                            loginViewModel!!.setUserName(it)
+                            userName = it ?:TextFieldValue()
+                            loginViewModel!!.setUserName(it?.text)
 
                         }
                     )
@@ -95,10 +96,10 @@ class LoginActivity : AppCompatActivity() {
                 InputText(
                     title = getString(R.string.prompt_password),
                     state = if (!loginUiState.isPasswordValid()) InputShellState.ERROR else InputShellState.UNFOCUSED,
-                    inputText = password,
+                    inputTextFieldValue =  password,
                     onValueChanged = {
-                        password = it?: ""
-                        loginViewModel!!.setPassword(it)
+                        password = it ?: TextFieldValue()
+                        loginViewModel!!.setPassword(it?.text)
                     },
                 )
 

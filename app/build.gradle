@@ -87,7 +87,9 @@ dependencies {
     implementation libs.lifecycle.extensions
     implementation libs.multidex
     implementation libs.legacy.support.v4
-    implementation 'org.apache.commons:commons-jexl:2.1.1'
+    implementation libs.commons.jexl
+    implementation(libs.androidx.core.splashscreen)
+
     api(libs.androidx.compose.livedata)
     debugApi(libs.androidx.compose.uitooling)
     api(libs.androidx.compose)

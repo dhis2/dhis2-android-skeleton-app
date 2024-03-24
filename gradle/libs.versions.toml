@@ -1,12 +1,13 @@
 [versions]
+commonsJexl = "2.1.1"
+coreSplashscreen = "1.0.0"
 kotlinCompilerExtensionVersion = "1.5.6"
 
 androidCore = "1.9.1"
 annotation = "1.7.1"
 appcompat = "1.6.1"
 constraintlayout = "2.1.4"
-designSystem = "1.0-20231017.105057-81"
-dhis2sdk = "1.9.0-20231018.121321-52"
+designSystem = "0.2-20240314.101140-42"
 espressoCore = "3.5.1"
 flipper-module = "0.161.0"
 flipper-network = "0.161.0"
@@ -30,8 +31,10 @@ desugar_jdk_libs = "2.0.3"
 [libraries]
 
 android-core = { module = "org.hisp.dhis:android-core", version.ref = "androidCore" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+commons-jexl = { module = "org.apache.commons:commons-jexl", version.ref = "commonsJexl" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 dhis2-mobile-designsystem = { group = "org.hisp.dhis.mobile", name = "designsystem", version.ref = "designSystem" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
