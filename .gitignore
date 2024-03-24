@@ -12,3 +12,4 @@
 /build
 /captures
 .externalNativeBuild
+/dhis2-android-sdk/core/build/intermediates/ktLint/
