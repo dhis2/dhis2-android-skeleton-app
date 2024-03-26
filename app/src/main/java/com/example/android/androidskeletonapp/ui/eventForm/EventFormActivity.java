@@ -15,7 +15,6 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
-import com.example.android.androidskeletonapp.ui.enrollmentForm.FormAdapter;
 
 import org.dhis2.form.model.EventMode;
 import org.dhis2.form.model.EventRecords;
@@ -75,7 +74,6 @@ public class EventFormActivity extends AppCompatActivity {
         FormView formView = new FormView.Builder()
                 .factory(getSupportFragmentManager())
                 .setRecords(new EventRecords(eventUid, EventMode.CHECK))
-                .useComposeForm(true)
                 .build();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.formContainer, formView)
@@ -130,7 +128,7 @@ public class EventFormActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (formType == FormType.CREATE)
-            EventFormService.getInstance().delete();
+            EventFormService.getInstance().delete(eventUid);
         setResult(RESULT_CANCELED);
         finish();
     }
