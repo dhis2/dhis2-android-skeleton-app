@@ -68,7 +68,7 @@ public class TrackedEntityInstancesActivity extends ListActivity {
                                 TrackedEntityInstancesActivity.this,
                                 teiUid,
                                 selectedProgram,
-                                Sdk.d2().organisationUnitModule().organisationUnits().one().blockingGet().uid()
+                                EnrollmentFormActivity.FormType.CREATE
                                 ))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -82,7 +82,7 @@ public class TrackedEntityInstancesActivity extends ListActivity {
     }
 
     private void observeTrackedEntityInstances() {
-        adapter = new TrackedEntityInstanceAdapter();
+        adapter = new TrackedEntityInstanceAdapter(this, selectedProgram);
         recyclerView.setAdapter(adapter);
 
         getTeiRepository().getPaged(20).observe(this, trackedEntityInstancePagedList -> {

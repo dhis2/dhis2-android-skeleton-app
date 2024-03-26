@@ -65,9 +65,7 @@ public class EventFormActivity extends AppCompatActivity {
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
         binding.buttonValidate.setOnClickListener(this::evaluateProgramIndicators);
 
-
         loadForm();
-
     }
 
     private void loadForm() {

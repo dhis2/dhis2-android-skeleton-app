@@ -1,214 +1,83 @@
 package com.example.android.androidskeletonapp.ui.enrollmentForm;
 
-import static android.text.TextUtils.isEmpty;
-
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 
-import com.example.android.androidskeletonapp.BuildConfig;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService;
-import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 
 import org.dhis2.form.model.EnrollmentMode;
 import org.dhis2.form.model.EnrollmentRecords;
 import org.dhis2.form.ui.FormView;
-import org.dhis2.mobileProgramRules.RuleEngineHelper;
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
-
-import java.io.File;
-
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.processors.PublishProcessor;
 
 public class EnrollmentFormActivity extends AppCompatActivity {
 
-    private final int CAMERA_RQ = 0;
-    private final int CAMERA_PERMISSION = 0;
+    private String enrollmentUid;
 
-    private ActivityEnrollmentFormBinding binding;
-    private FormAdapter adapter;
-    private CompositeDisposable disposable;
-    private PublishProcessor<Boolean> engineInitialization;
-    private RuleEngineHelper ruleEngineHelper;
-
-    private String teiUid;
-    private String fieldWaitingImage;
+    private FormType formType;
 
     private enum IntentExtra {
-        TEI_UID, PROGRAM_UID, OU_UID
+        TEI_UID, PROGRAM_UID, TYPE
     }
 
-    public static Intent getFormActivityIntent(Context context, String teiUid, String programUid,
-                                               String orgUnitUid) {
+    public enum FormType {
+        CREATE, CHECK
+    }
+
+    public static Intent getFormActivityIntent(
+            Context context,
+            String teiUid,
+            String programUid,
+            FormType type
+    ) {
         Intent intent = new Intent(context, EnrollmentFormActivity.class);
         intent.putExtra(IntentExtra.TEI_UID.name(), teiUid);
         intent.putExtra(IntentExtra.PROGRAM_UID.name(), programUid);
-        intent.putExtra(IntentExtra.OU_UID.name(), orgUnitUid);
+        intent.putExtra(IntentExtra.TYPE.name(), type.name());
         return intent;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_enrollment_form);
+        com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_enrollment_form);
 
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        teiUid = getIntent().getStringExtra(IntentExtra.TEI_UID.name());
 
-        adapter = new FormAdapter(getValueListener(), getImageListener());
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
-        binding.formRecycler.setAdapter(adapter);
         binding.formRecycler.setVisibility(View.GONE);
 
-        engineInitialization = PublishProcessor.create();
+        formType = FormType.valueOf(getIntent().getStringExtra(IntentExtra.TYPE.name()));
+        String teiUid = getIntent().getStringExtra(IntentExtra.TEI_UID.name());
+        String programUid = getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name());
+        enrollmentUid = Sdk.d2().enrollmentModule().enrollments()
+                .byProgram().eq(programUid)
+                .byTrackedEntityInstance().eq(teiUid)
+                .one().blockingGet().uid();
 
-        String enrollmentUid = EnrollmentFormService.getInstance().init(
-                Sdk.d2(),
-                getIntent().getStringExtra(IntentExtra.TEI_UID.name()),
-                getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
-                getIntent().getStringExtra(IntentExtra.OU_UID.name()));
-
-        if (enrollmentUid != null) {
-            loadForm(enrollmentUid);
-        }
-
+        loadForm(enrollmentUid);
     }
 
     private void loadForm(String enrollmentUid) {
         FormView formView = new FormView.Builder()
                 .factory(getSupportFragmentManager())
-                .setRecords(new EnrollmentRecords(enrollmentUid, EnrollmentMode.NEW))
-                .useComposeForm(true)
+                .setRecords(new EnrollmentRecords(enrollmentUid, EnrollmentMode.CHECK))
                 .build();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.formContainer, formView)
                 .commit();
-    }
-
-    private FormAdapter.OnImageSelectionClick getImageListener() {
-        return fieldUid -> {
-            fieldWaitingImage = fieldUid;
-
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
-            } else {
-                requestCamera();
-            }
-        };
-    }
-
-    private void requestCamera() {
-        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePicture.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        Uri photoUri = FileProvider.getUriForFile(this,
-                BuildConfig.APPLICATION_ID + ".provider",
-                new File(FileResourceDirectoryHelper.getFileResourceDirectory(this), "tempFile.png"));
-        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-        startActivityForResult(takePicture, CAMERA_RQ);
-    }
-
-    private FormAdapter.OnValueSaved getValueListener() {
-        return (fieldUid, value) -> {
-            TrackedEntityAttributeValueObjectRepository valueRepository =
-                    Sdk.d2().trackedEntityModule().trackedEntityAttributeValues()
-                            .value(
-                                    fieldUid,
-                                    getIntent().getStringExtra(IntentExtra.TEI_UID.name()
-                                    )
-                            );
-            String currentValue = valueRepository.blockingExists() ?
-                    valueRepository.blockingGet().value() : "";
-            if (currentValue == null)
-                currentValue = "";
-
-            try {
-                if (!isEmpty(value)) {
-                    valueRepository.blockingSet(value);
-                } else {
-                    valueRepository.blockingDeleteIfExist();
-                }
-            } catch (D2Error d2Error) {
-                d2Error.printStackTrace();
-            } finally {
-                if (!value.equals(currentValue)) {
-                    engineInitialization.onNext(true);
-                }
-            }
-        };
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        disposable = new CompositeDisposable();
-
-        /*disposable.add(
-                engineService.configure(Sdk.d2(),
-                        getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
-                        EnrollmentFormService.getInstance().getEnrollmentUid(),
-                        null
-                )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                ruleEngine -> {
-                                    this.ruleEngine = ruleEngine;
-                                    engineInitialization.onNext(true);
-                                },
-                                Throwable::printStackTrace
-                        )
-        );*/
-
-        /*disposable.add(
-                engineInitialization
-                        .flatMap(next ->
-                                Flowable.zip(
-                                        EnrollmentFormService.getInstance().getEnrollmentFormFields()
-                                                .subscribeOn(Schedulers.io()),
-                                        engineService.ruleEnrollment().flatMap(ruleEnrollment ->
-                                               Flowable.just(ruleEngineHelper.evaluate()))
-                                                .subscribeOn(Schedulers.io()),
-                                        this::applyEffects
-                                ))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                fieldData -> adapter.updateData(fieldData),
-                                Throwable::printStackTrace
-                        )
-        );*/
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        disposable.clear();
     }
 
     @Override
@@ -216,19 +85,6 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         EnrollmentFormService.clear();
         super.onDestroy();
     }
-
-    /*private List<FormField> applyEffects(Map<String, FormField> fields,
-                                         List<RuleEffect> ruleEffects) {
-
-        for (RuleEffect ruleEffect : ruleEffects) {
-            RuleAction ruleAction = ruleEffect.ruleAction();
-            if (ruleEffect.ruleAction() instanceof RuleActionHideField) {
-                fields.remove(((RuleActionHideField) ruleAction).field());
-            }
-        }
-
-        return new ArrayList<>(fields.values());
-    }*/
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -243,45 +99,10 @@ public class EnrollmentFormActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        EnrollmentFormService.getInstance().delete();
+        if (formType == FormType.CREATE) {
+            EnrollmentFormService.getInstance().delete(enrollmentUid);
+        }
         setResult(RESULT_CANCELED);
         finish();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            requestCamera();
-        } else {
-            fieldWaitingImage = null;
-        }
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch (requestCode) {
-            case CAMERA_RQ:
-                if (resultCode == RESULT_OK) {
-                    File file = new File(
-                            FileResourceDirectoryHelper.getFileResourceDirectory(this),
-                            "tempFile.png"
-                    );
-                    if (file.exists()) {
-                        try {
-                            String fileResourceUid =
-                                    Sdk.d2().fileResourceModule().fileResources()
-                                            .blockingAdd(FileResizerHelper.resizeFile(file, FileResizerHelper.Dimension.MEDIUM));
-                            Sdk.d2().trackedEntityModule().trackedEntityAttributeValues()
-                                    .value(fieldWaitingImage, teiUid).blockingSet(fileResourceUid);
-                            engineInitialization.onNext(true);
-                        } catch (D2Error d2Error) {
-                            d2Error.printStackTrace();
-                        } finally {
-                            fieldWaitingImage = null;
-                        }
-                    }
-                }
-        }
     }
 }

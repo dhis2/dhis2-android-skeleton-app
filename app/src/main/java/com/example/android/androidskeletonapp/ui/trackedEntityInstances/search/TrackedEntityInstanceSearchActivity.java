@@ -77,7 +77,7 @@ public class TrackedEntityInstanceSearchActivity extends ListWithoutBindingsActi
 
         binding.searchFormRecycler.setAdapter(searchFormAdapter);
 
-        adapter = new TrackedEntityInstanceAdapter();
+        adapter = new TrackedEntityInstanceAdapter(this, savedProgram);
 
         downloadButton.setOnClickListener(view -> {
             view.setVisibility(View.GONE);

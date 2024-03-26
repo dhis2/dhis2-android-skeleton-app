@@ -16,14 +16,17 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.paging.DataSource;
 import androidx.paging.PagedListAdapter;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
+import com.example.android.androidskeletonapp.ui.enrollmentForm.EnrollmentFormActivity;
 import com.example.android.androidskeletonapp.ui.trackerImportConflicts.TrackerImportConflictsAdapter;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -42,10 +45,16 @@ import io.reactivex.schedulers.Schedulers;
 
 public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntityInstance, ListItemWithSyncHolder> {
 
+    private final AppCompatActivity activity;
     private DataSource<?, TrackedEntityInstance> source;
 
-    public TrackedEntityInstanceAdapter() {
+    private String selectedProgram;
+
+    public TrackedEntityInstanceAdapter(AppCompatActivity activity, String selectedProgram) {
         super(new DiffByIdItemCallback<>());
+        this.activity = activity;
+        this.selectedProgram = selectedProgram;
+
     }
 
     @NonNull
@@ -106,6 +115,15 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
         setState(trackedEntityInstance.aggregatedSyncState(), holder.syncIcon);
         setConflicts(trackedEntityInstance.uid(), holder);
+        holder.itemView.setOnClickListener(view -> ActivityStarter.startActivity(
+                activity,
+                EnrollmentFormActivity.getFormActivityIntent(
+                        activity,
+                        trackedEntityInstance.uid(),
+                        selectedProgram,
+                        EnrollmentFormActivity.FormType.CHECK
+                ), false
+        ));
     }
 
     private Observable<D2Progress> syncTei(String teiUid) {
