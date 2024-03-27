@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Dhis2 Skeleton App</string>
+    <string name="app_name">DHIS2 Skeleton App</string>
     <!-- Strings related to login -->
     <string name="title_activity_login">Log in</string>
     <string name="prompt_server_url">Server url</string>
@@ -11,7 +11,10 @@
     <string name="invalid_password">Password must have more than 5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <!-- Strings related to autoFill -->
-    <string name="auto_fill_url">"https://play.dhis2.org/40/"</string>
+    <string name="auto_fill_url">"https://play.dhis2.org/40"</string>
+    <string name="auto_fill_url2">"https://play.dhis2.org/2.39"</string>
+    <string name="auto_fill_url3">"https://play.dhis2.org/2.38"</string>
+
     <string name="auto_fill_username">"android"</string>
     <string name="auto_fill_password">"Android123"</string>    <!-- Strings related to list item -->
     <string name="sync_icon">Sync icon</string>
