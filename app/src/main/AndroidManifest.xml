@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_splash_icon"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup"
         tools:targetApi="m"
         android:theme="@style/AppTheme">
         <activity

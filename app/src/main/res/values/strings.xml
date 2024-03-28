@@ -57,6 +57,7 @@
     <!-- Strings related to tracked entity instances -->
     <string name="title_activity_tracked_entity_instances">Your tracked entity instances</string>
     <string name="tracked_entity_instance_name">Tracked Entity Instance Name</string>
+    <string name="access_problem">A problem occurred when trying to access Tracked Entity Instance enrollment details</string>
     <string name="unique_id">1234</string>
     <string name="no_tracked_entity_instances_found">No tracked entity instances found</string>
     <!--Strings related to events-->
