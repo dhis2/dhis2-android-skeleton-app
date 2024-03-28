@@ -17,7 +17,6 @@ import com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormS
 import org.dhis2.form.model.EnrollmentMode;
 import org.dhis2.form.model.EnrollmentRecords;
 import org.dhis2.form.ui.FormView;
-
 public class EnrollmentFormActivity extends AppCompatActivity {
 
     private String enrollmentUid;
@@ -62,11 +61,14 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         formType = FormType.valueOf(getIntent().getStringExtra(IntentExtra.TYPE.name()));
         String teiUid = getIntent().getStringExtra(IntentExtra.TEI_UID.name());
         String programUid = getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name());
-        enrollmentUid = Sdk.d2().enrollmentModule().enrollments()
-                .byProgram().eq(programUid)
-                .byTrackedEntityInstance().eq(teiUid)
-                .one().blockingGet().uid();
 
+        if(programUid != null) {
+            enrollmentUid = Sdk.d2().enrollmentModule().enrollments().byTrackedEntityInstance()
+                    .eq(teiUid).byProgram().eq(programUid).one()
+                    .blockingGet().uid();
+        } else {
+            enrollmentUid = Sdk.d2().enrollmentModule().enrollments().byTrackedEntityInstance().eq(teiUid).one().blockingGet().uid();
+        }
         loadForm(enrollmentUid);
     }
 

@@ -7,6 +7,8 @@ import static com.example.android.androidskeletonapp.data.service.AttributeHelpe
 import static com.example.android.androidskeletonapp.data.service.ImageHelper.getBitmap;
 import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
 import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setState;
+import static com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService.enroll;
+import static com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService.hasEnrollments;
 
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +43,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -47,6 +51,8 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
 
     private final AppCompatActivity activity;
     private DataSource<?, TrackedEntityInstance> source;
+    private final int ENROLLMENT_RQ = 1210;
+    private CompositeDisposable compositeDisposable;
 
     private String selectedProgram;
 
@@ -95,7 +101,7 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
                 rotateAnim.setRepeatMode(Animation.INFINITE);
                 holder.syncIcon.startAnimation(rotateAnim);
 
-                Disposable disposable = syncTei(trackedEntityInstance.uid())
+                syncTei(trackedEntityInstance.uid())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
@@ -115,15 +121,38 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
         setState(trackedEntityInstance.aggregatedSyncState(), holder.syncIcon);
         setConflicts(trackedEntityInstance.uid(), holder);
-        holder.itemView.setOnClickListener(view -> ActivityStarter.startActivity(
-                activity,
-                EnrollmentFormActivity.getFormActivityIntent(
-                        activity,
-                        trackedEntityInstance.uid(),
-                        selectedProgram,
-                        EnrollmentFormActivity.FormType.CHECK
-                ), false
-        ));
+        holder.itemView.setOnClickListener(view -> {
+
+            try {
+                if(Boolean.TRUE.equals(hasEnrollments(trackedEntityInstance.uid()))) {
+                    ActivityStarter.startActivity(
+                            activity,
+                            EnrollmentFormActivity.getFormActivityIntent(
+                                    activity,
+                                    trackedEntityInstance.uid(),
+                                    selectedProgram,
+                                    EnrollmentFormActivity.FormType.CHECK
+                            ), false
+                    );
+                } else{
+                    String orgUnit = Sdk.d2().organisationUnitModule().organisationUnits()
+                            .one().blockingGet().uid();
+                    compositeDisposable = new CompositeDisposable();
+                    compositeDisposable.add(
+                        enroll(selectedProgram, orgUnit, trackedEntityInstance.uid(), view.getContext())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    intent ->    ActivityStarter.startActivityForResult(
+                                            activity, intent,ENROLLMENT_RQ),
+                                    Throwable::printStackTrace
+                            )
+                    );
+                }
+            } catch (Exception ex) {
+                Toast.makeText(view.getContext(), view.getResources().getString(R.string.access_problem), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private Observable<D2Progress> syncTei(String teiUid) {

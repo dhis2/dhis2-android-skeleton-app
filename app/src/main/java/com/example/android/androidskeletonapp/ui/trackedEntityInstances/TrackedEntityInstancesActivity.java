@@ -11,10 +11,7 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
-import com.example.android.androidskeletonapp.ui.enrollmentForm.EnrollmentFormActivity;
-
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +21,15 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.text.TextUtils.isEmpty;
+import static com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService.saveToEnroll;
 
 public class TrackedEntityInstancesActivity extends ListActivity {
 
     private CompositeDisposable compositeDisposable;
     private String selectedProgram;
+
+    private String orgUnit;
+
     private final int ENROLLMENT_RQ = 1210;
     private TrackedEntityInstanceAdapter adapter;
 
@@ -50,37 +51,24 @@ public class TrackedEntityInstancesActivity extends ListActivity {
         selectedProgram = getIntent().getStringExtra(IntentExtra.PROGRAM.name());
         compositeDisposable = new CompositeDisposable();
         observeTrackedEntityInstances();
-
+        orgUnit = Sdk.d2().organisationUnitModule().organisationUnits()
+                .one().blockingGet().uid();
         if (isEmpty(selectedProgram))
             findViewById(R.id.enrollmentButton).setVisibility(View.GONE);
 
-        findViewById(R.id.enrollmentButton).setOnClickListener(view -> compositeDisposable.add(
-                Sdk.d2().programModule().programs().uid(selectedProgram).get()
-                        .map(program -> Sdk.d2().trackedEntityModule().trackedEntityInstances()
-                                .blockingAdd(
-                                        TrackedEntityInstanceCreateProjection.builder()
-                                                .organisationUnit(Sdk.d2().organisationUnitModule().organisationUnits()
-                                                        .one().blockingGet().uid())
-                                                .trackedEntityType(program.trackedEntityType().uid())
-                                                .build()
-                                ))
-                        .map(teiUid -> EnrollmentFormActivity.getFormActivityIntent(
-                                TrackedEntityInstancesActivity.this,
-                                teiUid,
-                                selectedProgram,
-                                EnrollmentFormActivity.FormType.CREATE
-                                ))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                activityIntent ->
-                                        ActivityStarter.startActivityForResult(
-                                                TrackedEntityInstancesActivity.this, activityIntent,ENROLLMENT_RQ),
-                                Throwable::printStackTrace
-                        )
-        ));
+        findViewById(R.id.enrollmentButton).setOnClickListener(view ->
+                compositeDisposable.add(
+                        saveToEnroll(selectedProgram, orgUnit, TrackedEntityInstancesActivity.this)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        activityIntent ->
+                                                ActivityStarter.startActivityForResult(
+                                                        TrackedEntityInstancesActivity.this, activityIntent,ENROLLMENT_RQ),
+                                        Throwable::printStackTrace
+                                )
+                ));
     }
-
     private void observeTrackedEntityInstances() {
         adapter = new TrackedEntityInstanceAdapter(this, selectedProgram);
         recyclerView.setAdapter(adapter);
